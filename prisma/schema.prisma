@@ -1,0 +1,174 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model addresses {
+  address_id         Int                 @id @default(autoincrement())
+  city               String              @db.VarChar(255)
+  first_address      String              @db.VarChar(255)
+  second_address     String              @db.VarChar(255)
+  postcode           String              @db.VarChar(255)
+  user_id            Int
+  users              users               @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "fkaddresses857531")
+  billing_addresses  billing_addresses?
+  shipping_addresses shipping_addresses?
+}
+
+model billing_addresses {
+  address_id Int       @id
+  notes      String?   @db.VarChar(511)
+  addresses  addresses @relation(fields: [address_id], references: [address_id], onDelete: Cascade, map: "fkbilling_ad507106")
+}
+
+model bundles {
+  bundle_id     Int             @id @default(autoincrement())
+  price         Float
+  notes         String?         @db.VarChar(511)
+  bundles_items bundles_items[]
+}
+
+model bundles_items {
+  bundle_id Int
+  item_id   Int
+  bundles   bundles @relation(fields: [bundle_id], references: [bundle_id], onDelete: Cascade, map: "fkbundles_it784788")
+  items     items   @relation(fields: [item_id], references: [item_id], map: "fkbundles_it21538")
+
+  @@id([bundle_id, item_id])
+}
+
+model carts {
+  user_id Int
+  item_id Int
+  amount  Int
+  items   items @relation(fields: [item_id], references: [item_id], onDelete: Cascade, map: "fkcarts400421")
+  users   users @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "fkcarts255711")
+
+  @@id([user_id, item_id])
+}
+
+model discounts {
+  discount_id Int     @id @default(autoincrement())
+  percentage  Int
+  notes       String? @db.VarChar(511)
+  items       items[]
+}
+
+model emails {
+  email_id Int      @id @default(autoincrement())
+  trigger  String   @db.VarChar(255)
+  datetime DateTime @db.Timestamp(6)
+  user_id  Int?
+  users    users?   @relation(fields: [user_id], references: [user_id], map: "fkemails453837")
+}
+
+model items {
+  item_id          Int                @id @default(autoincrement())
+  name             String             @unique @db.VarChar(255)
+  description      String             @db.VarChar(511)
+  price            Float
+  vat              Int
+  amount_available Int
+  price_unit       String?            @db.VarChar(255)
+  photo_loc        String?            @db.VarChar(255)
+  entry_date       DateTime           @db.Timestamp(6)
+  discount_id      Int?
+  discounts        discounts?         @relation(fields: [discount_id], references: [discount_id], onDelete: Cascade, map: "fkitems605249")
+  bundles_items    bundles_items[]
+  carts            carts[]
+  list_items_items list_items_items[]
+}
+
+model list_items {
+  list_item_id     Int                @id @default(autoincrement())
+  category         String             @unique @db.VarChar(255)
+  notes            String?            @db.VarChar(511)
+  list_items_items list_items_items[]
+}
+
+model list_items_items {
+  list_item_id Int
+  item_id      Int
+  items        items      @relation(fields: [item_id], references: [item_id], onDelete: Cascade, map: "fklist_items683058")
+  list_items   list_items @relation(fields: [list_item_id], references: [list_item_id], onDelete: Cascade, map: "fklist_items450170")
+
+  @@id([list_item_id, item_id])
+}
+
+model log_accesses {
+  log_access_id Int      @id @default(autoincrement())
+  ip            String   @db.VarChar(255)
+  trigger       String   @db.VarChar(255)
+  datetime      DateTime @db.Timestamp(6)
+  user_id       Int?
+  users         users?   @relation(fields: [user_id], references: [user_id], map: "fklog_access736030")
+}
+
+model orders {
+  order_id               Int        @id @default(autoincrement())
+  price_total            Float
+  shipping_cost          Float      @default(0)
+  price_no_shipping_cost Float
+  datetime               DateTime   @db.Timestamp(6)
+  archive                String
+  status                 String     @db.VarChar(255)
+  user_id                Int
+  users                  users      @relation(fields: [user_id], references: [user_id], onDelete: SetNull, map: "fkorders458716")
+  receipts               receipts[]
+}
+
+model receipts {
+  receipt_id     Int      @id @default(autoincrement())
+  price_total    Float
+  price_no_vat   Float
+  vat            Float
+  datetime       DateTime @db.Timestamp(6)
+  payment_method String   @db.VarChar(255)
+  archive        String
+  status         String   @db.VarChar(255)
+  order_id       Int
+  orders         orders   @relation(fields: [order_id], references: [order_id], map: "fkreceipts115011")
+}
+
+model refresh_tokens {
+  refresh_token_id Int   @id @default(autoincrement())
+  version          Int
+  user_id          Int
+  users            users @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "fkrefresh_to114230")
+}
+
+model shipping_addresses {
+  address_id Int       @id
+  notes      String?   @db.VarChar(511)
+  addresses  addresses @relation(fields: [address_id], references: [address_id], onDelete: Cascade, map: "fkshipping_a233077")
+}
+
+model tokens {
+  token_id        Int      @id @default(autoincrement())
+  secret          String   @unique @db.VarChar(511)
+  expiry_datetime DateTime @db.Timestamp(6)
+  user_id         Int
+  users           users    @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "fktokens874970")
+}
+
+model users {
+  user_id        Int              @id @default(autoincrement())
+  name           String           @db.VarChar(255)
+  surname        String           @db.VarChar(255)
+  dob            DateTime         @db.Date
+  email          String           @unique @db.VarChar(255)
+  password       String           @db.VarChar(511)
+  phone_number   String?          @db.VarChar(255)
+  role           String           @default("client") @db.VarChar(255)
+  addresses      addresses[]
+  carts          carts[]
+  emails         emails[]
+  log_accesses   log_accesses[]
+  orders         orders[]
+  refresh_tokens refresh_tokens[]
+  tokens         tokens[]
+}
