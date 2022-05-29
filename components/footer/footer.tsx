@@ -18,7 +18,7 @@ const Footer = () => {
     }, [heightPage, widthPage])
 
     return (
-        <footer ref={footerRef} className="border-t-8 border-green flex flex-row w-full smx:px-16 px-8 py-8 bg-neutral-200 mdx:justify-between justify-center items-center bg-white flex-wrap sm:gap-8 gap-12">
+        <footer ref={footerRef} className="border-t-8 border-green-standard flex flex-row w-full smx:px-16 px-8 py-8 bg-neutral-200 mdx:justify-between justify-center items-center bg-white flex-wrap sm:gap-8 gap-12">
             <div className="grid sm:grid-cols-2 sm:grid-rows-2 grid-cols-1 grid-rows-4 grid-flow-col gap-8 items-center mdx:basis-2/4 grow sm:basis-full basis-1/2">
                 <div className="flex flex-col gap-6">
                     <span className="font-semibold text-2xl">Web Pages</span>

@@ -9,3 +9,18 @@
 .Typewriter {
     display: inline-block;
 }
+
+.button-animated {
+    position: relative;
+    transition: all 0.25s;
+}
+.button-animated:before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    border-radius: 0.5rem;
+    transition: all 0.25s;
+}

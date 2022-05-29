@@ -5,6 +5,7 @@ import {useEffect, useRef} from "react";
 import {useLayoutContext} from "../contexts/layout-context";
 import {useResizer} from "../contexts/resizer-context";
 import Typewriter from 'typewriter-effect';
+import Link from "next/link";
 
 const Home: NextPage = () => {
     const fullPageRef = useRef<HTMLDivElement>(null)
@@ -38,8 +39,9 @@ const Home: NextPage = () => {
                     }}/>
                 </span>
                 <div className={"sm:w-1/3 w-2/3 relative m-6"}>
-                    <span className="block absolute top-0 left-0 w-full h-full blur-md"/>
-                    <a className="block rounded-xl border-white shadow-lg p-6 border-2 text-white md:text-4xl text-3xl w-full text-center" href="">Shop</a>
+                    <Link href={"/shop"}>
+                        <a className="cursor-pointer block rounded-xl border-white shadow-lg p-6 border-2 text-white md:text-4xl text-3xl w-full text-center">Shop</a>
+                    </Link>
                 </div>
             </div>
         </main>

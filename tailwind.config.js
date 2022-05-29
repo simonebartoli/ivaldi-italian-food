@@ -7,6 +7,7 @@ module.exports = {
   theme: {
     screens: {
       smx: "400px",
+      smxl: "500px",
       ...defaultTheme.screens,
     },
     extend: {
@@ -16,7 +17,7 @@ module.exports = {
         homeTitle: ['Josefin Sans', "sans-serif"]
       },
       colors: {
-        green: "rgb(22 163 74)"
+        "green-standard": "rgb(22 163 74)"
       },
       screens: {
         mdx: "850px",
