@@ -55,9 +55,13 @@ const Navbar = () => {
                     <a className="hover:text-green-standard transition cursor-pointer">Shop</a>
                 </Link>
                 <span className="hover:text-green-standard transition cursor-pointer">Faqs</span>
-                <span className="hover:text-green-standard transition cursor-pointer">Contact Us</span>
+                <Link href="/contact">
+                    <a className="hover:text-green-standard transition cursor-pointer">Contact Us</a>
+                </Link>
                 <span> | </span>
-                <span className="hover:text-green-standard transition cursor-pointer">Log In / Sign Up</span>
+                <Link href="/login">
+                    <a className="hover:text-green-standard transition cursor-pointer">Log In / Sign Up</a>
+                </Link>
                 <div className="flex flex-row items-center gap-2">
                     <FiShoppingCart className="text-xl hover:text-green-standard transition cursor-pointer"/>
                     <span className="rounded-full bg-orange-500 text-white px-2 text-sm">10</span>
@@ -70,7 +74,9 @@ const Navbar = () => {
                     <AiOutlineClose className="text-2xl hover:text-red-600 transition" onClick={onNavClick}/>
                 }
                 <div ref={mobileNavRef} className="transition-all bg-white flex flex-col items-center gap-4 justify-evenly absolute w-0 overflow-hidden right-0 text-xl font-navbar">
-                    <span className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>Log In / Sign Up</span>
+                    <Link href="/login">
+                        <a className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>Log In / Sign Up</a>
+                    </Link>
                     <div className="flex flex-row items-center gap-4">
                         <FiShoppingCart className="text-2xl hover:text-green-standard transition cursor-pointer" onClick={onNavClick}/>
                         <span className="rounded-full bg-orange-500 text-white px-2 text-sm">10</span>
@@ -80,7 +86,9 @@ const Navbar = () => {
                         <span className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>Shop</span>
                     </Link>
                     <span className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>Faqs</span>
-                    <span className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>Contact Us</span>
+                    <Link href="/contact">
+                        <a className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>Contact Us</a>
+                    </Link>
                 </div>
             </div>
         </nav>

@@ -18,7 +18,7 @@ export const loginResolver = {
                     password: args.password
                 }
             })
-            if(userResult === null) throw new AuthenticationError("Login/Password Are Wrong")
+            if(userResult === null) throw new AuthenticationError("LoginSection/Password Are Wrong")
 
             const tokenResult = await prisma().tokens.create({
                 data:{

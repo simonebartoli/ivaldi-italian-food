@@ -22,6 +22,12 @@ module.exports = {
       screens: {
         mdx: "850px",
         xls: "1152px"
+      },
+      animation: {
+        slideLeft: "slideLeft 0.5s ease-in-out forwards",
+        comeFromRight: "comeFromRight 0.5s ease-in-out forwards",
+        slideRight: "slideRight 0.5s ease-in-out forwards",
+        comeFromLeft: "comeFromLeft 0.5s ease-in-out forwards"
       }
     },
   },

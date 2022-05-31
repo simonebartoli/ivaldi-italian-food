@@ -7,5 +7,5 @@ type LoginInfo = {
 }
 export const loginVal = ({email, password}: LoginInfo) => {
     const OK = EmailValidator.validate(email) && password.length >= 8;
-    if(!OK) throw new InvalidFormat("Login Parameters Not Valid")
+    if(!OK) throw new InvalidFormat("LoginSection Parameters Not Valid")
 }
