@@ -21,7 +21,8 @@ module.exports = {
       },
       screens: {
         mdx: "850px",
-        xls: "1152px"
+        xls: "1152px",
+        xlsx: "1252px"
       },
       animation: {
         slideLeft: "slideLeft 0.55s ease-in-out forwards",

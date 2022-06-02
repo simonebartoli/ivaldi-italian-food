@@ -79,10 +79,12 @@ const Navbar = () => {
                     <Link href="/login">
                         <a className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>Log In / Sign Up</a>
                     </Link>
-                    <div className="flex flex-row items-center gap-4">
-                        <FiShoppingCart className="text-2xl hover:text-green-standard transition cursor-pointer" onClick={onNavClick}/>
-                        <span className="rounded-full bg-orange-500 text-white px-2 text-sm">10</span>
-                    </div>
+                    <Link href="/cart">
+                        <div className="flex flex-row items-center gap-4 cursor-pointer" onClick={onNavClick}>
+                            <FiShoppingCart className="text-2xl hover:text-green-standard transition"/>
+                            <span className="rounded-full bg-orange-500 text-white px-2 text-sm">10</span>
+                        </div>
+                    </Link>
                     <span className="p-[0.5px] bg-neutral-500 w-3/4"/>
                     <Link href={"/shop"}>
                         <span className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>Shop</span>
