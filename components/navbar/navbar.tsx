@@ -62,10 +62,12 @@ const Navbar = () => {
                 <Link href="/login">
                     <a className="hover:text-green-standard transition cursor-pointer">Log In / Sign Up</a>
                 </Link>
-                <div className="flex flex-row items-center gap-2">
-                    <FiShoppingCart className="text-xl hover:text-green-standard transition cursor-pointer"/>
-                    <span className="rounded-full bg-orange-500 text-white px-2 text-sm">10</span>
-                </div>
+                <Link href="/cart">
+                    <div className="flex flex-row items-center gap-2 cursor-pointer">
+                        <FiShoppingCart className="text-xl hover:text-green-standard transition"/>
+                        <span className="rounded-full bg-orange-500 text-white px-2 text-sm">10</span>
+                    </div>
+                </Link>
             </div>
             <div className="mdx:hidden flex items-center">
                 {!navOpen ?

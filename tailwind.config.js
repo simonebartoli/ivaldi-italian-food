@@ -24,7 +24,7 @@ module.exports = {
         xls: "1152px"
       },
       animation: {
-        slideLeft: "slideLeft 0.5s ease-in-out forwards",
+        slideLeft: "slideLeft 0.55s ease-in-out forwards",
         comeFromRight: "comeFromRight 0.5s ease-in-out forwards",
         slideRight: "slideRight 0.5s ease-in-out forwards",
         comeFromLeft: "comeFromLeft 0.5s ease-in-out forwards"

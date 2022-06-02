@@ -5,6 +5,13 @@
 * {
     box-sizing: border-box;
 }
+html{
+    overflow-x: hidden;
+    max-width: 100%;
+}
+body{
+    overflow-x: hidden;
+}
 
 .Typewriter {
     display: inline-block;
