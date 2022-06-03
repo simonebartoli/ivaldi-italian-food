@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@maizzle/cli": "^1.4.0",
     "@prisma/client": "^3.13.0",
     "@react-hook/window-size": "^3.0.7",
     "apollo-server-micro": "^3.6.7",
@@ -16,6 +17,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "email-validator": "^2.0.4",
+    "global": "^4.4.0",
     "graphql": "^16.4.0",
     "jsonwebtoken": "^8.5.1",
     "micro": "^9.3.4",
@@ -24,7 +26,9 @@
     "react": "18.1.0",
     "react-dom": "18.1.0",
     "react-icons": "^4.3.1",
+    "swiper": "^8.2.2",
     "typewriter-effect": "^2.18.2",
+    "use-next-blurhash": "^1.0.2",
     "validator": "^13.7.0"
   },
   "devDependencies": {

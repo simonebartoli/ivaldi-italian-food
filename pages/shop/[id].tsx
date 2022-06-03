@@ -4,13 +4,18 @@ import {MdArrowForwardIos} from "react-icons/md";
 import {useResizer} from "../../contexts/resizer-context";
 import {useLayoutContext} from "../../contexts/layout-context";
 import Counter from "../../components/library/counter";
+import useBlurData from "use-next-blurhash";
 
 const Product = () => {
+    const [ready, setReady] = useState(false)
+    const [blurDataUrl] = useBlurData("L%Nc$qbb_4V@NHaeoKf+xvj[WAWU")
+
     const mainRef = useRef<HTMLDivElement>(null)
     const {heightPage} = useResizer()
     const {navHeight} = useLayoutContext()
     const [itemNumber, setItemNumber] = useState(1)
 
+    useEffect(() => setReady(true), [])
 
     useEffect(() => {
         if(mainRef.current !== null && navHeight !== undefined){
@@ -37,7 +42,12 @@ const Product = () => {
             </div>
             <article className="flex mdx:flex-row flex-col justify-evenly items-center p-2 gap-8 my-4">
                 <div className="shop-list mdx:basis-2/5 md:w-1/2 sm:w-3/4 w-full grow mdx:sticky top-[20%] lg:!static">
-                    <Image quality={100} src={"/media/photos/shop/ragu_funghi_300x.webp"} alt="photo" layout="fill" className="image"/>
+                    {ready &&
+                        <Image quality={100} src={"/media/photos/shop/ragu_funghi_300x.webp"}
+                               alt="photo" layout="fill" className="image"
+                               placeholder={"blur"} blurDataURL={blurDataUrl}
+                        />
+                    }
                 </div>
                 <div className="flex flex-col justify-center gap-16 basis-3/5 p-2 relative">
                     <div className="lg:space-y-6 space-y-10">

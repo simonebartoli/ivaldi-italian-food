@@ -39,7 +39,7 @@ const CartArticle = () => {
                                 </div>
                             }
                         </div>
-                        <span className="text-2xl text-right smxl:text-left">
+                        <span className="select-none text-2xl text-right smxl:text-left">
                                 Total:
                                 <span className="text-3xl font-semibold text-green-standard"> £ 15.70</span>
                             </span>

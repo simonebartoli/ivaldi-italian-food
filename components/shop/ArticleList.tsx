@@ -1,22 +1,32 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Image from "next/image";
 import Link from "next/link";
-import Counter from "../library/counter";
+import {IoSearchSharp} from "react-icons/io5";
+import {FiShoppingCart} from "react-icons/fi";
+import useBlurData from "use-next-blurhash";
 
 const ArticleList = () => {
+    const [ready, setReady] = useState(false)
+    const [blurDataUrl] = useBlurData("L%Nc$qbb_4V@NHaeoKf+xvj[WAWU")
     const [discount, setDiscount] = useState(true)
-    const [itemNumber, setItemNumber] = useState(1)
+
+    useEffect(() => setReady(true), [])
 
     return (
-        <article className="flex flex-col items-center justify-center gap-6 p-6 border-2 rounded-md border-neutral-400 relative">
+        <article className="flex flex-col items-center justify-center gap-6 p-6 relative border-b-[1px] border-neutral-400">
             {discount &&
-                <div className="absolute z-20 text-lg top-0 left-0 w-full p-2 bg-red-600 text-white text-center font-semibold">
+                <div className="absolute z-20 text-lg top-0 left-1/2 -translate-x-1/2 w-5/6 p-1 bg-red-600 text-white text-center font-semibold">
                     <span>Save 50%</span>
                 </div>
             }
             <div className="flex flex-col items-center justify-center gap-6">
                 <div className="shop-list w-full">
-                    <Image quality={100} src={"/media/photos/shop/ragu_funghi_300x.webp"} alt="this is a photo" layout="fill" className={"image"}/>
+                    {ready &&
+                        <Image  quality={100} src={"/media/photos/shop/ragu_funghi_300x.webp"}
+                                      alt="this is a photo" layout="fill" className={"image"}
+                                      placeholder="blur" blurDataURL={blurDataUrl}
+                        />
+                    }
                 </div>
                 {discount ?
                     <div className="flex flex-row gap-4 items-end">
@@ -29,20 +39,16 @@ const ArticleList = () => {
                 <span className="text-lg text-center">Grand Ragu&apos; Star Meat and Mushrooms Sauce (2x180g)</span>
             </div>
             <div className="flex flex-col gap-4 w-full">
-                <div className="hover:shadow-lg z-0 w-full border-2 rounded-lg border-black text-center text-white bg-green-standard hover:before:w-full before:bg-[#008c2e] button-animated">
-                    <Link href={"/shop/1"}>
-                        <a href="" className="relative block w-full p-3 text-lg  z-10">Check Product</a>
-                    </Link>
-                </div>
-                <div className="flex flex-row gap-4">
-                    <div className="basis-1/5">
-                        <Counter min={1} max={9}
-                                 itemNumber={itemNumber} setItemNumber={setItemNumber}
-                                 options={{fontText: "text-xl", sizeIcons: "text-xl", gap: "gap-3"}}
-                        />
+                <Link href={"/shop/1"}>
+                    <div className="cursor-pointer w-full p-2 flex flex-row gap-4 items-center justify-center bg-green-standard text-white rounded-lg shadow-md border-neutral-400 border-[1px] text-lg">
+                        <a href="">Check Product</a>
+                        <IoSearchSharp/>
                     </div>
-                    <div className="hover:before:w-full button-animated before:bg-orange-600 hover:shadow-lg z-0 grow border-2 rounded-lg border-black text-center text-white bg-orange-400 text-lg font-semibold basis-4/5">
-                        <span className="cursor-pointer relative block p-3 z-10">Add to Cart</span>
+                </Link>
+                <div className="flex flex-row gap-4">
+                    <div className="basis-3/5 grow w-full p-2 flex flex-row gap-4 items-center justify-center bg-orange-400 text-neutral-100 rounded-lg shadow-md border-neutral-400 border-[1px] text-lg">
+                        <a href="">Add to Cart</a>
+                        <FiShoppingCart/>
                     </div>
                 </div>
             </div>
