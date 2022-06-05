@@ -25,6 +25,10 @@ const Navbar = () => {
     }, [navHeight, heightPage])
 
     const onNavClick = () => {
+        if(navbarRef.current !== null){
+            navbarRef.current.classList.toggle("z-40")
+            navbarRef.current.classList.toggle("z-50")
+        }
         setNavOpen(!navOpen)
         if(mobileNavRef.current !== null) {
             mobileNavRef.current.classList.toggle("w-0")
@@ -75,7 +79,7 @@ const Navbar = () => {
                     :
                     <AiOutlineClose className="text-2xl hover:text-red-600 transition" onClick={onNavClick}/>
                 }
-                <div ref={mobileNavRef} className="transition-all bg-white flex flex-col items-center gap-4 justify-evenly absolute w-0 overflow-hidden right-0 text-xl font-navbar">
+                <div ref={mobileNavRef} className=" transition-all bg-white flex flex-col items-center gap-4 justify-evenly absolute w-0 overflow-hidden right-0 text-xl font-navbar">
                     <Link href="/login">
                         <a className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>Log In / Sign Up</a>
                     </Link>

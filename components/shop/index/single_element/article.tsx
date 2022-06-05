@@ -5,7 +5,7 @@ import {IoSearchSharp} from "react-icons/io5";
 import {FiShoppingCart} from "react-icons/fi";
 import useBlurData from "use-next-blurhash";
 
-const ArticleList = () => {
+const Article = () => {
     const [ready, setReady] = useState(false)
     const [blurDataUrl] = useBlurData("L%Nc$qbb_4V@NHaeoKf+xvj[WAWU")
     const [discount, setDiscount] = useState(true)
@@ -41,13 +41,13 @@ const ArticleList = () => {
             <div className="flex flex-col gap-4 w-full">
                 <Link href={"/shop/1"}>
                     <div className="cursor-pointer w-full p-2 flex flex-row gap-4 items-center justify-center bg-green-standard text-white rounded-lg shadow-md border-neutral-400 border-[1px] text-lg">
-                        <a href="">Check Product</a>
+                        <a href="components/shop/index/single_element/article">Check Product</a>
                         <IoSearchSharp/>
                     </div>
                 </Link>
                 <div className="flex flex-row gap-4">
                     <div className="basis-3/5 grow w-full p-2 flex flex-row gap-4 items-center justify-center bg-orange-400 text-neutral-100 rounded-lg shadow-md border-neutral-400 border-[1px] text-lg">
-                        <a href="">Add to Cart</a>
+                        <a href="components/shop/index/single_element/article">Add to Cart</a>
                         <FiShoppingCart/>
                     </div>
                 </div>
@@ -56,4 +56,4 @@ const ArticleList = () => {
     );
 };
 
-export default ArticleList;
+export default Article;

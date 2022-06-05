@@ -1,0 +1,8 @@
+.centered-swiper .swiper-wrapper{
+    align-items: center;
+    padding: 2rem;
+    margin-bottom: 2em;
+}
+.full-container-size .swiper{
+    height: 100%;
+}
