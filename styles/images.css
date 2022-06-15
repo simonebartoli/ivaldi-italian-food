@@ -30,4 +30,8 @@
     height: unset !important;
 }
 
+.people-photo > span {
+    @apply shadow-2xl
+}
+
 

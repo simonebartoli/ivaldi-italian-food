@@ -1,9 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {BiArrowToBottom} from "react-icons/bi";
 import {IoSearchSharp} from "react-icons/io5";
 import {useLayoutContext} from "../../contexts/layout-context";
 import {NextPage} from "next";
-import {useResizer} from "../../contexts/resizer-context";
 import {AiOutlineMenu} from "react-icons/ai";
 
 type Props = {
@@ -12,9 +11,6 @@ type Props = {
 
 const Filters: NextPage<Props> = ({highContrastSearchBar}) => {
     const {navHeight, searchBarRef, setSearchBarHeight} = useLayoutContext()
-    const [ready, setReady] = useState(false)
-
-    useEffect(() => setReady(true), [])
 
     useEffect(() => {
         if(searchBarRef.current !== null && navHeight !== undefined){

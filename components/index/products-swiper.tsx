@@ -24,12 +24,12 @@ const ProductsSwiper = () => {
                 draggable={true}
                 grabCursor={true}
                 modules={[EffectFade, Pagination, Autoplay]}
-                className="h-full"
+                className="h-full !flex !flex-row"
             >
                 <SwiperSlide>
                     <div className="relative w-full h-full">
                         <div className="xls:w-2/3 w-5/6 flex flex-col items-center justify-center gap-8 z-20 text-center leading-[4rem] absolute top-1/2 left-1/2 text-5xl text-white -translate-y-1/2 -translate-x-1/2">
-                            <span>Discover Our Pasta Collections</span>
+                            <span>Discover Our Pasta Selection</span>
                             <Link href={"/shop"}>
                                 <a href="" className="block h-full p-4 w-3/4 text-white text-2xl border-2 rounded-lg border-white relative">Check Our Pasta</a>
                             </Link>
@@ -42,7 +42,7 @@ const ProductsSwiper = () => {
                 <SwiperSlide>
                     <div className="relative w-full h-full">
                         <div className="xls:w-2/3 w-5/6 flex flex-col items-center justify-center gap-8 z-20 text-center leading-[4rem] absolute top-1/2 left-1/2 text-5xl text-white -translate-y-1/2 -translate-x-1/2">
-                            <span>Discover Our Cheese Collections</span>
+                            <span>Discover Our Cheese Selection</span>
                             <Link href={"/shop"}>
                                 <a href="" className="block h-full p-4 w-3/4 text-white text-2xl border-2 rounded-lg border-white relative">Check Our Cheese</a>
                             </Link>
@@ -55,7 +55,7 @@ const ProductsSwiper = () => {
                 <SwiperSlide>
                     <div className="relative w-full h-full">
                         <div className="xls:w-2/3 w-5/6 flex flex-col items-center justify-center gap-8 z-20 text-center leading-[4rem] absolute top-1/2 left-1/2 text-5xl text-white -translate-y-1/2 -translate-x-1/2">
-                            <span>Discover Our Sausages Collections</span>
+                            <span>Discover Our Sausages Selection</span>
                             <Link href={"/shop"}>
                                 <a href="" className="block h-full p-4 w-3/4 text-white text-2xl border-2 rounded-lg border-white relative">Check Our Sausages</a>
                             </Link>
@@ -68,7 +68,7 @@ const ProductsSwiper = () => {
                 <SwiperSlide>
                     <div className="relative w-full h-full">
                         <div className="xls:w-2/3 w-5/6 flex flex-col items-center justify-center gap-8 z-20 text-center leading-[4rem] absolute top-1/2 left-1/2 text-5xl text-white -translate-y-1/2 -translate-x-1/2">
-                            <span>Discover Our Biscuits Collections</span>
+                            <span>Discover Our Biscuits Selection</span>
                             <Link href={"/shop"}>
                                 <a href="" className="block h-full p-4 w-3/4 text-white text-2xl border-2 rounded-lg border-white relative">Check Our Biscuits</a>
                             </Link>
