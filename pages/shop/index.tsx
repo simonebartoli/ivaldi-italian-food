@@ -1,7 +1,7 @@
 import React, {useRef} from 'react';
 import ArticleList from "../../components/shop/index/list/articleList";
 import BestCategories from "../../components/shop/index/bestCategories";
-import Filters from "../../components/shop/filters";
+import Filters from "../../components/library/filter/filters";
 import HomeSectionList from "../../components/shop/index/list/homeSectionList";
 import BestLogoList from "../../components/shop/index/list/bestLogoList";
 
