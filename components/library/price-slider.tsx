@@ -18,16 +18,16 @@ const PriceSlider = () => {
     const [onEnterUpper, setOnEnterUpper] = useState(false)
     const [onEnterLower, setOnEnterLower] = useState(false)
 
-    const onMouseDown = (e: MouseEvent<HTMLSpanElement>) => {
-        const id = e.target.id
+    const onMouseDown = (e: React.MouseEvent<HTMLSpanElement>) => {
+        const id = (e.target as Element).id
         if(id === "upper-bound"){
             setOnEnterUpper(true)
         }else{
             setOnEnterLower(true)
         }
     }
-    const onMouseUp = (e: MouseEvent<HTMLSpanElement>) => {
-        const id = e.target.id
+    const onMouseUp = (e: React.MouseEvent<HTMLSpanElement>) => {
+        const id = (e.target as Element).id
         if(id === "upper-bound"){
             setOnEnterUpper(false)
         }else{

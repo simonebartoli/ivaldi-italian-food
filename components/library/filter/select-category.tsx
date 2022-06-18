@@ -1,41 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {BiArrowToBottom} from "react-icons/bi";
 import {IoMdArrowDropright} from "react-icons/io";
-
-const categories = [
-    {
-        name: "Pasta",
-        sub: ["Spaghetti", "Penne", "Riso", "Farina", "Pizza", "Impasto"]
-    },
-    {
-        name: "Sauces",
-        sub: ["Spaghetti2", "Penne", "Riso", "Farina", "Pizza", "Impasto"]
-    },
-    {
-        name: "Meat",
-        sub: ["Spaghetti3", "Penne", "Riso", "Farina", "Pizza", "Impasto"]
-    },
-    {
-        name: "Fish",
-        sub: ["Spaghetti4", "Penne", "Riso", "Farina", "Pizza", "Impasto"]
-    },
-    {
-        name: "Cheese",
-        sub: ["Spaghetti5", "Penne", "Riso", "Farina", "Pizza", "Impasto"]
-    },
-    {
-        name: "Charcuterie",
-        sub: ["Spaghetti6", "Penne", "Riso", "Farina", "Pizza", "Impasto"]
-    },
-    {
-        name: "Biscuits",
-        sub: ["Spaghetti7", "Penne", "Riso", "Farina", "Pizza", "Impasto", "test2"]
-    },
-    {
-        name: "TEST CLICKABLE",
-        sub: []
-    },
-]
+import {categories} from "../../../test-data/categories";
 
 const SelectCategory = () => {
     const [categorySelected, setCategorySelected] = useState("Relevant")
@@ -104,13 +70,13 @@ const SelectCategory = () => {
                     )
                 }
             </div>
-            <div className="grid grid-rows-5 grid-flow-col mt-4 ml-4 border-[1px] rounded-b-lg border-neutral-500 bg-white absolute top-full left-full items-center w-max shadow-lg">
+            <div className={`grid grid-cols-1 grid-flow-row mt-4 ml-4 border-[1px] rounded-b-lg border-neutral-500 bg-white absolute top-full left-full items-center w-max shadow-lg`}>
                 {
                     subElements.map((element, index) =>
                         <span
                             onClick={() => handleClickCategory(element)}
                             key={index}
-                            className="border-[1px] border-neutral-200 w-full p-6 hover:bg-neutral-100">
+                            className="border-[1px] border-neutral-200 w-full px-6 py-4 hover:bg-neutral-100">
                             {element}
                         </span>
                     )
