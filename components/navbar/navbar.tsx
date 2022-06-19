@@ -4,6 +4,8 @@ import {AiOutlineClose, AiOutlineMenu} from "react-icons/ai";
 import {useResizer} from "../../contexts/resizer-context";
 import {useLayoutContext} from "../../contexts/layout-context";
 import Link from "next/link";
+import {IoMdArrowDropdown} from "react-icons/io";
+import Slidedown from "react-slidedown";
 
 
 
@@ -13,6 +15,7 @@ const Navbar = () => {
 
     const mobileNavRef : RefObject<HTMLDivElement> = useRef(null)
     const [navOpen, setNavOpen] = useState(false)
+    const [accountNavOpen, setAccountNavOpen] = useState(false)
 
     useEffect(() => {
         setNavHeight(navbarRef.current?.clientHeight)
@@ -44,6 +47,10 @@ const Navbar = () => {
         }
     }
 
+    const handlePrivateAccountNavClick = () => {
+        setAccountNavOpen(!accountNavOpen)
+    }
+
 
     return (
         <nav ref={navbarRef} className="sticky top-0 z-40 flex flex-row justify-between shadow-lg p-6 bg-white">
@@ -73,13 +80,37 @@ const Navbar = () => {
                     </div>
                 </Link>
             </div>
-            <div className="mdx:hidden flex items-center">
+            <div className="mdx:hidden flex items-center overflow-y-scroll">
                 {!navOpen ?
                     <AiOutlineMenu className="text-2xl hover:text-green-standard transition" onClick={onNavClick}/>
                     :
                     <AiOutlineClose className="text-2xl hover:text-red-600 transition" onClick={onNavClick}/>
                 }
-                <div ref={mobileNavRef} className=" transition-all bg-white flex flex-col items-center gap-4 justify-evenly absolute w-0 overflow-hidden right-0 text-xl font-navbar">
+                {/*REPLACE GAP AND JUSTIFY BETWEEN WITH JUSTIFY START ONLY WHEN LOGGED*/}
+                <div ref={mobileNavRef} className="py-8 overflow-y-scroll transition-all bg-white flex flex-col items-center gap-20 justify-start absolute w-0 overflow-hidden right-0 text-xl font-navbar">
+                    <div className="flex flex-col gap-6 items-center justify-center w-full">
+                        <div onClick={handlePrivateAccountNavClick} className="flex flex-row gap-4 justify-center items-center hover:text-green-standard transition cursor-pointer">
+                            <span>Your Private Area</span>
+                            <IoMdArrowDropdown/>
+                        </div>
+                        <Slidedown className="w-full flex items-center justify-center">
+                            {
+                                accountNavOpen ?
+                                    <div className="p-8 flex flex-col gap-10 items-center justify-center bg-neutral-100 w-5/6">
+                                        <Link href="/account">
+                                            <a onClick={onNavClick} href={"/account"} className="text-center hover:text-green-standard transition cursor-pointer">Your Account</a>
+                                        </Link>
+                                        <Link href="/orders">
+                                            <a href={"/orders"} onClick={onNavClick} className="text-center hover:text-green-standard transition cursor-pointer">Your Orders</a>
+                                        </Link>
+                                        <a href="" className="text-center hover:text-green-standard transition cursor-pointer">Your Receipts</a>
+                                        <a href="" className="text-center hover:text-green-standard transition cursor-pointer">Your Shipping Addresses</a>
+                                        <a href="" className="text-center hover:text-green-standard transition cursor-pointer">Your Delivery Addresses</a>
+                                    </div>
+                                    : null
+                            }
+                        </Slidedown>
+                    </div>
                     <Link href="/login">
                         <a className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>Log In / Sign Up</a>
                     </Link>
