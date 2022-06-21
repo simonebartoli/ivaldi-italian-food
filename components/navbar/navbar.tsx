@@ -103,7 +103,9 @@ const Navbar = () => {
                                         <Link href="/orders">
                                             <a href={"/orders"} onClick={onNavClick} className="text-center hover:text-green-standard transition cursor-pointer">Your Orders</a>
                                         </Link>
-                                        <a href="" className="text-center hover:text-green-standard transition cursor-pointer">Your Receipts</a>
+                                        <Link href="/receipts">
+                                            <a href={"/receipts"} className="text-center hover:text-green-standard transition cursor-pointer">Your Receipts</a>
+                                        </Link>
                                         <a href="" className="text-center hover:text-green-standard transition cursor-pointer">Your Shipping Addresses</a>
                                         <a href="" className="text-center hover:text-green-standard transition cursor-pointer">Your Delivery Addresses</a>
                                     </div>

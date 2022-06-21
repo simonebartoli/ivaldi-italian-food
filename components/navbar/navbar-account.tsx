@@ -31,14 +31,18 @@ const NavbarAccount = () => {
                     <a href={"/orders"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Orders</a>
                 </div>
             </Link>
-            <div className="flex flex-row gap-6 items-center cursor-pointer">
-                <FaFileSignature className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
-                <span className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Receipts</span>
-            </div>
-            <div className="flex flex-row gap-6 items-center cursor-pointer">
-                <IoHome className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
-                <span className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Shipping Addresses</span>
-            </div>
+            <Link href="/receipts">
+                <div className="flex flex-row gap-6 items-center cursor-pointer">
+                    <FaFileSignature className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
+                    <a href={"/receipts"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Receipts</a>
+                </div>
+            </Link>
+            <Link href="/shipping-addresses">
+                <div className="flex flex-row gap-6 items-center cursor-pointer">
+                    <IoHome className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
+                    <a href={"/shipping-addresses"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Shipping Addresses</a>
+                </div>
+            </Link>
             <div className="flex flex-row gap-6 items-center cursor-pointer">
                 <BsGeoAltFill className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
                 <span className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Billing Addresses</span>

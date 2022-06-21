@@ -4,7 +4,7 @@ import Total from "./total";
 
 const ProductsList = () => {
     return (
-        <div className="w-full flex flex-col pt-8 gap-8 items-center justify-center">
+        <div className="p-8 w-full flex flex-col gap-8 items-center justify-center">
             <span className="w-full pt-2 text-center text-sm border-t-[1px] border-neutral-500 border-dashed">Order Details</span>
             {
                 new Array(10).fill([]).map((_, index) =>

@@ -1,27 +1,27 @@
 import React, {useState} from 'react';
 import LayoutPrivate from "../components/layout-private";
 
-import Description from "../components/orders/description";
-import ProductsList from "../components/orders/products-list";
-import Filters from "../components/orders/Filters";
+import Description from "../components/receipts/description";
+import Filters from "../components/receipts/Filters";
+import Total from "../components/receipts/total";
 
 const Orders = () => {
 
 
     return (
         <LayoutPrivate className={"self-stretch flex h-full flex-col gap-8 items-center justify-start smxl:p-8 smx:p-4 px-0 py-4"}>
-            <h1 className="text-3xl">My Orders</h1>
+            <h1 className="text-3xl">My Receipts</h1>
             <Filters/>
             {
                 new Array(5).fill([]).map((_, index) =>
-                    <Order key={index}/>
+                    <Receipt key={index}/>
                 )
             }
         </LayoutPrivate>
     );
 };
 
-const Order = () => {
+const Receipt = () => {
     const [orderOpen, setOrderOpen] = useState(false)
 
     return (
@@ -29,7 +29,7 @@ const Order = () => {
             <Description orderOpen={orderOpen} setOrderOpen={setOrderOpen}/>
             {
                 orderOpen ?
-                    <ProductsList/>
+                    <Total/>
                     : null
             }
         </div>
