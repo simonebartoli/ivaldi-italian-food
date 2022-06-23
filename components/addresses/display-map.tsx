@@ -18,10 +18,11 @@ const DisplayMap: NextPage<Props> = ({latitude, longitude}) => {
 
     return (
         <>
-            <MapContainer style={{height: "300px"}} className="z-0 w-full rounded-lg shadow-lg border-neutral-500 border-[1px] border-dashed" center={[latitude, longitude]} zoom={16} scrollWheelZoom={true}>
+            <MapContainer style={{height: "300px"}} className="z-0 w-full rounded-lg shadow-lg border-neutral-500 border-[1px] border-dashed" center={[latitude, longitude]} zoom={18} scrollWheelZoom={false}>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    url="https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+                    subdomains={["mt1", "mt2", "mt3"]}
                 />
                 <Marker position={[latitude, longitude]} icon={ICON}/>
                 </MapContainer>
