@@ -2,8 +2,13 @@ import React, {ChangeEvent, useEffect, useState} from 'react';
 import {OpenStreetMapAPIType} from "./openstreet-api-types";
 import EditForm from "./edit-form";
 import {AiFillSave} from "react-icons/ai";
+import {NextPage} from "next";
 
-const AddAddress = () => {
+type Props = {
+    extraUK?: boolean
+}
+
+const AddAddress: NextPage<Props> = ({extraUK = false}) => {
     const [addAddressVisible, setAddAddressVisible] = useState(false)
 
     return (
@@ -12,27 +17,69 @@ const AddAddress = () => {
             {
                 addAddressVisible ?
                     <>
-                        <button onClick={() => setAddAddressVisible(false)} className="flex flex-row justify-center gap-4 items-center w-1/3 p-4 bg-red-600 hover:bg-red-500 transition text-white text-xl shadow-lg rounded-lg text-center">
-                            Cancel
-                        </button>
-                        <div className="p-16 border-green-standard border-[1px] border-dashed rounded-lg w-full flex flex-col gap-10 items-center justify-center">
-                            <AutomaticSearchAddress/>
+                        <div className="p-8 w-full flex justify-end">
+                            <button onClick={() => setAddAddressVisible(false)} className="flex flex-row justify-center gap-4 items-center lg:w-1/3 md:w-1/2 w-full p-4 bg-red-600 hover:bg-red-500 transition text-white text-xl shadow-lg rounded-lg text-center">
+                                Cancel
+                            </button>
+                        </div>
+                        <div className="md:p-16 p-8 border-green-standard border-[1px] border-none smxl:border-dashed rounded-lg w-full flex flex-col gap-10 items-center justify-center">
+                            <AutomaticSearchAddress extraUK={extraUK}/>
                             <span className="border-t-[1px] border-dashed border-neutral-500 w-full"/>
-                            <div className="flex flex-col gap-4 w-full items-center justify-center">
-                                <span className="text-lg">Don&apos;t you find your address... Insert it here manually</span>
-                                <button className="flex flex-row justify-center gap-4 items-center w-1/3 p-4 bg-neutral-400 hover:bg-green-500 transition text-white text-xl shadow-lg rounded-lg text-center">Insert you address manually</button>
-                            </div>
+                            <ManualSearchAddress extraUK={extraUK}/>
                         </div>
                     </> :
-                    <button onClick={() => setAddAddressVisible(true)} className="flex flex-row justify-center gap-4 items-center w-1/3 p-4 bg-green-standard hover:bg-green-500 transition text-white text-xl shadow-lg rounded-lg text-center">
-                        Add Address
-                    </button>
+                    <div className="p-8 w-full flex justify-end">
+                        <button onClick={() => setAddAddressVisible(true)} className="flex flex-row justify-center gap-4 items-center lg:w-1/3 md:w-1/2 w-full p-4 bg-green-standard hover:bg-green-500 transition text-white text-xl shadow-lg rounded-lg text-center">
+                            Add Address
+                        </button>
+                    </div>
             }
         </div>
     );
 };
 
-const AutomaticSearchAddress = () => {
+type PropsSearch = {
+    extraUK: boolean
+}
+
+const ManualSearchAddress: NextPage<PropsSearch> = ({extraUK}) => {
+    const [buttonClicked, setButtonClicked] = useState(false)
+    const [disabled, setDisabled] = useState(true)
+
+    return (
+        <div className="flex flex-col gap-4 w-full items-center justify-center">
+            <span className="text-lg text-center">Don&apos;t you find your address... Insert it here manually</span>
+            <button onClick={() => setButtonClicked(true)} className="mt-4 flex flex-row justify-center gap-4 items-center lg:w-2/3 w-full p-4 bg-neutral-400 hover:bg-green-500 transition text-white text-xl shadow-lg rounded-lg text-center">Insert you address manually</button>
+            {
+                buttonClicked &&
+                <div className="mt-10 lg:w-2/3 w-full flex flex-col items-center justify-center gap-8">
+                    <EditForm currentFirstAddress={""}
+                              currentSecondAddress={""}
+                              currentPostcode={""}
+                              currentCity={""}
+                              currentNotes={""}
+                              currentCountry={extraUK ? "United Kingdom" : undefined}
+                              setDisabled={setDisabled}
+                              needsDifferent={false}
+                              extraUK={extraUK}
+                              style={{
+                                  mainPadding: "p-0",
+                                  width: "w-full"
+                              }}
+                    />
+                    <div className="w-full flex flex-row gap-8 items-center">
+                        <button disabled={disabled} className=" disabled:cursor-not-allowed disabled:bg-neutral-500 flex flex-row justify-center gap-4 items-center w-full p-4 bg-green-standard hover:bg-green-500 transition text-white text-xl shadow-lg rounded-lg text-center">
+                            Save
+                            <AiFillSave className="text-2xl"/>
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    )
+}
+
+const AutomaticSearchAddress: NextPage<PropsSearch> = ({extraUK}) => {
     const [searchValue, setSearchValue] = useState("")
     const [wait, setWait] = useState(false)
     const [makeRequest, setMakeRequest] = useState(false)
@@ -42,6 +89,7 @@ const AutomaticSearchAddress = () => {
     const [secondAddress, setSecondAddress] = useState("")
     const [postcode, setPostcode] = useState("")
     const [city, setCity] = useState("")
+    const [country, setCountry] = useState("Spain")
     const [disabled, setDisabled] = useState(false)
     const [addressSelected, setAddressSelected] = useState(false)
 
@@ -78,13 +126,23 @@ const AutomaticSearchAddress = () => {
                 value: "1"
             },
             {
+                name: "accept-language",
+                value: "en-GB"
+            },
+            {
                 name: "countrycodes",
                 value: "gb"
             }
         ]
         let fetchURL = "https://nominatim.openstreetmap.org/search?"
         for(const object of variables){
-            fetchURL += `${object.name}=${object.value}&`
+            if(extraUK){
+                if(object.name !== "countrycodes"){
+                    fetchURL += `${object.name}=${object.value}&`
+                }
+            }else{
+                fetchURL += `${object.name}=${object.value}&`
+            }
         }
         const result = await fetch(fetchURL, requestOptions)
         const resultJSON = await result.json()
@@ -115,11 +173,12 @@ const AutomaticSearchAddress = () => {
         setSecondAddress(element.address.building === undefined ? "" : element.address.building)
         setCity(element.address.city === undefined ? "" : element.address.city)
         setPostcode(element.address.postcode === undefined ? "" : element.address.postcode)
+        setCountry(element.address.country === undefined ? "" : element.address.country)
     }
 
     return (
-        <div className="w-1/2 flex flex-col gap-4 w-full items-center justify-center">
-            <span className="text-lg w-full text-center">Search your address automatically</span>
+        <div className="lg:w-2/3 w-full flex flex-col gap-4 w-full items-center justify-center">
+            <span className="text-lg w-full text-center text-center">Search your address automatically</span>
             <div className="w-full flex flex-col gap-4 items-center justify-center">
                 <input onChange={(e) => handleInputChange(e)} value={searchValue} type="text" placeholder="Insert your address here..." className="w-full p-3 text-lg rounded-lg border-[2px] border-green-standard shadow-md"/>
                 <div className="w-full flex flex-col gap-0 items-start justify-center">
@@ -130,20 +189,24 @@ const AutomaticSearchAddress = () => {
                                 {element.address.building !== undefined && element.address.building + ", "}
                                 {element.address.postcode !== undefined && element.address.postcode + ", "}
                                 {element.address.city !== undefined && element.address.city}
+                                {extraUK && ", "}
+                                {(element.address.country !== undefined && extraUK) && element.address.country}
                             </span>
                         )
                     }
                 </div>
                 {
                     addressSelected &&
-                    <div className="mt-10 flex flex-col items-center justify-center gap-8">
+                    <div className="mt-10 w-full flex flex-col items-center justify-center gap-8">
                         <EditForm currentFirstAddress={firstAddress}
                                   currentSecondAddress={secondAddress}
                                   currentPostcode={postcode}
                                   currentCity={city}
+                                  currentCountry={extraUK ? country : undefined}
                                   currentNotes={""}
                                   setDisabled={setDisabled}
                                   needsDifferent={false}
+                                  extraUK={extraUK}
                                   style={{
                                       mainPadding: "p-0",
                                       width: "w-full"

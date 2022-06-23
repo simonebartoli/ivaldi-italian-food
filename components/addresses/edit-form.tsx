@@ -1,17 +1,21 @@
 import React, {ChangeEvent, useEffect, useState} from 'react';
 import {NextPage} from "next";
+import {countries} from "../../static-data/countries";
 
 type Props = {
     currentFirstAddress: string
     currentSecondAddress: string
     currentPostcode: string
     currentCity: string
+    currentCountry?: string
     currentNotes: string
     setDisabled: React.Dispatch<React.SetStateAction<boolean>>
     needsDifferent?: boolean
+    extraUK?: boolean
     style?: {
-        mainPadding: string
-        width: string
+        mainPadding?: string
+        width?: string
+        bgColor?: string
     }
 }
 
@@ -19,14 +23,17 @@ const EditForm: NextPage<Props> = ({   currentFirstAddress,
                                        currentSecondAddress,
                                        currentPostcode,
                                        currentCity,
+                                       currentCountry,
                                        currentNotes,
                                        setDisabled,
                                        needsDifferent = true,
+                                       extraUK = false,
                                        style}) => {
     const [firstAddress, setFirstAddress] = useState(currentFirstAddress)
     const [secondAddress, setSecondAddress] = useState(currentSecondAddress)
     const [postcode, setPostcode] = useState(currentPostcode)
     const [city, setCity] = useState(currentCity)
+    const [country, setCountry] = useState(currentCountry)
     const [notes, setNotes] = useState(currentNotes)
 
     const [firstAddressError, setFirstAddressError] = useState("")
@@ -99,6 +106,8 @@ const EditForm: NextPage<Props> = ({   currentFirstAddress,
             }else {
                 setFirstAddressError("Address Needs to Contain a Number")
             }
+        }else if(newValue.length === 0){
+            setFirstAddressError("Address Required")
         }else{
             setFirstAddressError("Address Not Valid")
         }
@@ -119,8 +128,12 @@ const EditForm: NextPage<Props> = ({   currentFirstAddress,
         }
     }
     const checkPostcode = (newValue: string) => {
-        if(newValue.length > 3 && newValue.length < 9){
+        if(!extraUK && newValue.length > 3 && newValue.length < 9){
             setPostcodeError("")
+        }else if (extraUK && newValue.length > 3 && newValue.length < 20) {
+            setPostcodeError("")
+        }else if(newValue.length === 0) {
+            setPostcodeError("Postcode Required")
         }else{
             setPostcodeError("Postcode Not Valid")
         }
@@ -128,6 +141,8 @@ const EditForm: NextPage<Props> = ({   currentFirstAddress,
     const checkCity = (newValue: string) => {
         if(newValue.length > 2 && newValue.length < 30){
             setCityError("")
+        }else if(newValue.length === 0) {
+            setCityError("City Required")
         }else{
             setCityError("City Not Valid")
         }
@@ -135,37 +150,52 @@ const EditForm: NextPage<Props> = ({   currentFirstAddress,
 
 
     return (
-        <div className={`${style?.mainPadding !== undefined ? style.mainPadding : "p-8"} bg-white rounded-lg w-full items-start justify-center flex flex-col gap-8`}>
+        <div className={`${style?.mainPadding !== undefined ? style.mainPadding : "p-8"} ${style?.bgColor !== undefined ? style.bgColor : "bg-white"} rounded-lg w-full items-start justify-center flex flex-col gap-8`}>
             <div className="w-full flex flex-col gap-2 items-start justify-center text-lg">
                 <div className={`${style?.width !== undefined ? style.width : "w-3/5"} flex flex-row justify-between items-center`}>
                     <span>Street Address: <span className="text-red-600">*</span></span>
-                    <span className="text-red-600 italic text-base">{firstAddressError}</span>
+                    <span className="text-red-600 italic text-base text-right">{firstAddressError}</span>
                 </div>
                 <input value={firstAddress} onChange={(e) => handleFirstAddressChange(e)} placeholder="Insert your street address here..." type="text" className={`${style?.width !== undefined ? style.width : "w-3/5"} p-3 text-lg rounded-lg border-[1px] border-neutral-500 shadow-md`}/>
             </div>
             <div className="w-full flex flex-col gap-2 items-start justify-center text-lg">
                 <div className={`${style?.width !== undefined ? style.width : "w-3/5"} flex flex-row justify-between items-center`}>
                     <span>House Name and Flat Number: </span>
-                    <span className="text-red-600 italic text-base">{secondAddressError}</span>
+                    <span className="text-red-600 italic text-base text-right">{secondAddressError}</span>
                 </div>
                 <input value={secondAddress} onChange={(e) => handleSecondAddressChange(e)} placeholder="Insert your house name and number here..." type="text" className={`${style?.width !== undefined ? style.width : "w-3/5"} p-3 text-lg rounded-lg border-[1px] border-neutral-500 shadow-md`}/>
             </div>
-            <div className={`${style?.width !== undefined ? style.width : "w-3/5"} flex flex-row gap-8`}>
+            <div className={`${style?.width !== undefined ? style.width : "w-3/5"} flex mdx:flex-row flex-col gap-8`}>
                 <div className="w-full flex flex-col gap-2 items-start justify-center text-lg">
                     <div className="w-full flex flex-row justify-between items-center">
                         <span>Postcode: <span className="text-red-600">*</span></span>
-                        <span className="text-red-600 italic text-base">{postcodeError}</span>
+                        <span className="text-red-600 italic text-base text-right">{postcodeError}</span>
                     </div>
                     <input value={postcode} onChange={(e) => handlePostcodeChange(e)} placeholder="Insert your postcode here..." type="text" className="w-full p-3 text-lg rounded-lg border-[1px] border-neutral-500 shadow-md"/>
                 </div>
                 <div className="w-full flex flex-col gap-2 items-start justify-center text-lg">
                     <div className="w-full flex flex-row justify-between items-center">
                         <span>City: <span className="text-red-600">*</span></span>
-                        <span className="text-red-600 italic text-base">{cityError}</span>
+                        <span className="text-red-600 italic text-base text-right">{cityError}</span>
                     </div>
                     <input value={city} onChange={(e) => handleCityChange(e)} placeholder="Insert your city here..." type="text" className="w-full p-3 text-lg rounded-lg border-[1px] border-neutral-500 shadow-md"/>
                 </div>
             </div>
+            {
+                extraUK &&
+                <div className="w-full flex flex-col gap-2 items-start justify-center text-lg">
+                    <div className={`${style?.width !== undefined ? style.width : "w-3/5"} flex flex-row justify-between items-center`}>
+                        <span>Country: </span>
+                    </div>
+                    <select defaultValue={country} className={`${style?.width !== undefined ? style.width : "w-3/5"} p-3 text-lg rounded-lg border-[1px] border-neutral-500 shadow-md`}>
+                        {
+                            countries.map((element, index) =>
+                                <option key={index} value={element.name}>{element.name}</option>
+                            )
+                        }
+                    </select>
+                </div>
+            }
             <div className="w-full flex flex-col gap-2 items-start justify-center text-lg">
                 <div className={`${style?.width !== undefined ? style.width : "w-3/5"} flex flex-row justify-between items-center`}>
                     <span>Further Notes: </span>

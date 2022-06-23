@@ -106,8 +106,12 @@ const Navbar = () => {
                                         <Link href="/receipts">
                                             <a href={"/receipts"} className="text-center hover:text-green-standard transition cursor-pointer">Your Receipts</a>
                                         </Link>
-                                        <a href="" className="text-center hover:text-green-standard transition cursor-pointer">Your Shipping Addresses</a>
-                                        <a href="" className="text-center hover:text-green-standard transition cursor-pointer">Your Delivery Addresses</a>
+                                        <Link href="/shipping-addresses">
+                                            <a href={"/shipping-addresses"} className="text-center hover:text-green-standard transition cursor-pointer">Your Shipping Addresses</a>
+                                        </Link>
+                                        <Link href="/billing-addresses">
+                                            <a href={"/billing-addresses"} className="text-center hover:text-green-standard transition cursor-pointer">Your Delivery Addresses</a>
+                                        </Link>
                                     </div>
                                     : null
                             }

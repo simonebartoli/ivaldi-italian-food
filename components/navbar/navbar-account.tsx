@@ -43,10 +43,12 @@ const NavbarAccount = () => {
                     <a href={"/shipping-addresses"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Shipping Addresses</a>
                 </div>
             </Link>
-            <div className="flex flex-row gap-6 items-center cursor-pointer">
-                <BsGeoAltFill className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
-                <span className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Billing Addresses</span>
-            </div>
+            <Link href="/billing-addresses">
+                <div className="flex flex-row gap-6 items-center cursor-pointer">
+                    <BsGeoAltFill className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
+                    <a href={"/billing-addresses"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Billing Addresses</a>
+                </div>
+            </Link>
         </nav>
     );
 };
