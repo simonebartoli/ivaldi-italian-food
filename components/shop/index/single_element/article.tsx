@@ -3,11 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import {IoSearchSharp} from "react-icons/io5";
 import {FiShoppingCart} from "react-icons/fi";
-import useBlurData from "use-next-blurhash";
 
 const Article = () => {
     const [ready, setReady] = useState(false)
-    const [blurDataUrl] = useBlurData("L%Nc$qbb_4V@NHaeoKf+xvj[WAWU")
     const [discount, setDiscount] = useState(true)
 
     useEffect(() => setReady(true), [])
@@ -24,7 +22,6 @@ const Article = () => {
                     {ready &&
                         <Image  quality={100} src={"/media/photos/shop/ragu_funghi_300x.webp"}
                                       alt="this is a photo" layout="fill" className={"image"}
-                                      placeholder="blur" blurDataURL={blurDataUrl}
                         />
                     }
                 </div>

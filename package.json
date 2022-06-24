@@ -31,7 +31,6 @@
     "react-slidedown": "^2.4.7",
     "swiper": "^8.2.2",
     "typewriter-effect": "^2.18.2",
-    "use-next-blurhash": "^1.0.2",
     "validator": "^13.7.0"
   },
   "devDependencies": {
