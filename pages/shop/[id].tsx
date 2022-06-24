@@ -4,11 +4,9 @@ import {MdArrowForwardIos} from "react-icons/md";
 import {useResizer} from "../../contexts/resizer-context";
 import {useLayoutContext} from "../../contexts/layout-context";
 import Counter from "../../components/library/counter";
-import useBlurData from "use-next-blurhash";
 
 const Product = () => {
     const [ready, setReady] = useState(false)
-    const [blurDataUrl] = useBlurData("L%Nc$qbb_4V@NHaeoKf+xvj[WAWU")
 
     const mainRef = useRef<HTMLDivElement>(null)
     const {heightPage} = useResizer()
@@ -45,7 +43,6 @@ const Product = () => {
                     {ready &&
                         <Image quality={100} src={"/media/photos/shop/ragu_funghi_300x.webp"}
                                alt="photo" layout="fill" className="image"
-                               placeholder={"blur"} blurDataURL={blurDataUrl}
                         />
                     }
                 </div>
