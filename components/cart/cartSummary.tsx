@@ -2,6 +2,7 @@ import React, {useEffect, useRef} from 'react';
 import {FiPercent} from "react-icons/fi";
 import {useResizer} from "../../contexts/resizer-context";
 import {useLayoutContext} from "../../contexts/layout-context";
+import Link from "next/link";
 
 const CartSummary = () => {
     const fullPageRef = useRef<HTMLDivElement>(null)
@@ -30,9 +31,11 @@ const CartSummary = () => {
                 <FiPercent/>
                 <span>You Saved £ 15.85 with Discounts</span>
             </div>
-            <a href="" className="font-semibold cursor-pointer w-full text-lg bg-green-standard border-black border-2 rounded-lg shadow-lg p-4 text-white text-center">
-                Proceed To Checkout
-            </a>
+            <Link href="/checkout">
+                <a href={"/checkout"} className="font-semibold cursor-pointer w-full text-lg bg-green-standard border-black border-2 rounded-lg shadow-lg p-4 text-white text-center">
+                    Proceed To Checkout
+                </a>
+            </Link>
         </section>
     );
 };
