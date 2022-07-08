@@ -1,8 +1,12 @@
 import React, {useEffect, useRef} from 'react';
 import {useResizer} from "../contexts/resizer-context";
 import {useLayoutContext} from "../contexts/layout-context";
-import ShippingAddressList from "../components/checkout/shipping-address-list";
-import BillingAddressList from "../components/checkout/billing-address-list";
+import Final from "../components/checkout/final";
+import {Elements} from "@stripe/react-stripe-js";
+import {loadStripe, StripeElementsOptions} from "@stripe/stripe-js";
+
+
+const stripePromise = loadStripe('pk_test_51LHx5kILFxyKM1maBgbPWiLi1fcn545wLVdmeOUhX62ddzSoBUdLJ53yB2u9LNYdo9upTw7IdCe2nIlNyinYvubC00zipLMrxk');
 
 const Checkout = () => {
     const fullPageRef = useRef<HTMLDivElement>(null)
@@ -11,9 +15,10 @@ const Checkout = () => {
 
     const shippingSectionRef = useRef<HTMLDivElement>(null)
     const billingSectionRef = useRef<HTMLDivElement>(null)
-    const checkoutSectionRef = useRef<HTMLDivElement>(null)
+    const deliveryInfoSectionRef = useRef<HTMLDivElement>(null)
+    const finalSectionRef = useRef<HTMLDivElement>(null)
 
-    const refs = useRef([shippingSectionRef, billingSectionRef, checkoutSectionRef])
+    const refs = useRef([shippingSectionRef, billingSectionRef, deliveryInfoSectionRef])
 
     useEffect(() => {
         if(navHeight !== undefined && fullPageRef.current !== null){
@@ -55,10 +60,29 @@ const Checkout = () => {
         }
     }
 
+
+    const options: StripeElementsOptions = {
+        // passing the client secret obtained from the server
+        clientSecret: "pi_3LII25ILFxyKM1ma1tqDxaax_secret_zVJSdIDYr7aa8Jsc6ZQbHP1ZW",
+        appearance: {
+            theme: 'flat',
+            variables: {
+                spacingUnit: "5px",
+                spacingGridRow: "20px",
+                spacingGridColumn: "20px",
+                spacingTab: "20px"
+            }
+        }
+    };
+
     return (
         <main ref={fullPageRef} className="overflow-x-hidden overflow-y-clip p-4 flex flex-row items-center justify-center">
-            <ShippingAddressList ref={shippingSectionRef} moveNext={moveNext}/>
-            <BillingAddressList ref={billingSectionRef} moveBack={moveBack} moveNext={moveNext}/>
+            {/*<ShippingAddressList ref={shippingSectionRef} moveNext={moveNext}/>*/}
+            {/*<BillingAddressList ref={billingSectionRef} moveBack={moveBack} moveNext={moveNext}/>*/}
+            {/*<DeliveryInfo ref={deliveryInfoSectionRef} moveBack={moveBack} moveNext={moveNext}/>*/}
+            <Elements stripe={stripePromise} options={options}>
+                <Final ref={finalSectionRef} moveBack={moveBack} moveNext={moveNext}/>
+            </Elements>
         </main>
     );
 };

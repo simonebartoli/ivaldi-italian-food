@@ -3,16 +3,20 @@ import {HiOutlineMail} from "react-icons/hi";
 import validator from "validator";
 import {ImCross} from "react-icons/im";
 import SlideDown from "react-slidedown";
+import {NextPage} from "next";
 
+type Props = {
+    email: string | null
+}
 
-const Email = () => {
-    const [email, setEmail] = useState("")
+const Email: NextPage<Props> = ({email}) => {
+    const [newEmail, setNewEmail] = useState("")
     const [changeOptionSelected, setChangeOptionSelected] = useState(false)
     const [disabled, setDisabled] = useState(true)
     const [errorMessage, setErrorMessage] = useState("")
 
     const onEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value)
+        setNewEmail(e.target.value)
         if(validator.isEmail(e.target.value)) {
             setErrorMessage("")
             setDisabled(false)
@@ -24,7 +28,7 @@ const Email = () => {
     }
 
     const onEmailChangeOptionSelected = () => {
-        setEmail("")
+        setNewEmail("")
         setDisabled(true)
         setErrorMessage("")
         setChangeOptionSelected(!changeOptionSelected)
@@ -37,7 +41,9 @@ const Email = () => {
                     <HiOutlineMail className="lg:text-6xl smxl:text-5xl text-4xl"/>
                     <div className="flex flex-col gap-2">
                         <span className="text-neutral-600">Email</span>
-                        <span className="font-semibold lg:text-2xl smxl:text-xl text-lg text-green-standard">info@bartolisimone.com</span>
+                        <span className="font-semibold lg:text-2xl smxl:text-xl text-lg text-green-standard">
+                            {email === null ? "Not Logged" : email}
+                        </span>
                     </div>
                 </div>
                 <button onClick={onEmailChangeOptionSelected} className={`${changeOptionSelected ? "p-5 hover:bg-red-500 bg-red-600" : "p-4 hover:bg-green-500 bg-green-standard"} flex flex-col justify-center items-center mdx:w-fit w-full transition px-8 shadow-lg rounded-lg text-white lg:text-xl text-lg text-center`}>
@@ -60,7 +66,7 @@ const Email = () => {
                             <span className="text-red-600 italic text-sm">{errorMessage}</span>
                         </div>
                         <input
-                            value={email} onChange={(e) => onEmailChange(e)}
+                            value={newEmail} onChange={(e) => onEmailChange(e)}
                             placeholder="Insert your new email here..."
                             type="text"
                             className="border-[1px] border-neutral-400 text-lg p-3 w-full rounded-md"/>

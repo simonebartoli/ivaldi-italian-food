@@ -16,7 +16,6 @@ const LayoutPrivate: NextPage<Props> = ({children, className}) => {
 
     useEffect(() => {
         if(mainRef.current !== null && accountNavbarWidth !== undefined){
-            console.log(accountNavbarWidth)
             mainRef.current.style.width = `${widthPage - accountNavbarWidth}px`
         }
     }, [accountNavbarWidth, widthPage])

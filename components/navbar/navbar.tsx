@@ -5,9 +5,11 @@ import {useResizer} from "../../contexts/resizer-context";
 import {useLayoutContext} from "../../contexts/layout-context";
 import Link from "next/link";
 import {IoMdArrowDropdown} from "react-icons/io";
+import {useAuth} from "../../contexts/auth-context";
 
 
 const Navbar = () => {
+    const {userInfoNav} = useAuth()
     const {heightPage, widthPage} = useResizer()
     const {navHeight, setNavHeight, navbarRef} = useLayoutContext()
 
@@ -68,13 +70,22 @@ const Navbar = () => {
                     <a className="hover:text-green-standard transition cursor-pointer">Contact Us</a>
                 </Link>
                 <span> | </span>
-                <Link href="/login">
-                    <a className="hover:text-green-standard transition cursor-pointer">Log In / Sign Up</a>
-                </Link>
+                {
+                    userInfoNav.name === null ?
+                        <Link href="/login">
+                            <a className="hover:text-green-standard transition cursor-pointer">Log In / Sign Up</a>
+                        </Link>
+                        :
+                        <Link href="/account">
+                            <a className="hover:text-green-standard transition cursor-pointer">Hi {userInfoNav.name}</a>
+                        </Link>
+                }
                 <Link href="/cart">
                     <div className="flex flex-row items-center gap-2 cursor-pointer">
                         <FiShoppingCart className="text-xl hover:text-green-standard transition"/>
-                        <span className="rounded-full bg-orange-500 text-white px-2 text-sm">10</span>
+                        <span className="rounded-full bg-orange-500 text-white px-2 text-sm">
+                            {userInfoNav.cart === null ? 0 : userInfoNav.cart}
+                        </span>
                     </div>
                 </Link>
             </div>

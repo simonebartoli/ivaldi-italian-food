@@ -1,0 +1,14 @@
+.PhoneInput input{
+    border: 1px solid gray;
+    padding: 0.25em 0.5em;
+    font-size: 2em;
+    border-radius: 5px;
+    background-color: #ececec;
+}
+.PhoneInput input:focus{
+    background-color: white;
+}
+.PhoneInput {
+    --PhoneInputCountryFlag-height: 2.5em;
+    gap: 1.25em;
+}

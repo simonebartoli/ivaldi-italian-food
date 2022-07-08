@@ -3,7 +3,7 @@ import Navbar from "./navbar/navbar";
 import Footer from "./footer/footer";
 import {useResizer} from "../contexts/resizer-context";
 import {NextPage} from "next";
-import Loader from "./loader";
+import PageLoader from "./page-loader";
 import {useLayoutContext} from "../contexts/layout-context";
 
 type Props = {
@@ -27,7 +27,7 @@ const Layout: NextPage<Props> = ({children}) => {
 
     return (
         <>
-            <Loader display={displayLoader}/>
+            <PageLoader display={displayLoader}/>
             <Navbar/>
                 <div ref={mainSectionRef} className="transition-all">
                     {children}

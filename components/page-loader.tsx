@@ -6,7 +6,7 @@ type Props = {
     display: boolean
 }
 
-const Loader: NextPage<Props> = ({display}) => {
+const PageLoader: NextPage<Props> = ({display}) => {
     const loaderRef = useRef<HTMLDivElement>(null)
     useEffect(() => {
         if(!display && loaderRef.current !== null){
@@ -27,4 +27,4 @@ const Loader: NextPage<Props> = ({display}) => {
     );
 };
 
-export default Loader;
+export default PageLoader;
