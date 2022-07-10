@@ -9,21 +9,28 @@ import {NextPage} from "next";
 const Map = dynamic(() => import("./display-map"), { ssr: false });
 
 type Props = {
+    address: {
+        address_id: string
+        first_address: string
+        second_address: string | null
+        postcode: string
+        city: string
+        country: string
+        notes: string | null
+    }
     extraUK?: boolean
 }
 
-const ExistingAddress: NextPage<Props> = ({extraUK = false}) => {
+const ExistingAddress: NextPage<Props> = (
+    {
+        extraUK = false,
+        address
+    }) => {
+
+    const {address_id, first_address, second_address, postcode, city, country, notes} = address
+
     const {widthPage} = useResizer()
-
-    const [firstAddress, setFirstAddress] = useState("1 Yeo Street")
-    const [secondAddress, setSecondAddress] = useState("Caspian Wharf 40")
-    const [postcode, setPostcode] = useState("E33AE")
-    const [city, setCity] = useState("London")
-    const [country, setCountry] = useState("Italy")
-    const [notes, setNotes] = useState("")
-
     const [disabled, setDisabled] = useState(true)
-
     const [displayEdit, setDisplayEdit] = useState(false)
 
     return (
@@ -33,12 +40,13 @@ const ExistingAddress: NextPage<Props> = ({extraUK = false}) => {
                 {
                     displayEdit ?
                         <>
-                            <EditForm currentFirstAddress={firstAddress}
-                                      currentSecondAddress={secondAddress}
+                            {/*FIX EDIT FORM + UPDATE STATE*/}
+                            <EditForm currentFirstAddress={first_address}
+                                      currentSecondAddress={second_address === null ? second_address : ""}
                                       currentPostcode={postcode}
                                       currentCity={city}
                                       currentCountry={extraUK ? country : undefined}
-                                      currentNotes={notes}
+                                      currentNotes={notes === null ? notes : ""}
                                       setDisabled={setDisabled}
                                       extraUK={extraUK}
                                       style={{
@@ -60,7 +68,7 @@ const ExistingAddress: NextPage<Props> = ({extraUK = false}) => {
                         </>
                         :
                         <>
-                            <span className="text-xl">{firstAddress}, {secondAddress}, {postcode}, {city}, UK</span>
+                            <span className="text-xl">{first_address}, {second_address}, {postcode}, {city}, UK</span>
                             <div className="w-full flex smxl:flex-row flex-col smxl:gap-8 gap-4 items-center">
                                 <button onClick={() => setDisplayEdit(true)} className="flex flex-row justify-center gap-4 items-center lg:w-1/4 smxl:w-1/2 w-full p-4 bg-neutral-500 hover:bg-neutral-400 transition text-white text-xl shadow-lg rounded-lg text-center">
                                     Edit

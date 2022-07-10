@@ -5,7 +5,7 @@ import {gql, useMutation} from "@apollo/client";
 import validator from "validator";
 import {moveLabel, revertLabel} from "../library/lableMover";
 import {useAuth} from "../../contexts/auth-context";
-import {Bars, ThreeDots} from "react-loader-spinner";
+import {Bars} from "react-loader-spinner";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -16,7 +16,8 @@ const LOGIN_WITH_PASSWORD = gql`
 `
 
 const LoginWithPassword = () => {
-    const {generateAccessToken} = useAuth()
+    const {functions: {generateAccessToken}} = useAuth()
+
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [loginButtonDisabled, setLoginButtonDisabled] = useState(true)
@@ -76,7 +77,7 @@ const LoginWithPassword = () => {
                 password: password
             }
         },
-        onCompleted: (data) => {
+        onCompleted: () => {
             toast.success("Good 🎉, You are Logged In")
             setLoginButtonDisabled(false)
             setLoader(false)

@@ -33,23 +33,23 @@ const client = new ApolloClient({
 function MyApp({ Component, pageProps }: AppProps) {
   return (
       <ApolloProvider client={client}>
+          <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={true}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+          />
           <AuthContext>
               <ResizerContext>
                   <LayoutContext>
                       <Layout>
-                          <ToastContainer
-                              position="top-right"
-                              autoClose={5000}
-                              hideProgressBar={false}
-                              newestOnTop={false}
-                              closeOnClick
-                              rtl={false}
-                              pauseOnFocusLoss
-                              draggable
-                              pauseOnHover
-                          />
+
                             <Component {...pageProps} />
-                          <ToastContainer />
                       </Layout>
                   </LayoutContext>
               </ResizerContext>

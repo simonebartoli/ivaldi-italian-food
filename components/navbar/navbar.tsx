@@ -1,5 +1,5 @@
 import React, {RefObject, useEffect, useRef, useState} from 'react';
-import {FiShoppingCart} from "react-icons/fi";
+import {FiLogOut, FiShoppingCart} from "react-icons/fi";
 import {AiOutlineClose, AiOutlineMenu} from "react-icons/ai";
 import {useResizer} from "../../contexts/resizer-context";
 import {useLayoutContext} from "../../contexts/layout-context";
@@ -9,13 +9,14 @@ import {useAuth} from "../../contexts/auth-context";
 
 
 const Navbar = () => {
-    const {userInfoNav} = useAuth()
+    const {userInfoNav, functions: {logout}} = useAuth()
     const {heightPage, widthPage} = useResizer()
     const {navHeight, setNavHeight, navbarRef} = useLayoutContext()
 
     const mobileNavRef : RefObject<HTMLDivElement> = useRef(null)
     const [navOpen, setNavOpen] = useState(false)
     const [accountNavOpen, setAccountNavOpen] = useState(false)
+
 
     useEffect(() => {
         setNavHeight(navbarRef.current?.clientHeight)
@@ -50,7 +51,9 @@ const Navbar = () => {
     const handlePrivateAccountNavClick = () => {
         setAccountNavOpen(!accountNavOpen)
     }
-
+    const handleLogoutClick = () => {
+        logout()
+    }
 
     return (
         <nav ref={navbarRef} className="sticky top-0 z-40 flex flex-row justify-between shadow-lg p-6 bg-white">
@@ -88,6 +91,12 @@ const Navbar = () => {
                         </span>
                     </div>
                 </Link>
+                {
+                    userInfoNav.name !== null &&
+                    <div onClick={handleLogoutClick} className="flex flex-row items-center gap-2 cursor-pointer">
+                        <FiLogOut className="text-xl hover:text-red-600 transition"/>
+                    </div>
+                }
             </div>
             <div className="mdx:hidden flex items-center overflow-y-scroll">
                 {!navOpen ?

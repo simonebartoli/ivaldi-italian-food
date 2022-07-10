@@ -4,7 +4,7 @@ import Email from "../components/account/email";
 import Password from "../components/account/password";
 import 'react-slidedown/lib/slidedown.css'
 import LayoutPrivate from "../components/layout-private";
-import {useAuth, useLoginAuth} from "../contexts/auth-context";
+import {useAuth} from "../contexts/auth-context";
 import {useRouter} from "next/router";
 import PageLoader from "../components/page-loader";
 import {gql, useLazyQuery} from "@apollo/client";
@@ -34,8 +34,8 @@ const Account = () => {
     const [fullName, setFullName] = useState<string | null>(null)
     const [dob, setDob] = useState<string | null>(null)
     const [email, setEmail] = useState<string | null>(null)
+    const {loading, logged, accessToken} = useAuth()
 
-    const {accessToken} = useAuth()
     const [getUserInfo] = useLazyQuery(GET_USER_INFO, {
         context: {
             headers: {
@@ -52,16 +52,15 @@ const Account = () => {
         }
     })
     const router = useRouter()
-    const loginStatus = useLoginAuth(accessToken)
 
     useEffect(() => {
         if(accessToken.token !== null) getUserInfo()
     }, [accessToken])
 
-    if(loginStatus.loading) {
+    if(loading) {
         return <PageLoader display={true}/>
     }
-    if(!loginStatus.logged) {
+    if(!logged) {
         router.push("/login")
         return <PageLoader display/>
     }

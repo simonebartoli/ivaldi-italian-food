@@ -13,8 +13,14 @@ type Props = {
 const NameSurname = React.forwardRef<HTMLDivElement, Props>(({name, surname, setName, setSurname, moveNext}, ref) => {
     const [firstSectionButtonDisabled, setFirstSectionButtonDisabled] = useState(true)
     const [firstButtonErrors, setFirstButtonErrors] = useState({
-        name: false,
-        surname: false
+        name: {
+            status: false,
+            message: ""
+        },
+        surname: {
+            status: false,
+            message: ""
+        }
     })
     const nameRef = useRef<HTMLDivElement>(null)
     const surnameRef = useRef<HTMLDivElement>(null)
@@ -29,7 +35,7 @@ const NameSurname = React.forwardRef<HTMLDivElement, Props>(({name, surname, set
     useEffect(() => {
         let OK = true
         for(const value of Object.values(firstButtonErrors)){
-            if(!value) OK = false
+            if(!value.status) OK = false
         }
         if(OK) setFirstSectionButtonDisabled(false)
         else setFirstSectionButtonDisabled(true)
@@ -41,12 +47,18 @@ const NameSurname = React.forwardRef<HTMLDivElement, Props>(({name, surname, set
         if(newValue.length > 2 && newValue.length < 25){
             setFirstButtonErrors({
                 ...firstButtonErrors,
-                name: true
+                name: {
+                    status: true,
+                    message: ""
+                }
             })
         }else{
             setFirstButtonErrors({
                 ...firstButtonErrors,
-                name: false
+                name: {
+                    status: false,
+                    message: "Name is not valid"
+                }
             })
         }
     }
@@ -56,12 +68,18 @@ const NameSurname = React.forwardRef<HTMLDivElement, Props>(({name, surname, set
         if(newValue.length > 2 && newValue.length < 25){
             setFirstButtonErrors({
                 ...firstButtonErrors,
-                surname: true
+                surname: {
+                    status: true,
+                    message: ""
+                }
             })
         }else{
             setFirstButtonErrors({
                 ...firstButtonErrors,
-                surname: false
+                surname: {
+                    status: false,
+                    message: "Surname is not valid"
+                }
             })
         }
     }
@@ -70,29 +88,35 @@ const NameSurname = React.forwardRef<HTMLDivElement, Props>(({name, surname, set
         <div ref={ref} className="flex flex-col gap-16 items-center xls:w-1/3 mdx:w-1/2 sm:w-2/3 smxl:w-3/4 w-full h-full p-2">
             <span className="text-lg text-center">Insert your name and surname and then click Next</span>
             <div className="space-y-12 w-full">
-                <div className="flex flex-col relative w-full">
-                    <div ref={nameRef} className="pointer-events-none select-none transition-all absolute text-neutral-500 top-1/2 text-lg -translate-y-1/2 left-4 flex flex-row gap-2 items-center">
-                        <AiOutlineUser className="mt-[1px]"/>
-                        <span className="font-navbar">Name</span>
+                <div className="flex flex-col w-full relative">
+                    <span className="absolute text-red-600 w-full text-right -top-7 left-0">{firstButtonErrors.name.message}</span>
+                    <div className="flex flex-col relative w-full">
+                        <div ref={nameRef} className="pointer-events-none select-none transition-all absolute text-neutral-500 top-1/2 text-lg -translate-y-1/2 left-4 flex flex-row gap-2 items-center">
+                            <AiOutlineUser className="mt-[1px]"/>
+                            <span className="font-navbar">Name</span>
+                        </div>
+                        <input
+                            value={name} onChange={(e) => onNameChange(e)}
+                            onFocus={() => moveLabel(nameRef)}
+                            onBlur={(e) => onInputBlur(e, nameRef, false)}
+                            type="text"
+                            className="border-[1px] border-neutral-400 text-lg p-3 w-full rounded-md"/>
                     </div>
-                    <input
-                        value={name} onChange={(e) => onNameChange(e)}
-                        onFocus={() => moveLabel(nameRef)}
-                        onBlur={(e) => onInputBlur(e, nameRef, false)}
-                        type="text"
-                        className="border-[1px] border-neutral-400 text-lg p-3 w-full rounded-md"/>
                 </div>
                 <div className="flex flex-col relative w-full">
-                    <div ref={surnameRef} className="pointer-events-none select-none transition-all absolute text-neutral-500 top-1/2 text-lg -translate-y-1/2 left-4 flex flex-row gap-2 items-center">
-                        <AiOutlineUser className="mt-[1px]"/>
-                        <span className="font-navbar">Surname</span>
+                    <span className="absolute text-red-600 w-full text-right -top-7 left-0">{firstButtonErrors.surname.message}</span>
+                    <div className="flex flex-col relative w-full">
+                        <div ref={surnameRef} className="pointer-events-none select-none transition-all absolute text-neutral-500 top-1/2 text-lg -translate-y-1/2 left-4 flex flex-row gap-2 items-center">
+                            <AiOutlineUser className="mt-[1px]"/>
+                            <span className="font-navbar">Surname</span>
+                        </div>
+                        <input
+                            value={surname} onChange={(e) => onSurnameChange(e)}
+                            onFocus={() => moveLabel(surnameRef)}
+                            onBlur={(e) => onInputBlur(e, surnameRef, false)}
+                            type="text"
+                            className="border-[1px] border-neutral-400 text-lg p-3 w-full rounded-md"/>
                     </div>
-                    <input
-                        value={surname} onChange={(e) => onSurnameChange(e)}
-                        onFocus={() => moveLabel(surnameRef)}
-                        onBlur={(e) => onInputBlur(e, surnameRef, false)}
-                        type="text"
-                        className="border-[1px] border-neutral-400 text-lg p-3 w-full rounded-md"/>
                 </div>
             </div>
             <button

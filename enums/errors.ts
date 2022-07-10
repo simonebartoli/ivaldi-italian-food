@@ -1,3 +1,4 @@
 export enum Errors {
-    AUTH_ERROR = "AUTH_ERROR"
+    AUTH_ERROR = "AUTH_ERROR",
+    TOKEN_NOT_AUTHORIZED = "TOKEN_NOT_AUTHORIZED"
 }

@@ -3,14 +3,13 @@ import LoginSection from "../components/login/loginSection";
 import SignupSection from "../components/login/signupSection";
 import {useResizer} from "../contexts/resizer-context";
 import {useLayoutContext} from "../contexts/layout-context";
-import {useAuth, useLoginAuth} from "../contexts/auth-context";
+import {useAuth} from "../contexts/auth-context";
 import PageLoader from "../components/page-loader";
 import {useRouter} from "next/router";
 
 const Login = () => {
     const router = useRouter()
-    const {accessToken} = useAuth()
-    const {loading, logged} = useLoginAuth(accessToken)
+    const {loading, logged} = useAuth()
 
     const fullPageRef = useRef<HTMLDivElement>(null)
     const {heightPage} = useResizer()

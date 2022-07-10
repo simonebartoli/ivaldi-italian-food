@@ -7,7 +7,12 @@ import {Errors} from "../enums/errors";
 type ContextType = {
     accessToken: AccessTokenType
     userInfoNav: UserInfoNavType
-    generateAccessToken: () => void
+    loading: boolean
+    logged: boolean
+    functions: {
+        generateAccessToken: () => void
+        logout: () => void
+    }
 }
 type AccessTokenType = {
     token: string | null
@@ -40,8 +45,6 @@ type Props = {
     children: ReactNode
 }
 
-
-
 const CREATE_ACCESS_TOKEN =gql`
     mutation CREATE_ACCESS_TOKEN {
         createAccessTokenStandard {
@@ -50,7 +53,6 @@ const CREATE_ACCESS_TOKEN =gql`
         }
     }
 `
-
 const GET_USER_INFO_NAV = gql`
     query GET_USER_INFO_NAV {
         getUserInfo {
@@ -62,9 +64,13 @@ const GET_USER_INFO_NAV = gql`
         }
     }
 `
+const LOGOUT = gql`
+    mutation LOGOUT {
+        logout
+    }
+`
 
-
-export const useLoginAuth = (
+const useLoginAuth = (
     accessToken: AccessTokenType,
 ) => {
 
@@ -100,14 +106,13 @@ export const AuthContext: NextPage<Props> = ({children}) => {
         name: null,
         cart: null
     })
-
     const [accessToken, setAccessToken] = useState<AccessTokenType>({
         token: null,
         firstRender: true
     })
     const [publicKey, setPublicKey] = useState<null | string>(null)
 
-    const [generateAccessTokenQuery] = useMutation(CREATE_ACCESS_TOKEN, {
+    const [generateAccessTokenMutation] = useMutation(CREATE_ACCESS_TOKEN, {
         onCompleted: (data) => {
             const {accessToken: newAccessToken, publicKey: newPublicKey} = (data as CreateAccessTokenType).createAccessTokenStandard
             setAccessToken({
@@ -116,7 +121,7 @@ export const AuthContext: NextPage<Props> = ({children}) => {
             })
             setPublicKey(newPublicKey)
         },
-        onError: (error) => {
+        onError: () => {
             // console.log(error.graphQLErrors[0].extensions.code)
             setAccessToken({
                 token: null,
@@ -124,7 +129,7 @@ export const AuthContext: NextPage<Props> = ({children}) => {
             })
         }
     })
-    const [getUserInfoNav] = useLazyQuery(GET_USER_INFO_NAV, {
+    const [getUserInfoNavQuery] = useLazyQuery(GET_USER_INFO_NAV, {
         context: {
             headers: {
                 authorization: "Bearer " + accessToken.token,
@@ -143,17 +148,35 @@ export const AuthContext: NextPage<Props> = ({children}) => {
             console.log(error.message)
         }
     })
+    const [logoutMutation] = useMutation(LOGOUT, {
+        onCompleted: () => setAccessToken({
+            firstRender: false,
+            token: null
+        }),
+        onError: (error) => console.log(error)
+    })
+
+    const {loading, logged} = useLoginAuth(accessToken)
 
     useEffect(() => {
         generateAccessToken()
     }, [])
-
     useEffect(() => {
-        if(accessToken.token !== null) getUserInfoNav()
+        if(accessToken.token !== null && userInfoNav.name === null)
+            getUserInfoNavQuery()
+        if(accessToken.token === null && userInfoNav.name !== null)
+            setUserInfoNav({
+                name: null,
+                cart: null
+            })
+
     }, [accessToken.token])
 
     const generateAccessToken = () => {
-        generateAccessTokenQuery()
+        generateAccessTokenMutation()
+    }
+    const logout = async () => {
+        logoutMutation()
     }
 
     const handleAuthErrors = (error: ApolloError) => {
@@ -163,7 +186,16 @@ export const AuthContext: NextPage<Props> = ({children}) => {
         }
     }
 
-    const value = {accessToken, userInfoNav, generateAccessToken}
+    const value = {
+        accessToken,
+        userInfoNav,
+        loading,
+        logged,
+        functions: {
+            generateAccessToken,
+            logout
+        }
+    }
     return (
         <authContext.Provider value={value}>
             {children}

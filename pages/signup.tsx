@@ -4,8 +4,28 @@ import {useLayoutContext} from "../contexts/layout-context";
 import NameSurname from "../components/signup/nameSurname";
 import EmailDob from "../components/signup/emailDob";
 import Password from "../components/signup/password";
+import {gql, useMutation} from "@apollo/client";
+import 'react-responsive-modal/styles.css';
+import ConfirmEmailModal from "../components/signup/confirmEmailModal";
+import {toast} from "react-toastify";
+import {useAuth} from "../contexts/auth-context";
+import PageLoader from "../components/page-loader";
+import {useRouter} from "next/router";
+
+const CREATE_NEW_USER = gql`
+    mutation CREATE_NEW_USER ($data: CreateNewUserInput!) {
+        createNewUser(data: $data)
+    }
+`
+type CreateNewUserType = {
+    createNewUser: string
+}
+
 
 const Signup = () => {
+    const {loading, logged} = useAuth()
+    const router = useRouter()
+
     const fullPageRef = useRef<HTMLDivElement>(null)
     const {heightPage} = useResizer()
     const {navHeight} = useLayoutContext()
@@ -22,6 +42,21 @@ const Signup = () => {
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
 
+    const [modalOpen, setModalOpen] = useState(false)
+    const [sixDigitCode, setSixDigitCode] = useState("")
+    const [formLoading, setFormLoading] = useState(false)
+
+    const [createNewUser] = useMutation(CREATE_NEW_USER, {
+        onCompleted: (data: CreateNewUserType) => {
+            setFormLoading(false)
+            setModalOpen(true)
+            setSixDigitCode(data.createNewUser)
+        },
+        onError: (error) => {
+            setFormLoading(false)
+            toast.error(error.message)
+        }
+    })
 
     useEffect(() => {
         if(fullPageRef.current !== null && navHeight !== undefined){
@@ -63,8 +98,31 @@ const Signup = () => {
         }
     }
 
+    const handleSubmitForm = () => {
+        const data = {
+            name: name,
+            surname: surname,
+            email: email,
+            dob: dob,
+            password: password
+        }
+        setFormLoading(true)
+        createNewUser({
+            variables: {
+                data: data
+            }
+        })
+    }
+
+    if(loading) return <PageLoader display/>
+    if(logged) {
+        router.push("/account")
+        return <PageLoader display/>
+    }
+
     return (
         <main ref={fullPageRef} className="overflow-hidden flex flex-col gap-16 items-center justify-center p-8">
+            <ConfirmEmailModal modalOpen={modalOpen} setModalOpen={setModalOpen} sixDigitCode={sixDigitCode}/>
             <h2 className="text-4xl">Signup</h2>
             <div className="flex flex-row overflow-x-hidden overflow-y-clip gap-12 items-center justify-center w-full relative">
                 <NameSurname name={name} surname={surname}
@@ -80,6 +138,8 @@ const Signup = () => {
                 <Password password={password} confirmPassword={confirmPassword}
                           setPassword={setPassword} setConfirmPassword={setConfirmPassword}
                           ref={thirdSectionRef}
+                          loading={formLoading}
+                          handleSubmitForm={handleSubmitForm}
                           moveBack={moveBack}/>
             </div>
         </main>
