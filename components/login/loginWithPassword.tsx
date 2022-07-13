@@ -8,6 +8,8 @@ import {useAuth} from "../../contexts/auth-context";
 import {Bars} from "react-loader-spinner";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import {Errors} from "../../enums/errors";
+import SecurityModal from "../securityModal";
 
 const LOGIN_WITH_PASSWORD = gql`
     mutation LOGIN_WITH_PASSWORD($credentials: LoginWithPasswordInputs!){
@@ -21,10 +23,12 @@ const LoginWithPassword = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [loginButtonDisabled, setLoginButtonDisabled] = useState(true)
-    const [loader, setLoader] = useState(false)
 
     const firstEmailRef = useRef<HTMLDivElement>(null)
     const passwordRef = useRef<HTMLDivElement>(null)
+
+    const [modalOpen, setModalOpen] = useState(false)
+    const [sixDigitCode, setSixDigitCode] = useState("")
 
     useEffect(() => {
         if(validator.isEmail(email) && password.length >= 8 && password.length <= 31){
@@ -70,7 +74,7 @@ const LoginWithPassword = () => {
         }
     }
 
-    const [loginWithPassword] = useMutation(LOGIN_WITH_PASSWORD, {
+    const [loginWithPassword, {loading}] = useMutation(LOGIN_WITH_PASSWORD, {
         variables: {
             credentials: {
                 email: email,
@@ -80,19 +84,23 @@ const LoginWithPassword = () => {
         onCompleted: () => {
             toast.success("Good 🎉, You are Logged In")
             setLoginButtonDisabled(false)
-            setLoader(false)
             generateAccessToken()
         },
         onError: (error) => {
-            toast.error(error.message)
+            const graphqlError = error.graphQLErrors[0]
+            if(graphqlError.extensions.type === Errors.EMAIL_NOT_VERIFIED){
+                const code = (graphqlError.extensions.info as any).sixDigitCode as string
+                setModalOpen(true)
+                setSixDigitCode(code)
+            }else{
+                toast.error(error.message)
+            }
             setLoginButtonDisabled(false)
-            setLoader(false)
         }
     })
 
     const onLoginFormSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        setLoader(true)
         setLoginButtonDisabled(true)
         loginWithPassword()
     }
@@ -100,6 +108,15 @@ const LoginWithPassword = () => {
 
     return (
         <form onSubmit={(e) => onLoginFormSubmit(e)} className="flex flex-col gap-10 w-full">
+            <SecurityModal
+                modalOpen={modalOpen}
+                setModalOpen={setModalOpen}
+                sixDigitCode={sixDigitCode}
+                content={{
+                    title: "You Need to Verify Your Email First",
+                    description: "To protect your account we need to verify your email."
+                }}
+            />
             <div className="flex flex-col relative">
                 <div ref={firstEmailRef} className="pointer-events-none select-none transition-all absolute text-neutral-500 top-1/2 text-lg -translate-y-1/2 left-4 flex flex-row gap-2 items-center">
                     <HiOutlineMail className="mt-[1px]"/>
@@ -127,7 +144,7 @@ const LoginWithPassword = () => {
                     type="submit" disabled={loginButtonDisabled}
                     className="flex justify-center relative z-10 transition disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:text-black cursor-pointer p-3 rounded-lg w-full shadow-lg text-white">
                     {
-                        loader ?
+                        loading ?
                             <Bars height={24} color={"white"}/>
                             :
                             "Login"

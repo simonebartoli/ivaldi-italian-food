@@ -12,6 +12,7 @@ import {ApolloClient, ApolloProvider, createHttpLink, InMemoryCache} from "@apol
 import {setContext} from "@apollo/client/link/context";
 import {AuthContext} from "../contexts/auth-context";
 import {ToastContainer} from "react-toastify";
+import {CartContext} from "../contexts/cart-context";
 
 const httpLink = createHttpLink({
     uri: "http://localhost:4000/graphql"
@@ -25,14 +26,14 @@ const authLink = setContext((_, {headers, }) => {
     }
 })
 
-const client = new ApolloClient({
+export const apolloClient = new ApolloClient({
     link: authLink.concat(httpLink),
     cache: new InMemoryCache()
 })
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-      <ApolloProvider client={client}>
+      <ApolloProvider client={apolloClient}>
           <ToastContainer
               position="top-right"
               autoClose={5000}
@@ -45,14 +46,15 @@ function MyApp({ Component, pageProps }: AppProps) {
               pauseOnHover
           />
           <AuthContext>
-              <ResizerContext>
-                  <LayoutContext>
-                      <Layout>
-
-                            <Component {...pageProps} />
-                      </Layout>
-                  </LayoutContext>
-              </ResizerContext>
+              <CartContext>
+                  <ResizerContext>
+                      <LayoutContext>
+                          <Layout>
+                                <Component {...pageProps} />
+                          </Layout>
+                      </LayoutContext>
+                  </ResizerContext>
+              </CartContext>
           </AuthContext>
       </ApolloProvider>
   )

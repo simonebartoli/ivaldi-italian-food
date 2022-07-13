@@ -112,10 +112,10 @@ const Password = React.forwardRef<HTMLDivElement, Props>(({password, setPassword
 
     return (
         <div ref={ref} className="hidden flex flex-col gap-16 items-center xls:w-1/3 mdx:w-1/2 sm:w-2/3 smxl:w-3/4 w-full pb-16">
-            <span className="text-lg text-center">To finish the registration choose a strong password and<br/> then click Sign Up</span>
+            <span className="text-lg text-center leading-10">To finish the registration choose a strong password and<br/> then click Sign Up</span>
             <div className="flex flex-col gap-8 w-full">
-                <div className="flex flex-col relative w-full">
-                    <span className="absolute text-red-600 w-full text-right -top-7 left-0">{thirdButtonErrors.password.message}</span>
+                <div className="mt-8 smxl:mt-0 flex flex-col relative w-full">
+                    <span className="absolute text-red-600 w-full text-right -top-14 left-0">{thirdButtonErrors.password.message}</span>
                     <div className="flex flex-col relative w-full">
                         <div ref={passwordRef} className="pointer-events-none select-none transition-all absolute text-neutral-500 top-1/2 text-lg -translate-y-1/2 left-4 flex flex-row gap-2 items-center">
                             <BiLockAlt className="mt-[1px]"/>
@@ -136,8 +136,8 @@ const Password = React.forwardRef<HTMLDivElement, Props>(({password, setPassword
                         <li ref={secondReqRef}>have at least a number and a letter</li>
                     </ul>
                 </div>
-                <div className="flex flex-col relative w-full">
-                    <span className="absolute text-red-600 w-full text-right -top-7 left-0">{thirdButtonErrors.confirmPassword.message}</span>
+                <div className="mt-8 smxl:mt-0 flex flex-col relative w-full">
+                    <span className="absolute text-red-600 w-full text-right -top-14 left-0">{thirdButtonErrors.confirmPassword.message}</span>
                     <div className="flex flex-col relative w-full">
                         <div ref={confirmPasswordRef} className="pointer-events-none select-none transition-all absolute text-neutral-500 top-1/2 text-lg -translate-y-1/2 left-4 flex flex-row gap-2 items-center">
                             <BiLockAlt className="mt-[1px]"/>

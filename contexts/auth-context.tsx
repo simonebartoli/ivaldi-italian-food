@@ -3,7 +3,6 @@ import {NextPage} from "next";
 import {ApolloError, gql, useLazyQuery, useMutation} from "@apollo/client";
 import {Errors} from "../enums/errors";
 
-
 type ContextType = {
     accessToken: AccessTokenType
     userInfoNav: UserInfoNavType
@@ -12,6 +11,7 @@ type ContextType = {
     functions: {
         generateAccessToken: () => void
         logout: () => void
+        handleAuthErrors: (error: ApolloError) => void
     }
 }
 type AccessTokenType = {
@@ -72,6 +72,7 @@ const LOGOUT = gql`
 
 const useLoginAuth = (
     accessToken: AccessTokenType,
+    generateAccessToken: () => void
 ) => {
 
     const [loginStatus, setLoginStatus] = useState({
@@ -81,13 +82,11 @@ const useLoginAuth = (
     useEffect(() => {
         const checkIfLogged = async () => {
             if (accessToken.token !== null) {
-                console.log("VALID")
                 setLoginStatus({
                     loading: false,
                     logged: true
                 })
             } else {
-                console.log("INVALID")
                 setLoginStatus({
                     loading: false,
                     logged: false
@@ -113,6 +112,7 @@ export const AuthContext: NextPage<Props> = ({children}) => {
     const [publicKey, setPublicKey] = useState<null | string>(null)
 
     const [generateAccessTokenMutation] = useMutation(CREATE_ACCESS_TOKEN, {
+        fetchPolicy: "network-only",
         onCompleted: (data) => {
             const {accessToken: newAccessToken, publicKey: newPublicKey} = (data as CreateAccessTokenType).createAccessTokenStandard
             setAccessToken({
@@ -122,7 +122,6 @@ export const AuthContext: NextPage<Props> = ({children}) => {
             setPublicKey(newPublicKey)
         },
         onError: () => {
-            // console.log(error.graphQLErrors[0].extensions.code)
             setAccessToken({
                 token: null,
                 firstRender: false
@@ -135,6 +134,7 @@ export const AuthContext: NextPage<Props> = ({children}) => {
                 authorization: "Bearer " + accessToken.token,
             }
         },
+        fetchPolicy: "network-only",
         onCompleted: (data: GetUserInfoNavType) => {
             let amount = 0
             data.getUserCart.forEach(element => amount += element.amount)
@@ -155,8 +155,6 @@ export const AuthContext: NextPage<Props> = ({children}) => {
         }),
         onError: (error) => console.log(error)
     })
-
-    const {loading, logged} = useLoginAuth(accessToken)
 
     useEffect(() => {
         generateAccessToken()
@@ -182,9 +180,11 @@ export const AuthContext: NextPage<Props> = ({children}) => {
     const handleAuthErrors = (error: ApolloError) => {
         const graphqlErrorCode = error.graphQLErrors[0].extensions.code
         if(graphqlErrorCode === Errors.AUTH_ERROR){
-
+            generateAccessTokenMutation()
         }
     }
+
+    const {loading, logged} = useLoginAuth(accessToken, generateAccessToken)
 
     const value = {
         accessToken,
@@ -193,7 +193,8 @@ export const AuthContext: NextPage<Props> = ({children}) => {
         logged,
         functions: {
             generateAccessToken,
-            logout
+            logout,
+            handleAuthErrors
         }
     }
     return (

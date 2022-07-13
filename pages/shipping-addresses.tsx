@@ -37,7 +37,7 @@ const GET_SHIPPING_ADDRESSES = gql`
 `
 
 const ShippingAddresses = () => {
-    const {loading, logged, accessToken} = useAuth()
+    const {loading, logged, accessToken, functions: {handleAuthErrors}} = useAuth()
     const router = useRouter()
     const [addresses, setAddresses] = useState<ShippingAddresses[]>([])
 
@@ -53,6 +53,7 @@ const ShippingAddresses = () => {
             setAddresses(dataFormatted)
         },
         onError: (error) => {
+            handleAuthErrors(error)
             console.log(error.graphQLErrors)
         }
     })

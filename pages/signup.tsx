@@ -6,7 +6,7 @@ import EmailDob from "../components/signup/emailDob";
 import Password from "../components/signup/password";
 import {gql, useMutation} from "@apollo/client";
 import 'react-responsive-modal/styles.css';
-import ConfirmEmailModal from "../components/signup/confirmEmailModal";
+import SecurityModal from "../components/securityModal";
 import {toast} from "react-toastify";
 import {useAuth} from "../contexts/auth-context";
 import PageLoader from "../components/page-loader";
@@ -122,7 +122,15 @@ const Signup = () => {
 
     return (
         <main ref={fullPageRef} className="overflow-hidden flex flex-col gap-16 items-center justify-center p-8">
-            <ConfirmEmailModal modalOpen={modalOpen} setModalOpen={setModalOpen} sixDigitCode={sixDigitCode}/>
+            <SecurityModal
+                modalOpen={modalOpen}
+                setModalOpen={setModalOpen}
+                sixDigitCode={sixDigitCode}
+                content={{
+                    title: "🎉 Your Registration is almost completed",
+                    description: "To complete your registration you need to confirm your email."
+                }}
+            />
             <h2 className="text-4xl">Signup</h2>
             <div className="flex flex-row overflow-x-hidden overflow-y-clip gap-12 items-center justify-center w-full relative">
                 <NameSurname name={name} surname={surname}

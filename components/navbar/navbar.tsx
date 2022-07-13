@@ -6,10 +6,12 @@ import {useLayoutContext} from "../../contexts/layout-context";
 import Link from "next/link";
 import {IoMdArrowDropdown} from "react-icons/io";
 import {useAuth} from "../../contexts/auth-context";
+import {useCart} from "../../contexts/cart-context";
 
 
 const Navbar = () => {
     const {userInfoNav, functions: {logout}} = useAuth()
+    const {cart} = useCart()
     const {heightPage, widthPage} = useResizer()
     const {navHeight, setNavHeight, navbarRef} = useLayoutContext()
 
@@ -17,6 +19,7 @@ const Navbar = () => {
     const [navOpen, setNavOpen] = useState(false)
     const [accountNavOpen, setAccountNavOpen] = useState(false)
 
+    const [cartNumber, setCartNumber] = useState(0)
 
     useEffect(() => {
         setNavHeight(navbarRef.current?.clientHeight)
@@ -27,6 +30,12 @@ const Navbar = () => {
             mobileNavRef.current.style.height = `${heightPage - navHeight}px`
         }
     }, [navHeight, heightPage])
+
+    useEffect(() =>{
+        let total = 0
+        for(const value of cart.values()) total += value
+        setCartNumber(total)
+    }, [cart])
 
     const onNavClick = () => {
         if(navbarRef.current !== null){
@@ -87,7 +96,7 @@ const Navbar = () => {
                     <div className="flex flex-row items-center gap-2 cursor-pointer">
                         <FiShoppingCart className="text-xl hover:text-green-standard transition"/>
                         <span className="rounded-full bg-orange-500 text-white px-2 text-sm">
-                            {userInfoNav.cart === null ? 0 : userInfoNav.cart}
+                            {cartNumber}
                         </span>
                     </div>
                 </Link>

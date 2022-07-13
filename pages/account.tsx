@@ -34,7 +34,7 @@ const Account = () => {
     const [fullName, setFullName] = useState<string | null>(null)
     const [dob, setDob] = useState<string | null>(null)
     const [email, setEmail] = useState<string | null>(null)
-    const {loading, logged, accessToken} = useAuth()
+    const {loading, logged, accessToken, functions: {handleAuthErrors}} = useAuth()
 
     const [getUserInfo] = useLazyQuery(GET_USER_INFO, {
         context: {
@@ -48,6 +48,7 @@ const Account = () => {
             setEmail(data.getUserInfo.email)
         },
         onError: (error) => {
+            handleAuthErrors(error)
             console.log(error.message)
         }
     })

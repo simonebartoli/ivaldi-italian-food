@@ -19,7 +19,7 @@ const Login = () => {
         if(fullPageRef.current !== null && navHeight !== undefined){
             fullPageRef.current.style.minHeight = `${heightPage - navHeight!}px`
         }
-    })
+    }, [loading, heightPage, navHeight])
 
     if(loading) return <PageLoader display/>
     if(logged) {
