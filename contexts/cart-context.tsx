@@ -1,17 +1,22 @@
 import React, {createContext, ReactNode, useEffect, useState} from 'react';
 import {NextPage} from "next";
 import {useAuth} from "./auth-context";
-import {ApolloError, gql} from "@apollo/client";
-import {apolloClient} from "../pages/_app";
+import {ApolloError, gql, useLazyQuery, useMutation} from "@apollo/client";
 
 export type ItemCartType = {
     item_id: number
     amount: number
 }
+type RemoveItemCartType = {
+    item_id: number
+}
 type ContextType = {
     cart: Map<number, number>
+    error: ApolloError | null | false
+    item: ItemCartType | null
     functions: {
-        addToCart: (item_id: number, amount: number) => Promise<boolean | ApolloError>
+        addToCart: (item_id: number, amount: number) => void
+        removeFromCart: (item_id: number) => void
     }
 }
 
@@ -26,78 +31,289 @@ const ADD_NEW_RECORD = gql`
         addNewRecord(data: $data)
     }
 `
+const REMOVE_RECORD = gql`
+    mutation REMOVE_RECORD($data: RemoveEntryFromCartInput!) {
+        removeRecord(data: $data)
+    }
+`
+const SYNC_CARTS = gql`
+    mutation SYNC_CARTS($data: [AddEntryToCartInput!]!) {
+        syncCarts(data: $data)
+    }
+`
+const GET_USER_CART = gql`
+    query GET_USER_CART {
+        getUserCart {
+            item_id
+            amount
+        }
+    }
+`
+
+let reTryOperation = false // IN CASE OF TOKEN EXPIRED
+let actionType: string | null = null // DECIDE WHICH QUERY/MUTATION EXECUTE
 
 export const CartContext: NextPage<Props> = ({children}) => {
-    const {loading, logged, accessToken, functions: {handleAuthErrors}} = useAuth()
+    const {logged, loading, accessToken, functions: {handleAuthErrors}} = useAuth()
+    const [storage, setStorage] = useState<Map<number, number>>(new Map())
 
-    const [storage, setStorage] = useState<Map<number, number>>(new Map()) // DO IT WITH MAPS
-    const [firstRender, setFirstRender] = useState(true)
+    const [item, setItem] = useState<ItemCartType | null>(null)
+    const [localItems, setLocalItems] = useState<ItemCartType[] | null>(null)
 
-    useEffect(() => {
-        // MANAGE LOGIN
-        const data = localStorage.getItem("cart")
-        if(data !== null){
-            try {
-                const dataJSON = JSON.parse(data) as ItemCartType[]
-                const items = new Map<number, number>()
-                for(const element of dataJSON){
-                    if(element.item_id === undefined || element.amount === undefined) throw new Error()
-                    if(isNaN(Number(element.item_id)) || isNaN(Number(element.amount))) throw new Error()
+    const [error, setError] = useState<ApolloError | null | false>(null)
 
-                    items.set(element.item_id, element.amount)
+    const [addNewRecord] = useMutation<boolean, { data: ItemCartType }>(ADD_NEW_RECORD, {
+        context: {
+            headers: {
+                authorization: "Bearer " + accessToken.token
+            }
+        },
+        onCompleted: () => setError(false),
+        onError: async (error) => {
+            const result = await handleAuthErrors(error)
+            if(result){
+                actionType = "addNewRecord"
+                reTryOperation = true
+                return
+            }
+            setError(error)
+            console.log(error.message)
+        }
+    })
+    const [syncCarts] = useMutation<boolean, { data: ItemCartType[] }>(SYNC_CARTS, {
+        context: {
+            headers: {
+                authorization: "Bearer " + accessToken.token
+            }
+        },
+        onCompleted: () => {
+            getUserCart({
+                context: {
+                    headers: {
+                        authorization: "Bearer " + accessToken.token
+                    }
                 }
-                setStorage(items)
-            }catch (e) {
-                localStorage.removeItem("cart")
+            })
+        },
+        onError: async (error) => {
+            const result = await handleAuthErrors(error)
+            if(result){
+                actionType = "syncCarts"
+                reTryOperation = true
+                return
             }
+            console.log(error.message)
         }
-        setFirstRender(false)
-    }, [])
+    })
+    const [getUserCart] = useLazyQuery<{getUserCart: ItemCartType[]}>(GET_USER_CART, {
+        onCompleted: (data) => {
+            const items = new Map<number, number>()
+            for(const element of data.getUserCart){
+                items.set(element.item_id, element.amount)
+            }
+            localStorage.removeItem("cart")
+            setStorage(items)
+        },
+        onError: async (error) => {
+            const result = await handleAuthErrors(error)
+            if(result){
+                actionType = "getUserCart"
+                reTryOperation = true
+                return
+            }
+            console.log(error.message)
+        }
+    })
+    const [removeRecord] = useMutation<boolean, {data: RemoveItemCartType}>(REMOVE_RECORD, {
+        context: {
+            headers: {
+                authorization: "Bearer " + accessToken.token
+            }
+        },
+        onCompleted: () => setError(false),
+        onError: async (error) => {
+            const result = await handleAuthErrors(error)
+            if(result){
+                actionType = "removeRecord"
+                reTryOperation = true
+                return
+            }
+            setError(error)
+            console.log(error.message)
+        }
+    })
 
     useEffect(() => {
-        if(!firstRender){
-            if(storage.size > 0) {
-                const appStorage: ItemCartType[] = []
-                for(const [key, value] of storage.entries()) appStorage.push({item_id: key, amount: value})
-                localStorage.setItem("cart", JSON.stringify(appStorage))
-            }
-            else localStorage.removeItem("cart")
-        }
-    }, [storage, firstRender])
-
-    const addToCart = async (item_id: number, amount: number): Promise<true | ApolloError> => {
-        try{
-            if(!loading && logged){
-                await apolloClient.mutate<boolean, {data: ItemCartType }>({
+        if(accessToken.token !== null && reTryOperation) {
+            if(actionType === "addNewRecord" && item !== null){
+                addNewRecord({
+                    variables: {
+                        data: {
+                            item_id: item.item_id,
+                            amount: item.amount
+                        }
+                    }
+                })
+            }else if (actionType === "getUserCart"){
+                getUserCart({
                     context: {
                         headers: {
                             authorization: "Bearer " + accessToken.token
                         }
-                    },
-                    mutation: ADD_NEW_RECORD,
+                    }
+                })
+            }else if (actionType === "syncCarts" && localItems !== null){
+                syncCarts({
+                    variables: {
+                        data: localItems
+                    }
+                })
+            }else if (actionType === "removeRecord" && item !== null){
+                removeRecord({
                     variables: {
                         data: {
-                            item_id: item_id,
-                            amount: amount
+                            item_id: item.item_id
                         }
                     }
                 })
             }
-            const newStorage = storage.has(item_id) ?
-                new Map(storage).set(item_id, storage.get(item_id)! + amount) :
-                new Map(storage).set(item_id, amount)
+
+            actionType = null
+            reTryOperation = false
+        }
+    }, [accessToken, item, localItems])
+
+    useEffect(() => {
+        const data = localStorage.getItem("cart")
+
+        if(!logged){
+            if(data !== null){
+                const result = parseLocalStorageCart(data)
+                if(result !== false) setStorage(result)
+            }else{
+                setStorage(new Map())
+            }
+        }else{
+            if(data !== null){
+                const result = parseLocalStorageCart(data)
+                if(result !== false) {
+                    const mutationData: ItemCartType[] = []
+                    for(const [key, amount] of Array.from(result.entries())){
+                        mutationData.push({
+                            item_id: key,
+                            amount: amount
+                        })
+                    }
+                    console.log(mutationData)
+                    setLocalItems(mutationData)
+                    syncCarts({
+                        variables: {
+                            data: mutationData
+                        }
+                    })
+                }
+            }else{
+                getUserCart({
+                    context: {
+                        headers: {
+                            authorization: "Bearer " + accessToken.token
+                        }
+                    }
+                })
+            }
+        }
+    }, [logged])
+
+    useEffect(() => {
+        if(storage.size > 0) {
+            if(!logged){
+                const appStorage: ItemCartType[] = []
+                for(const [key, value] of storage.entries()) appStorage.push({item_id: key, amount: value})
+                localStorage.setItem("cart", JSON.stringify(appStorage))
+            }
+        }
+        else localStorage.removeItem("cart")
+
+    }, [storage])
+
+
+    useEffect(() => {
+        if(error === false && item !== null){
+            let newStorage = new Map<number, number>(storage)
+            if(item.amount === 0){
+                newStorage.delete(item.item_id)
+            }else{
+                newStorage = storage.has(item.item_id) ?
+                    newStorage.set(item.item_id, storage.get(item.item_id)! + item.amount) :
+                    newStorage.set(item.item_id, item.amount)
+            }
 
             setStorage(newStorage)
-            return true
+        }
+    }, [error, item])
+
+    const parseLocalStorageCart = (data: string): Map<number, number> | false => {
+        try {
+            const dataJSON = JSON.parse(data) as ItemCartType[]
+            const items = new Map<number, number>()
+            for(const element of dataJSON){
+                if(element.item_id === undefined || element.amount === undefined) throw new Error()
+                if(isNaN(Number(element.item_id)) || isNaN(Number(element.amount))) throw new Error()
+
+                items.set(element.item_id, element.amount)
+            }
+            return items
         }catch (e) {
-            return e as ApolloError
+            localStorage.removeItem("cart")
+            return false
         }
     }
 
+    const addToCart = async (item_id: number, amount: number) => {
+        setItem(null)
+        setError(null)
+
+        setItem({item_id: item_id, amount: amount})
+        if(logged){
+            addNewRecord({
+                variables: {
+                    data: {
+                        item_id: item_id,
+                        amount: amount
+                    }
+                }
+            })
+        }else{
+            setError(false)
+        }
+    }
+
+    const removeFromCart = async (item_id: number) => {
+        setItem(null)
+        setError(null)
+
+        setItem({item_id: item_id, amount: 0})
+        if(logged){
+            removeRecord({
+                variables: {
+                    data: {
+                        item_id: item_id
+                    }
+                }
+            })
+        }else{
+            setError(false)
+        }
+    }
+
+
     const value: ContextType = {
         cart: storage,
+        error: error,
+        item: item,
         functions: {
-            addToCart
+            addToCart,
+            removeFromCart
         }
     }
     return (

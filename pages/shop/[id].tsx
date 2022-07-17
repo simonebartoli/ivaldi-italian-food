@@ -11,6 +11,7 @@ import PageLoader from "../../components/page-loader";
 import {useCart} from "../../contexts/cart-context";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import {Errors} from "../../enums/errors";
 
 type ItemType = {
     item_id: number
@@ -72,7 +73,7 @@ const Product: NextPage<ItemType> = ({
     const mainRef = useRef<HTMLDivElement>(null)
     const {heightPage} = useResizer()
     const {navHeight} = useLayoutContext()
-    const {cart, functions: {addToCart}} = useCart()
+    const {cart, error, functions: {addToCart}} = useCart()
 
     const [ready, setReady] = useState(false)
     const [availableThisSession, setAvailableThisSession] = useState(0)
@@ -95,15 +96,27 @@ const Product: NextPage<ItemType> = ({
         }
     }, [heightPage, navHeight])
 
+    useEffect(() => {
+        if(error !== null){
+            if(error === false){
+                toast.success(`${itemNumber} ${name} Have Been Added to the Cart`)
+                setAvailableThisSession(availableThisSession - itemNumber)
+            }else{
+                const errorType = error.graphQLErrors[0].extensions
+                if(errorType.type === Errors.AMOUNT_NOT_AVAILABLE){
+                    toast.error("This quantity is not available")
+                }
+                else if(errorType.code === Errors.AUTH_ERROR){
+                    toast.error("Your session has expired. Please Login Again")
+                }else{
+                    toast.error("There is an Error. Please Try Again.")
+                }
+            }
+        }
+    }, [error])
 
     const handleAddToCartButton = async () => {
-        const result = await addToCart(item_id, itemNumber)
-        if(result === true){
-            toast.success(`${itemNumber} ${name} Have Been Added to the Cart`)
-            setAvailableThisSession(availableThisSession - itemNumber)
-        }else{
-            toast.error("Please Try Again")
-        }
+        await addToCart(item_id, itemNumber)
     }
 
     useEffect(() => {

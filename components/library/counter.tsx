@@ -12,18 +12,21 @@ type Props = {
         fontText?: string
         gap?: string
     }
+    disable?: boolean
 }
 
-const Counter: NextPage<Props> = ({max, min, itemNumber, setItemNumber, options}) => {
+const Counter: NextPage<Props> = ({max, min, itemNumber, setItemNumber, options, disable = false}) => {
 
     const changeItemNumber = (action: string) => {
-        if(action === "increase"){
-            if(itemNumber < max){
-                setItemNumber(itemNumber+1)
-            }
-        }else{
-            if(itemNumber > min){
-                setItemNumber(itemNumber-1)
+        if(!disable){
+            if(action === "increase"){
+                if(itemNumber < max){
+                    setItemNumber(itemNumber+1)
+                }
+            }else{
+                if(itemNumber > min){
+                    setItemNumber(itemNumber-1)
+                }
             }
         }
     }

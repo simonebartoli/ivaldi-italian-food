@@ -5,24 +5,19 @@ import {FaRegTrashAlt} from "react-icons/fa";
 import {useResizer} from "../../contexts/resizer-context";
 import {NextPage} from "next";
 import {useCart} from "../../contexts/cart-context";
+import {ItemType} from "../../pages/cart";
+import 'react-toastify/dist/ReactToastify.css';
+import {toast} from "react-toastify";
 
-type ItemType = {
-    item_id: number
-    name: string
-    price_total: number
-    vat: {
-        percentage: number
-    }
-    amount_available: number
-    amount: number
-    price_unit: string
-    photo_loc: string
-    discount: {
-        percentage: number
-    } | null
+type Props = {
+    item: ItemType,
+    items: Map<number, ItemType>
+    setItems: React.Dispatch<React.SetStateAction<Map<number, ItemType>>>
 }
 
-const CartArticle: NextPage<{item: ItemType }> = ({item: {
+let actionType = ""
+
+const CartArticle: NextPage<Props> = ({item: {
     item_id,
     name,
     price_unit,
@@ -32,18 +27,52 @@ const CartArticle: NextPage<{item: ItemType }> = ({item: {
     photo_loc,
     vat,
     discount
-}}) => {
+}, items, setItems}) => {
+
     const [number, setNumber] = useState(amount < amount_available ? amount : amount_available)
     const [ready, setReady] = useState(false)
+    const [disabled, setDisabled] = useState(false)
 
-    useEffect(() => {setReady(true)}, [])
-    const {functions: {addToCart}} = useCart()
+    const {item, error, functions: {addToCart, removeFromCart}} = useCart()
     const {widthPage} = useResizer()
 
     useEffect(() => {
-        amount = number
-        // addToCart(item_id, number)
+        if(ready) {
+            actionType = "edit"
+            setDisabled(true)
+            addToCart(item_id, number - amount)
+        }
+        if(!ready) setReady(true)
+
     }, [number])
+
+
+    useEffect(() => {
+        if(error !== null && item !== null && item.item_id === item_id){
+            if(error !== false){
+                if(actionType === "edit") setDisabled(false)
+                console.log(error.graphQLErrors[0])
+                toast.error("There is a problem. Try Again.")
+            }else{
+                if(actionType === "edit") setItems(new Map(items).set(item_id, {...items.get(item_id)!, amount: number}))
+                else if(actionType === "remove") {
+                    let item = new Map(items)
+                    item.delete(item_id)
+                    setItems(item)
+                }
+            }
+            actionType = ""
+        }
+    }, [error, item])
+
+    useEffect(() => {
+        setDisabled(false)
+    }, [items])
+
+    const handleRemoveFromCartClick = () => {
+        actionType = "remove"
+        removeFromCart(item_id)
+    }
 
     return (
         <article className="flex smxl:flex-row flex-col gap-4 items-center w-full">
@@ -69,7 +98,9 @@ const CartArticle: NextPage<{item: ItemType }> = ({item: {
                                 max={amount_available}
                                 itemNumber={number}
                                 setItemNumber={setNumber}
-                                options={{fontText: "text-2xl", sizeIcons: "text-2xl"}}/>
+                                options={{fontText: "text-2xl", sizeIcons: "text-2xl"}}
+                                disable={disabled}
+                            />
                             {
                                 ready && widthPage < 600 &&
                                 <div>
@@ -85,7 +116,7 @@ const CartArticle: NextPage<{item: ItemType }> = ({item: {
                 </div>
                 {
                     ready && widthPage >= 600 &&
-                        <div>
+                        <div onClick={handleRemoveFromCartClick}>
                             <FaRegTrashAlt className="text-3xl text-neutral-500 cursor-pointer hover:text-red-600 transition"/>
                         </div>
                 }

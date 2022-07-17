@@ -52,8 +52,12 @@ const ShippingAddresses = () => {
             data.getUserInfo.shipping_addresses.forEach((element) => dataFormatted.push(element))
             setAddresses(dataFormatted)
         },
-        onError: (error) => {
-            handleAuthErrors(error)
+        onError: async (error) => {
+            const result = await handleAuthErrors(error)
+            if(result) {
+                getShippingAddresses()
+                return
+            }
             console.log(error.graphQLErrors)
         }
     })

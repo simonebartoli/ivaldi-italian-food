@@ -8,9 +8,10 @@ import BestLogoList from "../../components/shop/index/list/bestLogoList";
 const Index = () => {
     const mainRef = useRef<HTMLDivElement>(null)
 
-    const highContrastSearchBar = () => {
+    const highContrastSearchBar = (status: boolean) => {
         if(mainRef.current !== null){
-            mainRef.current.classList.toggle("brightness-50")
+            if(status) mainRef.current.classList.add("brightness-50")
+            else mainRef.current.classList.remove("brightness-50")
         }
     }
 

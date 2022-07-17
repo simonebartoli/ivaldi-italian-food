@@ -47,8 +47,11 @@ const Account = () => {
             setDob(DateTime.fromISO(data.getUserInfo.dob).toFormat("d LLL yyyy"))
             setEmail(data.getUserInfo.email)
         },
-        onError: (error) => {
-            handleAuthErrors(error)
+        onError: async (error) => {
+            const result = await handleAuthErrors(error)
+            if(result) {
+                return
+            }
             console.log(error.message)
         }
     })

@@ -2,6 +2,7 @@ import React, {createContext, ReactNode, useEffect, useState} from 'react';
 import {NextPage} from "next";
 import {ApolloError, gql, useLazyQuery, useMutation} from "@apollo/client";
 import {Errors} from "../enums/errors";
+import {apolloClient} from "../pages/_app";
 
 type ContextType = {
     accessToken: AccessTokenType
@@ -11,7 +12,7 @@ type ContextType = {
     functions: {
         generateAccessToken: () => void
         logout: () => void
-        handleAuthErrors: (error: ApolloError) => void
+        handleAuthErrors: (error: ApolloError) => Promise<boolean>
     }
 }
 type AccessTokenType = {
@@ -20,7 +21,6 @@ type AccessTokenType = {
 }
 type UserInfoNavType = {
     name: string | null
-    cart: number | null
 }
 type CreateAccessTokenType = {
     createAccessTokenStandard: {
@@ -28,14 +28,10 @@ type CreateAccessTokenType = {
         publicKey: string
     }
 }
-type GetUserInfoNavType = {
+type GetUserInfoType = {
     getUserInfo: {
         name: string
     }
-    getUserCart: [{
-        item_id: number
-        amount: number
-    }]
 }
 
 
@@ -53,14 +49,10 @@ const CREATE_ACCESS_TOKEN =gql`
         }
     }
 `
-const GET_USER_INFO_NAV = gql`
-    query GET_USER_INFO_NAV {
+const GET_USER_INFO = gql`
+    query GET_USER_INFO {
         getUserInfo {
             name
-        }
-        getUserCart {
-            item_id
-            amount
         }
     }
 `
@@ -103,49 +95,20 @@ const useLoginAuth = (
 export const AuthContext: NextPage<Props> = ({children}) => {
     const [userInfoNav, setUserInfoNav] = useState<UserInfoNavType>({
         name: null,
-        cart: null
     })
     const [accessToken, setAccessToken] = useState<AccessTokenType>({
         token: null,
         firstRender: true
     })
-    const [publicKey, setPublicKey] = useState<null | string>(null)
-
-    const [generateAccessTokenMutation] = useMutation(CREATE_ACCESS_TOKEN, {
+    const [getUserInfoNavQuery] = useLazyQuery(GET_USER_INFO, {
         fetchPolicy: "network-only",
-        onCompleted: (data) => {
-            const {accessToken: newAccessToken, publicKey: newPublicKey} = (data as CreateAccessTokenType).createAccessTokenStandard
-            setAccessToken({
-                token: newAccessToken,
-                firstRender: false
-            })
-            setPublicKey(newPublicKey)
-        },
-        onError: () => {
-            setAccessToken({
-                token: null,
-                firstRender: false
-            })
-        }
-    })
-    const [getUserInfoNavQuery] = useLazyQuery(GET_USER_INFO_NAV, {
-        context: {
-            headers: {
-                authorization: "Bearer " + accessToken.token,
-            }
-        },
-        fetchPolicy: "network-only",
-        onCompleted: (data: GetUserInfoNavType) => {
-            let amount = 0
-            data.getUserCart.forEach(element => amount += element.amount)
-
+        onCompleted: (data: GetUserInfoType) => {
             setUserInfoNav({
                 name: data.getUserInfo.name,
-                cart: amount
             })
         },
         onError: (error) => {
-            console.log(error.message)
+            console.log(error.graphQLErrors)
         }
     })
     const [logoutMutation] = useMutation(LOGOUT, {
@@ -159,29 +122,59 @@ export const AuthContext: NextPage<Props> = ({children}) => {
     useEffect(() => {
         generateAccessToken()
     }, [])
+
     useEffect(() => {
-        if(accessToken.token !== null && userInfoNav.name === null)
-            getUserInfoNavQuery()
+        // if(accessToken.token === null && !accessToken.firstRender && userInfoNav.name !== null) {
+        //     setTimeout(() => {
+        //         window.location.reload()
+        //     }, 3000)
+        // }
+
+        if(accessToken.token !== null && userInfoNav.name === null) {
+            getUserInfoNavQuery({
+                context: {
+                    headers: {
+                        authorization: "Bearer " + accessToken.token,
+                    }
+                }
+            })
+        }
         if(accessToken.token === null && userInfoNav.name !== null)
             setUserInfoNav({
                 name: null,
-                cart: null
             })
 
-    }, [accessToken.token])
+    }, [accessToken])
 
-    const generateAccessToken = () => {
-        generateAccessTokenMutation()
+    const generateAccessToken = async () => {
+        try{
+            const result = await apolloClient.mutate<CreateAccessTokenType>({
+                mutation: CREATE_ACCESS_TOKEN,
+                fetchPolicy: "network-only",
+            })
+            setAccessToken({
+                token: result.data!.createAccessTokenStandard.accessToken,
+                firstRender: false
+            })
+            return true
+        }catch (e){
+            setAccessToken({
+                token: null,
+                firstRender: false
+            })
+            return false
+        }
     }
     const logout = async () => {
         logoutMutation()
     }
 
-    const handleAuthErrors = (error: ApolloError) => {
+    const handleAuthErrors = async (error: ApolloError): Promise<boolean> => {
         const graphqlErrorCode = error.graphQLErrors[0].extensions.code
         if(graphqlErrorCode === Errors.AUTH_ERROR){
-            generateAccessTokenMutation()
+            return await generateAccessToken()
         }
+        return false
     }
 
     const {loading, logged} = useLoginAuth(accessToken, generateAccessToken)

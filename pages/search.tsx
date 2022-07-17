@@ -4,8 +4,50 @@ import {useResizer} from "../contexts/resizer-context";
 import {useLayoutContext} from "../contexts/layout-context";
 import PriceSlider from "../components/library/price-slider";
 import Article from "../components/shop/index/single_element/article";
+import {GetServerSideProps, NextPage} from "next";
+import {apolloClient} from "./_app";
+import {gql} from "@apollo/client";
 
-const Search = () => {
+type Item = {
+    item_id: number
+    name: string
+    discount: {
+        percentage: number
+    } | null
+    photo_loc: string
+    price_total: number
+    importance: number
+}
+
+type GetItemsFullType = {
+    getItems_FULL: Item[]
+}
+
+type GetItemsFullVarType = {
+    keywords: string
+}
+
+
+const GET_ITEMS_FULL = gql`
+    query GET_ITEMS_FULL ($keywords: String!) {
+        getItems_FULL(keywords: $keywords) {
+            item_id
+            name
+            discount {
+                percentage
+            }
+            photo_loc
+            price_total
+        }
+    }
+`
+
+type Props = {
+    items: Item[]
+    query: string
+}
+
+const Search: NextPage<Props> = ({query, items}) => {
     const mainRef = useRef<HTMLDivElement>(null)
     const fullPageRef = useRef<HTMLDivElement>(null)
     const extraFilters = useRef<HTMLDivElement>(null)
@@ -13,9 +55,10 @@ const Search = () => {
     const {widthPage, heightPage} = useResizer()
     const {navHeight, searchBarHeight} = useLayoutContext()
 
-    const highContrastSearchBar = () => {
+    const highContrastSearchBar = (status: boolean) => {
         if(mainRef.current !== null){
-            mainRef.current.classList.toggle("brightness-50")
+            if(status) mainRef.current.classList.add("brightness-50")
+            else mainRef.current.classList.remove("brightness-50")
         }
     }
     useEffect(() => {
@@ -27,6 +70,7 @@ const Search = () => {
             extraFilters.current.style.top = `${searchBarHeight}px`
         }
     }, [widthPage, heightPage, navHeight, searchBarHeight])
+
 
     return (
         <main ref={fullPageRef} className="flex flex-col h-full">
@@ -45,12 +89,15 @@ const Search = () => {
                 </div>
                 <div className="bg-white flex flex-col gap-4 mdxl:w-3/4 md:w-2/3 sm:w-3/5 w-full p-8 items-center justify-center">
                     <span className="text-neutral-500 text-lg pb-8 underline-offset-8 underline">Search Results for:&nbsp;
-                        <span className="font-semibold text-green-standard">Pesto</span>
+                        <span className="font-semibold text-green-standard">{query}</span>
                     </span>
                     <div className="grid lg:grid-cols-3 mdx:grid-cols-2 grid-cols-1 gap-x-8 gap-y-14">
                         {
-                            new Array(10).fill([]).map((_, index) =>
-                                <Article key={index}/>
+                            items.map((item) =>
+                                <Article
+                                    key={item.item_id}
+                                    item={item}
+                                />
                             )
                         }
                     </div>
@@ -60,8 +107,49 @@ const Search = () => {
     );
 };
 
-/*
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const {query} = context.query
+    if(query === undefined || Array.isArray(query) || query.length < 3){
+        return {
+            redirect: {
+                destination: "/shop",
+                permanent: false
+            },
+            props: {}
+        }
+    }
 
-*/
+    try {
+        const result = await apolloClient.query<GetItemsFullType, GetItemsFullVarType>({
+            query: GET_ITEMS_FULL,
+            variables: {
+                keywords: query
+            }
+        })
+
+        let data = result.data.getItems_FULL.map((element) => {
+            return {
+                ...element,
+                item_id: Number(element.item_id)
+            }
+        })
+        data = data.sort((a, b) => (a.importance < b.importance) ? 1 : -1)
+
+        return {
+            props: {
+                query: query,
+                items: data
+            }
+        }
+    }catch (e) {
+        return {
+            redirect: {
+                destination: "/shop",
+                permanent: false
+            },
+            props: {}
+        }
+    }
+}
 
 export default Search;

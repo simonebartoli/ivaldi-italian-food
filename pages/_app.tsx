@@ -17,7 +17,7 @@ import {CartContext} from "../contexts/cart-context";
 const httpLink = createHttpLink({
     uri: "http://localhost:4000/graphql"
 })
-const authLink = setContext((_, {headers, }) => {
+const authLink = setContext((_, {headers}) => {
     return {
         credentials: "include",
         headers: {
