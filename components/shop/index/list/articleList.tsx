@@ -52,7 +52,15 @@ const ArticleList = () => {
                 >
                     {(new Array(13).fill([])).map((element, index) =>
                         <SwiperSlide key={index}>
-                            <Article/>
+                            <Article key={index} item={{
+                                item_id: 1,
+                                name: "test",
+                                photo_loc: "test",
+                                price_total: 10.50,
+                                discount: {
+                                    percentage: 20
+                                }
+                            }}/>
                         </SwiperSlide>
                     )}
                 </Swiper>

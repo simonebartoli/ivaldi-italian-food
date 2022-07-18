@@ -1,6 +1,20 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
+import {NextPage} from "next";
 
-const PriceSlider = () => {
+type Props = {
+    min: number
+    max: number
+
+    priceMin: number
+    priceMax: number
+
+    setPriceMin: React.Dispatch<React.SetStateAction<number>>
+    setPriceMax: React.Dispatch<React.SetStateAction<number>>
+
+    setFetchPriceRange: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const PriceSlider: NextPage<Props> = ({min, max, priceMin, priceMax, setPriceMin, setPriceMax, setFetchPriceRange}) => {
     const upperBoundRef = useRef<HTMLDivElement>(null)
     const lowerBoundRef = useRef<HTMLDivElement>(null)
     const separatorRef = useRef<HTMLDivElement>(null)
@@ -8,15 +22,26 @@ const PriceSlider = () => {
     const disabledLowerRef = useRef<HTMLDivElement>(null)
     const steps = 20
 
-    const [priceMin, setPriceMin] = useState(2.5)
-    const [priceMax, setPriceMax] = useState(10.0)
-    const [priceRefMin, priceRefMax] = [2.5, 10.0]
+    const [priceRefMin, priceRefMax] = [min, max]
 
     const [minimum, setMinimum] = useState(0)
     const [maximum, setMaximum] = useState(steps-1)
 
     const [onEnterUpper, setOnEnterUpper] = useState(false)
     const [onEnterLower, setOnEnterLower] = useState(false)
+
+    useEffect(() => {
+        setPriceMin(min)
+        setPriceMax(max)
+
+        disabledUpperRef.current!.style.bottom = `0%`
+        upperBoundRef.current!.style.top = `0%`
+
+        separatorRef.current!.style.top = `100%`
+
+        disabledLowerRef.current!.style.top = `0%`
+        lowerBoundRef.current!.style.bottom = `0%`
+    }, [min, max])
 
     const onMouseDown = (e: React.MouseEvent<HTMLSpanElement>) => {
         const id = (e.target as Element).id
@@ -45,6 +70,7 @@ const PriceSlider = () => {
                 const newValue: number = +((priceRefMax - priceRefMin)/steps * index + priceRefMin).toFixed(2)
                 setPriceMin(newValue)
                 setMinimum(index+1)
+                setFetchPriceRange(true)
             }
         }else if(onEnterLower){
             if(index > minimum){
@@ -55,6 +81,7 @@ const PriceSlider = () => {
                 const newValue: number = +((priceRefMax - priceRefMin)/steps * index + priceRefMin).toFixed(2)
                 setPriceMax(newValue)
                 setMaximum(index-1)
+                setFetchPriceRange(true)
             }
         }
     }
