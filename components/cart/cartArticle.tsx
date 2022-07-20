@@ -29,39 +29,48 @@ const CartArticle: NextPage<Props> = ({item: {
     discount
 }, items, setItems}) => {
 
-    const [number, setNumber] = useState(amount < amount_available ? amount : amount_available)
+    const [amountSelected, setAmountSelected] = useState(amount < amount_available ? amount : amount_available)
     const [ready, setReady] = useState(false)
     const [disabled, setDisabled] = useState(false)
 
-    const {item, error, functions: {addToCart, removeFromCart}} = useCart()
+    const {item, error, functions: {addToCart, removeFromCart, resetErrorItemStatus}} = useCart()
     const {widthPage} = useResizer()
 
     useEffect(() => {
         if(ready) {
             actionType = "edit"
             setDisabled(true)
-            addToCart(item_id, number - amount)
+            addToCart(item_id, amountSelected - amount)
         }
         if(!ready) setReady(true)
 
-    }, [number])
+    }, [amountSelected])
 
 
     useEffect(() => {
+        // console.log("ERROR " + error)
+        // console.log("ITEM  " + item)
+
         if(error !== null && item !== null && item.item_id === item_id){
             if(error !== false){
                 if(actionType === "edit") setDisabled(false)
                 console.log(error.graphQLErrors[0])
                 toast.error("There is a problem. Try Again.")
+                console.log("HERE3")
             }else{
-                if(actionType === "edit") setItems(new Map(items).set(item_id, {...items.get(item_id)!, amount: number}))
+                if(actionType === "edit") {
+                    console.log("HERE2")
+                    setItems(new Map(items).set(item_id, {...items.get(item_id)!, amount: amountSelected}))
+                }
                 else if(actionType === "remove") {
+                    console.log("HERE")
                     let item = new Map(items)
                     item.delete(item_id)
                     setItems(item)
                 }
             }
             actionType = ""
+            resetErrorItemStatus()
         }
     }, [error, item])
 
@@ -96,8 +105,8 @@ const CartArticle: NextPage<Props> = ({item: {
                             <Counter
                                 min={1}
                                 max={amount_available}
-                                itemNumber={number}
-                                setItemNumber={setNumber}
+                                itemNumber={amountSelected}
+                                setItemNumber={setAmountSelected}
                                 options={{fontText: "text-2xl", sizeIcons: "text-2xl"}}
                                 disable={disabled}
                             />
@@ -110,7 +119,7 @@ const CartArticle: NextPage<Props> = ({item: {
                         </div>
                         <span className="select-none text-2xl text-right smxl:text-left">
                                 Total:
-                                <span className="text-3xl font-semibold text-green-standard"> £ {(price_total*number).toFixed(2)}</span>
+                                <span className="text-3xl font-semibold text-green-standard"> £ {(price_total*amountSelected).toFixed(2)}</span>
                             </span>
                     </div>
                 </div>

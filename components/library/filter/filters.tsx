@@ -14,6 +14,9 @@ type Props = {
 const Filters: NextPage<Props> = ({highContrastSearchBar}) => {
     const {navHeight, searchBarRef, setSearchBarHeight} = useLayoutContext()
     const [search, setSearch] = useState("")
+    const [order, setOrder] = useState("Most Relevant")
+
+    const [render, setRender] = useState(false)
     const router = useRouter()
 
     useEffect(() => {
@@ -26,8 +29,19 @@ const Filters: NextPage<Props> = ({highContrastSearchBar}) => {
     const handleSearchButtonClick = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         highContrastSearchBar(false)
-        router.push("/search?query=" + search)
+        router.push("/search?query=" + search + "&order=" + order)
     }
+
+    useEffect(() => {
+        if(render){
+            let {query} = router.query
+            if(query === undefined){
+                query = "All Products"
+            }
+            router.push("/search?query=" + query + "&order=" + order)
+            setRender(false)
+        }
+    }, [order, render])
 
     return (
         <section ref={searchBarRef} className="
@@ -54,7 +68,7 @@ const Filters: NextPage<Props> = ({highContrastSearchBar}) => {
                     <IoSearchSharp className="text-white"/>
                 </button>
             </form>
-            <OrderBy/>
+            <OrderBy order={order} setOrder={setOrder} setRender={setRender}/>
             <FilterMobile/>
         </section>
     );

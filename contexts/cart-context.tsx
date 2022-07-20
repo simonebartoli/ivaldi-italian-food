@@ -15,8 +15,10 @@ type ContextType = {
     error: ApolloError | null | false
     item: ItemCartType | null
     functions: {
+        updateCart: () => void
         addToCart: (item_id: number, amount: number) => void
         removeFromCart: (item_id: number) => void
+        resetErrorItemStatus: () => void
     }
 }
 
@@ -68,7 +70,9 @@ export const CartContext: NextPage<Props> = ({children}) => {
                 authorization: "Bearer " + accessToken.token
             }
         },
-        onCompleted: () => setError(false),
+        onCompleted: () => {
+            setError(false)
+        },
         onError: async (error) => {
             const result = await handleAuthErrors(error)
             if(result){
@@ -80,6 +84,28 @@ export const CartContext: NextPage<Props> = ({children}) => {
             console.log(error.message)
         }
     })
+    const [removeRecord] = useMutation<boolean, {data: RemoveItemCartType}>(REMOVE_RECORD, {
+        context: {
+            headers: {
+                authorization: "Bearer " + accessToken.token
+            }
+        },
+        onCompleted: () => {
+            setError(false)
+        },
+        onError: async (error) => {
+            const result = await handleAuthErrors(error)
+            if(result){
+                actionType = "removeRecord"
+                reTryOperation = true
+                return
+            }
+            setError(error)
+            console.log(error.message)
+        }
+    })
+
+
     const [syncCarts] = useMutation<boolean, { data: ItemCartType[] }>(SYNC_CARTS, {
         context: {
             headers: {
@@ -106,6 +132,7 @@ export const CartContext: NextPage<Props> = ({children}) => {
         }
     })
     const [getUserCart] = useLazyQuery<{getUserCart: ItemCartType[]}>(GET_USER_CART, {
+        fetchPolicy: "cache-and-network",
         onCompleted: (data) => {
             const items = new Map<number, number>()
             for(const element of data.getUserCart){
@@ -121,24 +148,6 @@ export const CartContext: NextPage<Props> = ({children}) => {
                 reTryOperation = true
                 return
             }
-            console.log(error.message)
-        }
-    })
-    const [removeRecord] = useMutation<boolean, {data: RemoveItemCartType}>(REMOVE_RECORD, {
-        context: {
-            headers: {
-                authorization: "Bearer " + accessToken.token
-            }
-        },
-        onCompleted: () => setError(false),
-        onError: async (error) => {
-            const result = await handleAuthErrors(error)
-            if(result){
-                actionType = "removeRecord"
-                reTryOperation = true
-                return
-            }
-            setError(error)
             console.log(error.message)
         }
     })
@@ -184,44 +193,7 @@ export const CartContext: NextPage<Props> = ({children}) => {
     }, [accessToken, item, localItems])
 
     useEffect(() => {
-        const data = localStorage.getItem("cart")
-
-        if(!logged){
-            if(data !== null){
-                const result = parseLocalStorageCart(data)
-                if(result !== false) setStorage(result)
-            }else{
-                setStorage(new Map())
-            }
-        }else{
-            if(data !== null){
-                const result = parseLocalStorageCart(data)
-                if(result !== false) {
-                    const mutationData: ItemCartType[] = []
-                    for(const [key, amount] of Array.from(result.entries())){
-                        mutationData.push({
-                            item_id: key,
-                            amount: amount
-                        })
-                    }
-                    console.log(mutationData)
-                    setLocalItems(mutationData)
-                    syncCarts({
-                        variables: {
-                            data: mutationData
-                        }
-                    })
-                }
-            }else{
-                getUserCart({
-                    context: {
-                        headers: {
-                            authorization: "Bearer " + accessToken.token
-                        }
-                    }
-                })
-            }
-        }
+        updateCart()
     }, [logged])
 
     useEffect(() => {
@@ -271,7 +243,6 @@ export const CartContext: NextPage<Props> = ({children}) => {
 
     const addToCart = async (item_id: number, amount: number) => {
         setItem(null)
-        setError(null)
 
         setItem({item_id: item_id, amount: amount})
         if(logged){
@@ -290,7 +261,6 @@ export const CartContext: NextPage<Props> = ({children}) => {
 
     const removeFromCart = async (item_id: number) => {
         setItem(null)
-        setError(null)
 
         setItem({item_id: item_id, amount: 0})
         if(logged){
@@ -306,14 +276,69 @@ export const CartContext: NextPage<Props> = ({children}) => {
         }
     }
 
+    const updateCart = () => {
+        const data = localStorage.getItem("cart")
+
+        if(!logged){
+            if(data !== null){
+                const result = parseLocalStorageCart(data)
+                if(result !== false) setStorage(result)
+            }else{
+                setStorage(new Map())
+            }
+        }else{
+            if(data !== null){
+                const result = parseLocalStorageCart(data)
+                if(result !== false) {
+                    const mutationData: ItemCartType[] = []
+                    for(const [key, amount] of Array.from(result.entries())){
+                        mutationData.push({
+                            item_id: key,
+                            amount: amount
+                        })
+                    }
+                    console.log(mutationData)
+                    setLocalItems(mutationData)
+                    syncCarts({
+                        variables: {
+                            data: mutationData
+                        }
+                    })
+                }
+            }else{
+                getUserCart({
+                    context: {
+                        headers: {
+                            authorization: "Bearer " + accessToken.token
+                        }
+                    },
+                    onCompleted: (data) => {
+                        const items = new Map<number, number>()
+                        for(const element of data.getUserCart){
+                            items.set(element.item_id, element.amount)
+                        }
+                        localStorage.removeItem("cart")
+                        setStorage(items)
+                    },
+                })
+            }
+        }
+    }
+
+    const resetErrorItemStatus = () => {
+        setItem(null)
+        setError(null)
+    }
 
     const value: ContextType = {
         cart: storage,
         error: error,
         item: item,
         functions: {
+            updateCart,
             addToCart,
-            removeFromCart
+            removeFromCart,
+            resetErrorItemStatus
         }
     }
     return (

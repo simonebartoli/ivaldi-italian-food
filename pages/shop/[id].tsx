@@ -73,7 +73,7 @@ const Product: NextPage<ItemType> = ({
     const mainRef = useRef<HTMLDivElement>(null)
     const {heightPage} = useResizer()
     const {navHeight} = useLayoutContext()
-    const {cart, error, functions: {addToCart}} = useCart()
+    const {cart, error, functions: {addToCart, resetErrorItemStatus}} = useCart()
 
     const [ready, setReady] = useState(false)
     const [availableThisSession, setAvailableThisSession] = useState(0)
@@ -112,6 +112,7 @@ const Product: NextPage<ItemType> = ({
                     toast.error("There is an Error. Please Try Again.")
                 }
             }
+            resetErrorItemStatus()
         }
     }, [error])
 

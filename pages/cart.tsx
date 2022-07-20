@@ -7,6 +7,7 @@ import {gql, useLazyQuery} from "@apollo/client";
 import PageLoader from "../components/page-loader";
 import {useLayoutContext} from "../contexts/layout-context";
 import Link from "next/link";
+import _ from "lodash";
 
 type GetItemsCartType = {
     getItemsCart: ItemType[]
@@ -50,14 +51,16 @@ const Cart = () => {
     const {widthPage, heightPage} = useResizer()
     const {navHeight} = useLayoutContext()
 
-    const {cart} = useCart()
+    const {cart, functions: {updateCart}} = useCart()
+
     const fullPageRef = useRef<HTMLDivElement>(null)
 
     const [ready, setReady] = useState(false)
-    const [firstRender, setFirstRender] = useState(true)
+    const [render, setRender] = useState(true)
 
     const [itemsCart, setItemsCart] = useState<Map<number, ItemType>>(new Map())
     const [getItemsCart, {loading}] = useLazyQuery<GetItemsCartType, {items: ItemCartType[]}>(GET_ITEMS_CART, {
+        fetchPolicy: "cache-and-network",
         onError: (error) => console.log(error),
         onCompleted: (data) => {
             const result = new Map()
@@ -75,7 +78,7 @@ const Cart = () => {
 
 
     useEffect(() => {
-        if(firstRender){
+        if(render){
             if(cart.size > 0){
                 const cartFormatted: ItemCartType[] = []
                 for(const [key, value] of cart) cartFormatted.push({item_id: key, amount: value})
@@ -86,16 +89,36 @@ const Cart = () => {
                         }
                     })
                 }
-                setFirstRender(false)
+                setRender(false)
             }
         }
-    }, [cart, firstRender])
+    }, [cart, render])
 
     useEffect(() => {
         if(cart.size === 0) setItemsCart(new Map())
+        else if (!render) {
+            const cartComparison = Array.from(cart.entries()).map((element) => {
+                return {
+                    item_id: element[0],
+                    amount: element[1]
+                }
+            })
+            const itemsCartComparison = Array.from(itemsCart.values()).map((element) => {
+                return {
+                    item_id: element.item_id,
+                    amount: element.amount
+                }
+            })
+
+            const equal = _.isEqual(_.sortBy(cartComparison, ["item_id"]), _.sortBy(itemsCartComparison, ["item_id"]))
+            if(!equal) setRender(true)
+        }
     }, [cart])
 
-    useEffect(() => {setReady(true)}, [])
+    useEffect(() => {
+        setReady(true)
+        updateCart()
+    }, [])
 
     useEffect(() => {
         if(fullPageRef.current !== null && navHeight !== undefined){

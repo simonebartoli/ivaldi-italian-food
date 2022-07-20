@@ -1,36 +1,82 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {BiArrowToBottom} from "react-icons/bi";
-import {IoMdArrowDropright} from "react-icons/io";
-import {categories} from "../../../test-data/categories";
+import {gql, useQuery} from "@apollo/client";
+import {useResizer} from "../../../contexts/resizer-context";
+import {useLayoutContext} from "../../../contexts/layout-context";
+import {useRouter} from "next/router";
+
+type Category = {
+    name: string
+    sub_categories: {
+        name: string
+    }[]
+}
+
+type GetCategoriesFull = {
+    getCategories_FULL: Category[]
+}
+
+const GET_CATEGORIES_FULL = gql`
+    query GET_CATEGORIES_FULL {
+        getCategories_FULL {
+            name
+            sub_categories {
+                name
+            }
+        }
+    }
+`
 
 const SelectCategory = () => {
-    const [categorySelected, setCategorySelected] = useState("Relevant")
+    const router = useRouter()
 
-    const [categoryHover, setCategoryHover] = useState<string>("")
-    const [categorySelectedIndex, setCategorySelectedIndex] = useState<undefined | number>(undefined)
-    const [subElements, setSubElements] = useState<string[]>([])
-
+    const [categories, setCategories] = useState<Category[]>([{
+        name: "Relevant",
+        sub_categories: []
+    }])
+    const [categoriesNoSub, setCategoriesNoSub] = useState<Category["sub_categories"]>([])
+    const [categorySelected, setCategorySelected] = useState("")
     const contextMenuRef = useRef<HTMLDivElement>(null)
 
-    useEffect(() => {
-        if(categoryHover !== ""){
-            const index = categories.findIndex((el) => el.name === categoryHover)
-            setCategorySelectedIndex(index)
-            setSubElements(categories[index].sub)
-        }
-    }, [categoryHover])
+    const {widthPage, heightPage} = useResizer()
+    const {navHeight, searchBarHeight} = useLayoutContext()
 
-    const handleMouseEnter = (name: string) => {
-        setCategoryHover(name)        
-    }
+
+    const {} = useQuery<GetCategoriesFull>(GET_CATEGORIES_FULL, {
+        onCompleted: (data) => {
+            setCategories([...categories, ...data.getCategories_FULL])
+        }
+    })
+
+    useEffect(() => {
+        if(contextMenuRef.current !== null && navHeight !== undefined && searchBarHeight !== undefined){
+            contextMenuRef.current.style.maxWidth = `${widthPage - 64}px`
+            contextMenuRef.current.style.maxHeight = `${(heightPage - navHeight - searchBarHeight)}px`
+        }
+    }, [widthPage, navHeight, searchBarHeight])
+    useEffect(() => {
+        setCategorySelected(categories[0].name)
+
+        const newCategories: Category["sub_categories"] = []
+        for(const category of categories){
+            if(category.sub_categories.length === 0) {
+                newCategories.push({name: category.name})
+            }
+        }
+        setCategoriesNoSub(newCategories)
+
+    }, [categories])
+
     const handleClickCategory = (name: string) => {
         setCategorySelected(name)
+        if(name !== "Relevant"){
+            router.push("/search?query=" + name)
+        }else if(name === "Relevant"){
+            router.push("/shop")
+        }
     }
 
     const handleContextMenuClick = () => {
-        setCategoryHover("")
-        setCategorySelectedIndex(undefined)
-        setSubElements([])
         if(contextMenuRef.current !== null){
             contextMenuRef.current.classList.toggle("animate-slideUp")
             contextMenuRef.current.classList.toggle("animate-slideDown")
@@ -45,12 +91,47 @@ const SelectCategory = () => {
         }
     }
 
+
+
+
     return (
         <div onClick={handleContextMenuClick} className="relative cursor-pointer xls:flex hidden basis-1/4 flex-row gap-4 items-center text-xl p-3 justify-center border-[1px] border-neutral-400 bg-white rounded-lg">
             <span>Select Category:</span>
             <span className="font-semibold">{categorySelected}</span>
             <BiArrowToBottom/>
-            <div ref={contextMenuRef} className="hidden animate-slideUp pointer-events-none mt-4 border-[1px] rounded-b-lg border-neutral-500 bg-white absolute top-full left-0 flex-col items-center w-full shadow-lg">
+            <div ref={contextMenuRef} className="hidden animate-slideUp pointer-events-none p-4 flex flex-col gap-10 overflow-y-scroll h-max w-max box-border mt-4 border-[1px] border-t-4 border-t-green-standard rounded-b-lg border-neutral-500 bg-white absolute top-full left-0 items-start w-full shadow-lg">
+                <div className="w-full grid grid-cols-4 grid-flow-row gap-x-16 gap-y-4">
+                    {
+                        categoriesNoSub.map((element) =>
+                            <div onClick={() => handleClickCategory(element.name)} key={element.name} className="flex flex-col w-fit gap-6 items-start justify-start p-8">
+                                <span className="text-2xl w-full font-semibold pb-4 border-b-[1px] border-neutral-500">{element.name}</span>
+                            </div>
+                        )
+                    }
+                </div>
+                <span className="w-full border-t-[1px] border-neutral-500"/>
+                <div className="w-full grid grid-cols-4 auto-rows-min grid-flow-row gap-x-16 gap-y-4">
+                    {
+                        categories.map((element) => {
+                            if(element.sub_categories.length > 0){
+                                return (
+                                    <div key={element.name} className="flex flex-col w-fit gap-6 items-start justify-start p-8">
+                                        <span onClick={() => handleClickCategory(element.name)} className="text-2xl w-full font-semibold pb-4 border-b-[1px] border-neutral-500">{element.name}</span>
+                                        <div className="grid grid-flow-col grid-rows-6 gap-10 gap-x-24">
+                                            {
+                                                element.sub_categories.map((subElement) =>
+                                                    <span onClick={() => handleClickCategory(subElement.name)} key={subElement.name} className="text-base hover:underline border-black">{subElement.name}</span>
+                                                )
+                                            }
+                                        </div>
+                                    </div>
+                                )
+                            }
+                        })
+                    }
+                </div>
+            </div>
+            {/*<div ref={contextMenuRef} className="hidden animate-slideUp pointer-events-none mt-4 border-[1px] rounded-b-lg border-neutral-500 bg-white absolute top-full left-0 flex-col items-center w-full shadow-lg">
                 {
                     categories.map((element, index) =>
                         <div
@@ -61,7 +142,7 @@ const SelectCategory = () => {
                             className="group flex flex-row justify-between items-center w-full p-4 hover:bg-neutral-100">
                                 <span>{element.name}</span>
                                 {
-                                    element.sub.length > 0 && <IoMdArrowDropright
+                                    element.sub_categories.length > 0 && <IoMdArrowDropright
                                         style={{color: `${categorySelectedIndex === index ? "black" : "rgb(163 163 163)"}`}}
                                         className="text-2xl text-neutral-400 group-hover:text-black transition"
                                     />
@@ -74,14 +155,14 @@ const SelectCategory = () => {
                 {
                     subElements.map((element, index) =>
                         <span
-                            onClick={() => handleClickCategory(element)}
+                            onClick={() => handleClickCategory(element.name)}
                             key={index}
                             className="border-[1px] border-neutral-200 w-full px-6 py-4 hover:bg-neutral-100">
-                            {element}
+                            {element.name}
                         </span>
                     )
                 }
-            </div>
+            </div>*/}
         </div>
     );
 };

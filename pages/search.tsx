@@ -33,14 +33,15 @@ type GetItemsPaginationVarType = {
         max: number
     }
     outOfStock?: boolean
+    order?: "Most Relevant" | "Price Ascending" | "Price Descending" | "Higher Discounts"
     keywords: string
     offset: number
     limit: number
 }
 
 const GET_ITEMS_PAGINATION = gql`
-    query GET_ITEMS_PAGINATION ($offset: Int!, $limit: Int!, $discountOnly: Boolean, $priceRange: Price, $outOfStock: Boolean, $keywords: String!) {
-        getItems_pagination(offset: $offset, limit: $limit, discountOnly: $discountOnly, priceRange: $priceRange, outOfStock: $outOfStock, keywords: $keywords) {
+    query GET_ITEMS_PAGINATION ($offset: Int!, $limit: Int!, $discountOnly: Boolean, $priceRange: Price, $outOfStock: Boolean, $keywords: String!, $order: String) {
+        getItems_pagination(offset: $offset, limit: $limit, discountOnly: $discountOnly, priceRange: $priceRange, outOfStock: $outOfStock, keywords: $keywords, order: $order) {
             item_id
             name
             discount {
@@ -56,6 +57,7 @@ const GET_ITEMS_PAGINATION = gql`
 type Props = {
     itemsServer: Item[]
     query: string
+    order: "Most Relevant" | "Price Ascending" | "Price Descending" | "Higher Discounts" | null
 }
 
 const OFFSET_BASE = 0
@@ -86,7 +88,7 @@ const orderSearch = (items: Item[], priceRange?: { min: number, max: number }): 
 }
 
 
-const Search: NextPage<Props> = ({query, itemsServer}) => {
+const Search: NextPage<Props> = ({query, itemsServer, order}) => {
     const mainRef = useRef<HTMLDivElement>(null)
     const fullPageRef = useRef<HTMLDivElement>(null)
     const extraFilters = useRef<HTMLDivElement>(null)
@@ -179,7 +181,12 @@ const Search: NextPage<Props> = ({query, itemsServer}) => {
         setOutOfStock(false)
         setDiscountOnly(false)
         setItems(itemsServer)
-    }, [query])
+        fetchMore.current = true
+        setOffsetLimit({
+            offset: OFFSET_BASE + INCREMENT,
+            limit: LIMIT_BASE + INCREMENT
+        })
+    }, [query, order])
 
     useEffect(() => {
         if(fetchPriceRange){
@@ -197,6 +204,7 @@ const Search: NextPage<Props> = ({query, itemsServer}) => {
                     outOfStock: outOfStock,
                     discountOnly: discountOnly,
                     keywords: query,
+                    order: order === null ? undefined : order,
                     offset: offsetLimit.offset,
                     limit: offsetLimit.limit
                 }
@@ -232,6 +240,7 @@ const Search: NextPage<Props> = ({query, itemsServer}) => {
                     outOfStock: outOfStock,
                     discountOnly: discountOnly,
                     keywords: query,
+                    order: order === null ? undefined : order,
                     offset: OFFSET_BASE,
                     limit: LIMIT_BASE
                 }
@@ -313,8 +322,8 @@ const ViewportBlock = handleViewport(Block, /** options: {}, config: {} **/);
 
 
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
-    const {query} = context.query
-    if(query === undefined || Array.isArray(query) || query.length < 3){
+    const {query, order} = context.query
+    if(query === undefined || Array.isArray(query) || Array.isArray(order) || query.length < 3){
         return {
             redirect: {
                 destination: "/shop",
@@ -330,12 +339,14 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
             variables: {
                 keywords: query,
                 offset: OFFSET_BASE,
-                limit: LIMIT_BASE
+                limit: LIMIT_BASE,
+                order: order as "Most Relevant" | "Price Ascending" | "Price Descending" | "Higher Discounts" | undefined
             }
         })
         return {
             props: {
                 query: query,
+                order: order === undefined ? null : order as "Most Relevant" | "Price Ascending" | "Price Descending" | "Higher Discounts",
                 itemsServer: orderSearch(result.data.getItems_pagination)
             }
         }
