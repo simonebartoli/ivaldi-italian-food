@@ -1,12 +1,59 @@
-import React, {ChangeEvent, useRef, useState} from 'react';
+import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
 import {FiLock} from "react-icons/fi";
 import {ImCross} from "react-icons/im";
 import {BiLockAlt} from "react-icons/bi";
 import Slidedown from "react-slidedown";
+import {gql, useMutation} from "@apollo/client";
+import {useAuth} from "../../contexts/auth-context";
+import {toast} from "react-toastify";
+import {Bars} from "react-loader-spinner";
+
+type ChangePasswordType = {
+    data: {
+        newPassword: string
+    }
+}
+
+const CHANGE_PASSWORD = gql`
+    mutation CHANGE_PASSWORD($data: ChangePasswordInput!) {
+        changePassword(data: $data)
+    }
+`
+
 
 const Password = () => {
+    const {accessToken, functions: {handleAuthErrors}} = useAuth()
+
+    const [changePassword] = useMutation<true, ChangePasswordType>(CHANGE_PASSWORD, {
+        context: {
+            headers: {
+                authorization: "Bearer " + accessToken.token,
+            }
+        },
+        onCompleted: () => {
+            setLoading(false)
+            setChangeOptionSelected(false)
+            toast.success("Password Changed Correctly.")
+        },
+        onError: async (error) => {
+            const result = await handleAuthErrors(error)
+            if(result){
+                setReTry(true)
+                return
+            }
+            setLoading(false)
+            console.log(error.message)
+            toast.error("Sorry, there is a problem. Try Again.")
+        }
+    })
+
+
     const [changeOptionSelected, setChangeOptionSelected] = useState(false)
     const [disabled, setDisabled] = useState(true)
+
+    const [loading, setLoading] = useState(false)
+    const [reTry, setReTry] = useState(false)
+
     const [errorMessage, setErrorMessage] = useState("")
     const [password, setPassword] = useState("")
 
@@ -50,6 +97,23 @@ const Password = () => {
         else setDisabled(true)
     }
 
+    const handleChangePasswordButtonClick = () => {
+        setLoading(true)
+        changePassword({
+            variables: {
+                data: {
+                    newPassword: password
+                }
+            }
+        })
+    }
+
+    useEffect(() => {
+        if(accessToken.token !== null && reTry){
+            setReTry(false)
+            handleChangePasswordButtonClick()
+        }
+    }, [accessToken, reTry])
 
     return (
         <div className="flex flex-col justify-center items-center bg-neutral-50 rounded-lg p-8 w-full shadow-md">
@@ -94,9 +158,12 @@ const Password = () => {
                                 <li ref={secondReqRef}>have at least a number and a letter</li>
                             </ul>
                         </div>
-                        <button disabled={disabled}
-                                className="transition disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:text-black p-4 bg-green-standard text-white text-xl text-center shadow-lg lg:w-1/2 xls:w-1/3 w-full rounded-lg">Change
-                            Password
+                        <button onClick={handleChangePasswordButtonClick} disabled={disabled || loading}
+                                className="flex items-center justify-center transition disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:text-black p-4 bg-green-standard text-white text-xl text-center shadow-lg lg:w-1/2 xls:w-1/3 w-full rounded-lg">
+                            {
+                                loading ? <Bars height={24} color={"white"}/>
+                                    : <>Change Password</>
+                            }
                         </button>
                     </div>
                 : null }

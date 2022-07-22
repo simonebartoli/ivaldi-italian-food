@@ -12,12 +12,13 @@ type Props = {
 }
 
 const Filters: NextPage<Props> = ({highContrastSearchBar}) => {
+    const router = useRouter()
+
     const {navHeight, searchBarRef, setSearchBarHeight} = useLayoutContext()
     const [search, setSearch] = useState("")
-    const [order, setOrder] = useState("Most Relevant")
+    const [order, setOrder] = useState(router.query.order !== undefined ? router.query.order as string : "Most Relevant")
 
     const [render, setRender] = useState(false)
-    const router = useRouter()
 
     useEffect(() => {
         if(searchBarRef.current !== null && navHeight !== undefined){

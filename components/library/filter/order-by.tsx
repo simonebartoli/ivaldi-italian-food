@@ -18,7 +18,9 @@ const OrderBy: NextPage<Props> = ({order, setOrder, setRender}) => {
             if(orderFilterRef.current.classList.contains("hidden"))
                 orderFilterRef.current.classList.toggle("hidden")
             else
-                setTimeout(() => orderFilterRef.current!.classList.toggle("hidden"), 250)
+                setTimeout(() => {
+                    if(orderFilterRef.current !== null) orderFilterRef.current.classList.toggle("hidden")
+                }, 250)
         }
     }
     const handleContextMenuOptionClick = (id: string) => {

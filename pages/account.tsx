@@ -74,7 +74,7 @@ const Account = () => {
         <LayoutPrivate className="self-stretch flex h-full flex-col gap-8 items-center justify-start smxl:p-8 smx:p-4 px-0 py-4">
             <h1 className="text-3xl">My Account</h1>
             <NameDob fullName={fullName} dob={dob}/>
-            <Email email={email}/>
+            <Email email={email} setEmail={setEmail}/>
             <Password/>
         </LayoutPrivate>
     );

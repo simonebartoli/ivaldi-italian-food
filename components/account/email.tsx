@@ -1,18 +1,71 @@
-import React, {ChangeEvent, useState} from 'react';
+import React, {ChangeEvent, useEffect, useState} from 'react';
 import {HiOutlineMail} from "react-icons/hi";
 import validator from "validator";
 import {ImCross} from "react-icons/im";
 import SlideDown from "react-slidedown";
 import {NextPage} from "next";
+import {gql, useMutation} from "@apollo/client";
+import {useAuth} from "../../contexts/auth-context";
+import 'react-toastify/dist/ReactToastify.css';
+import {toast} from "react-toastify";
+import {Bars} from "react-loader-spinner";
+import {Errors} from "../../enums/errors";
 
 type Props = {
     email: string | null
+    setEmail: React.Dispatch<React.SetStateAction<string | null>>
 }
 
-const Email: NextPage<Props> = ({email}) => {
+type ChangeEmailType = {
+    data: {
+        newEmail: string
+    }
+}
+
+const CHANGE_EMAIL = gql`
+    mutation CHANGE_EMAIL($data: ChangeEmailInput!) {
+        changeEmail(data: $data)
+    }
+`
+
+const Email: NextPage<Props> = ({email, setEmail}) => {
+    const {accessToken, functions: {handleAuthErrors}} = useAuth()
+
+    const [changeEmail] = useMutation<true, ChangeEmailType>(CHANGE_EMAIL, {
+        context: {
+            headers: {
+                authorization: "Bearer " + accessToken.token,
+            }
+        },
+        onCompleted: () => {
+            setLoading(false)
+            setChangeOptionSelected(false)
+            toast.success("Email Changed Correctly.")
+            setEmail(newEmail)
+        },
+        onError: async (error) => {
+            const result = await handleAuthErrors(error)
+            if(result){
+                setReTry(true)
+                return
+            }
+            setLoading(false)
+            console.log(error.message)
+            if(error.graphQLErrors[0] !== undefined){
+                if(error.graphQLErrors[0].extensions.type === Errors.EMAIL_ALREADY_USED) {
+                    toast.error("This email has already been used. Try a different one.")
+                    return
+                }
+            }
+            toast.error("Sorry, there is a problem. Try Again.")
+        }
+    })
+
     const [newEmail, setNewEmail] = useState("")
     const [changeOptionSelected, setChangeOptionSelected] = useState(false)
     const [disabled, setDisabled] = useState(true)
+    const [loading, setLoading] = useState(false)
+    const [reTry, setReTry] = useState(false)
     const [errorMessage, setErrorMessage] = useState("")
 
     const onEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -33,6 +86,24 @@ const Email: NextPage<Props> = ({email}) => {
         setErrorMessage("")
         setChangeOptionSelected(!changeOptionSelected)
     }
+
+    const handleChangeEmailButtonClick = () => {
+        setLoading(true)
+        changeEmail({
+            variables: {
+                data: {
+                    newEmail: newEmail
+                }
+            }
+        })
+    }
+
+    useEffect(() => {
+        if(accessToken.token !== null && reTry){
+            setReTry(false)
+            handleChangeEmailButtonClick()
+        }
+    }, [accessToken, reTry])
 
     return (
         <div className="flex flex-col justify-center items-center bg-neutral-50 rounded-lg p-8 w-full shadow-md">
@@ -71,7 +142,13 @@ const Email: NextPage<Props> = ({email}) => {
                             type="text"
                             className="border-[1px] border-neutral-400 text-lg p-3 w-full rounded-md"/>
                     </div>
-                    <button disabled={disabled} className="transition disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:text-black p-4 bg-green-standard text-white text-xl text-center shadow-lg lg:w-1/2 xls:w-1/3 w-full rounded-lg">Change Email</button>
+                    <button onClick={handleChangeEmailButtonClick} disabled={disabled || loading} className="flex items-center justify-center transition disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:text-black p-4 bg-green-standard text-white text-xl text-center shadow-lg lg:w-1/2 xls:w-1/3 w-full rounded-lg">
+                        {
+                            loading ? <Bars height={24} color={"white"}/>
+                                : <>Change Email</>
+                        }
+                    </button>
+
                 </div> : null}
             </SlideDown>
         </div>

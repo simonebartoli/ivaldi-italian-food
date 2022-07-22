@@ -3,15 +3,36 @@ import {NextPage} from "next";
 import {countries} from "../../static-data/countries";
 
 type Props = {
-    currentFirstAddress: string
-    currentSecondAddress: string
-    currentPostcode: string
-    currentCity: string
-    currentCountry?: string
-    currentNotes: string
+    currentAddress: {
+        firstAddress: string
+        secondAddress: string
+        postcode: string
+        city: string
+        country: string
+        notes: string
+    }
+    address: {
+        firstAddress: string
+        setFirstAddress: React.Dispatch<React.SetStateAction<string>>
+
+        secondAddress: string
+        setSecondAddress: React.Dispatch<React.SetStateAction<string>>
+
+        postcode: string
+        setPostcode: React.Dispatch<React.SetStateAction<string>>
+
+        city: string
+        setCity: React.Dispatch<React.SetStateAction<string>>
+
+        country: string
+        setCountry: React.Dispatch<React.SetStateAction<string>>
+
+        notes: string
+        setNotes: React.Dispatch<React.SetStateAction<string>>
+    }
     setDisabled: React.Dispatch<React.SetStateAction<boolean>>
     needsDifferent?: boolean
-    extraUK?: boolean
+    billing: boolean
     style?: {
         mainPadding?: string
         width?: string
@@ -19,27 +40,23 @@ type Props = {
     }
 }
 
-const EditForm: NextPage<Props> = ({   currentFirstAddress,
-                                       currentSecondAddress,
-                                       currentPostcode,
-                                       currentCity,
-                                       currentCountry,
-                                       currentNotes,
+const EditForm: NextPage<Props> = ({   currentAddress,
+                                       address,
                                        setDisabled,
                                        needsDifferent = true,
-                                       extraUK = false,
+                                       billing ,
                                        style}) => {
-    const [firstAddress, setFirstAddress] = useState(currentFirstAddress)
-    const [secondAddress, setSecondAddress] = useState(currentSecondAddress)
-    const [postcode, setPostcode] = useState(currentPostcode)
-    const [city, setCity] = useState(currentCity)
-    const [country, setCountry] = useState(currentCountry)
-    const [notes, setNotes] = useState(currentNotes)
+
+    const {
+        firstAddress, secondAddress, postcode, city, country, notes,
+        setFirstAddress, setSecondAddress, setPostcode, setCity, setCountry, setNotes
+    } = address
 
     const [firstAddressError, setFirstAddressError] = useState("")
     const [secondAddressError, setSecondAddressError] = useState("")
     const [postcodeError, setPostcodeError] = useState("")
     const [cityError, setCityError] = useState("")
+    const [notesError, setNotesError] = useState("")
 
     useEffect(() => {
         checkFirstAddress(firstAddress)
@@ -53,13 +70,18 @@ const EditForm: NextPage<Props> = ({   currentFirstAddress,
         if( firstAddressError === "" &&
             secondAddressError === "" &&
             postcodeError === "" &&
-            cityError === ""){
+            cityError === "" &&
+            notesError === ""
+        ){
 
             if(needsDifferent){
-                if(currentFirstAddress !== firstAddress ||
-                    currentSecondAddress !== secondAddress ||
-                    currentPostcode !== postcode ||
-                    currentCity !== city){
+                if(currentAddress.firstAddress !== firstAddress ||
+                    currentAddress.secondAddress !== secondAddress ||
+                    currentAddress.postcode !== postcode ||
+                    currentAddress.city !== city ||
+                    currentAddress.notes !== notes ||
+                    currentAddress.country !== country
+                ){
                     OK = true
                 }
             }else{
@@ -75,7 +97,7 @@ const EditForm: NextPage<Props> = ({   currentFirstAddress,
         }else{
             setDisabled(true)
         }
-    }, [firstAddressError, secondAddressError, cityError, postcodeError, firstAddress, secondAddress, postcode, city])
+    }, [firstAddressError, secondAddressError, cityError, postcodeError, notesError, firstAddress, secondAddress, postcode, city, notes, country])
 
     const handleFirstAddressChange = (e: ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value
@@ -97,15 +119,19 @@ const EditForm: NextPage<Props> = ({   currentFirstAddress,
         setCity(newValue)
         checkCity(newValue)
     }
+    const handleCountryChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        const newValue = e.target.value
+        setCountry(newValue)
+    }
+    const handleNotesChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value
+        setNotes(newValue)
+        checkNotes(newValue)
+    }
 
     const checkFirstAddress = (newValue: string) => {
-        console.log(newValue)
-        if(newValue.length > 5){
-            if(/\d/.test(newValue)){
-                setFirstAddressError("")
-            }else {
-                setFirstAddressError("Address Needs to Contain a Number")
-            }
+        if(newValue.length > 5 && newValue.length < 100){
+            setFirstAddressError("")
         }else if(newValue.length === 0){
             setFirstAddressError("Address Required")
         }else{
@@ -114,7 +140,7 @@ const EditForm: NextPage<Props> = ({   currentFirstAddress,
     }
     const checkSecondAddress = (newValue: string) => {
         if(newValue.length > 0){
-            if(newValue.length > 5){
+            if(newValue.length > 5 && newValue.length < 100){
                 if(/\d/.test(newValue)){
                     setSecondAddressError("")
                 }else {
@@ -128,9 +154,9 @@ const EditForm: NextPage<Props> = ({   currentFirstAddress,
         }
     }
     const checkPostcode = (newValue: string) => {
-        if(!extraUK && newValue.length > 3 && newValue.length < 9){
+        if(!billing && newValue.length > 3 && newValue.length < 9){
             setPostcodeError("")
-        }else if (extraUK && newValue.length > 3 && newValue.length < 20) {
+        }else if (billing && newValue.length > 3 && newValue.length < 20) {
             setPostcodeError("")
         }else if(newValue.length === 0) {
             setPostcodeError("Postcode Required")
@@ -145,6 +171,14 @@ const EditForm: NextPage<Props> = ({   currentFirstAddress,
             setCityError("City Required")
         }else{
             setCityError("City Not Valid")
+        }
+    }
+
+    const checkNotes = (newValue: string) => {
+        if(newValue.length < 250){
+            setNotesError("")
+        }else{
+            setNotesError("Notes Not Valid | Too Long")
         }
     }
 
@@ -182,12 +216,12 @@ const EditForm: NextPage<Props> = ({   currentFirstAddress,
                 </div>
             </div>
             {
-                extraUK &&
+                billing &&
                 <div className="w-full flex flex-col gap-2 items-start justify-center text-lg">
                     <div className={`${style?.width !== undefined ? style.width : "w-3/5"} flex flex-row justify-between items-center`}>
                         <span>Country: </span>
                     </div>
-                    <select defaultValue={country} className={`${style?.width !== undefined ? style.width : "w-3/5"} p-3 text-lg rounded-lg border-[1px] border-neutral-500 shadow-md`}>
+                    <select defaultValue={country} onChange={(e) => handleCountryChange(e)} className={`${style?.width !== undefined ? style.width : "w-3/5"} p-3 text-lg rounded-lg border-[1px] border-neutral-500 shadow-md`}>
                         {
                             countries.map((element, index) =>
                                 <option key={index} value={element.name}>{element.name}</option>
@@ -199,8 +233,9 @@ const EditForm: NextPage<Props> = ({   currentFirstAddress,
             <div className="w-full flex flex-col gap-2 items-start justify-center text-lg">
                 <div className={`${style?.width !== undefined ? style.width : "w-3/5"} flex flex-row justify-between items-center`}>
                     <span>Further Notes: </span>
+                    <span className="text-red-600 italic text-base text-right">{notesError}</span>
                 </div>
-                <input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Insert your notes here..." type="text" className={`${style?.width !== undefined ? style.width : "w-3/5"} p-3 text-lg rounded-lg border-[1px] border-neutral-500 shadow-md`}/>
+                <input value={notes} onChange={(e) => handleNotesChange(e)} placeholder="Insert your notes here..." type="text" className={`${style?.width !== undefined ? style.width : "w-3/5"} p-3 text-lg rounded-lg border-[1px] border-neutral-500 shadow-md`}/>
             </div>
         </div>
     );
