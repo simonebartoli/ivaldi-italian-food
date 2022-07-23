@@ -54,9 +54,8 @@ const Cart = () => {
     const {cart, functions: {updateCart}} = useCart()
 
     const fullPageRef = useRef<HTMLDivElement>(null)
-
-    const [ready, setReady] = useState(false)
     const [render, setRender] = useState(true)
+    const [loader, setLoader] = useState(true)
 
     const [itemsCart, setItemsCart] = useState<Map<number, ItemType>>(new Map())
     const [getItemsCart, {loading}] = useLazyQuery<GetItemsCartType, {items: ItemCartType[]}>(GET_ITEMS_CART, {
@@ -111,12 +110,12 @@ const Cart = () => {
             })
 
             const equal = _.isEqual(_.sortBy(cartComparison, ["item_id"]), _.sortBy(itemsCartComparison, ["item_id"]))
+            console.log("EQUAL: " + equal)
             if(!equal) setRender(true)
         }
     }, [cart])
 
     useEffect(() => {
-        setReady(true)
         updateCart()
     }, [])
 
@@ -129,19 +128,30 @@ const Cart = () => {
 
     return (
         <main className="flex flex-col justify-center w-full items-center p-8">
-            {loading ? <PageLoader display/> :
+            {(loading && loader) ? <PageLoader display/> :
                 <>
                     {itemsCart.size === 0 ?
                         <div ref={fullPageRef} className="w-full flex flex-col gap-8 items-center justify-center">
-                            <span className="p-14 rounded-lg bg-neutral-100 text-5xl text-neutral-400 h-full text-center">There is NO items in the cart for now...</span>
-                            <Link href={"/shop"}>
-                                <a className="hover:bg-green-500 transition w-1/3 p-6 bg-green-standard text-lg text-center text-white shadow-lg rounded-lg" href={"/shop"}>Go to Shop</a>
-                            </Link>
+                            <span className="sm:p-14 smx:p-10 p-6 rounded-lg bg-neutral-100 sm:text-5xl smx:text-3xl text-2xl text-neutral-400 h-full text-center">There is NO items in the cart for now...</span>
+                            <div className="flex sm:flex-row flex-col gap-8 w-full items-center justify-center">
+                                <div className="self-stretch lg:w-1/3 sm:w-1/2 w-full smxl:p-12 p-6 rounded-lg border-neutral-300 border-[1px] flex flex-col items-center justify-between bg-white gap-8">
+                                    <span className="text-xl text-center">First Time Here?</span>
+                                    <Link href={"/shop"}>
+                                        <a className="hover:bg-green-500 transition w-full p-4 bg-green-standard text-lg text-center text-white shadow-lg rounded-lg" href={"/shop"}>Go to Shop</a>
+                                    </Link>
+                                </div>
+                                <div className="self-stretch lg:w-1/3 sm:w-1/2 w-full smxl:p-12 p-6 rounded-lg border-neutral-300 border-[1px] flex flex-col items-center justify-between bg-neutral-50 gap-8">
+                                    <span className="text-xl text-center">Do you have already an Account?</span>
+                                    <Link href={"/login?cart"}>
+                                        <a className="hover:bg-green-500 transition w-full p-4 bg-green-standard text-lg text-center text-white shadow-lg rounded-lg" href={"/login?cart"}>Login</a>
+                                    </Link>
+                                </div>
+                            </div>
                         </div>
                         :
                         <article
                             className="w-full flex lg:flex-row flex-col justify-between items-start xlsx:gap-40 smxl:gap-24 gap-16 h-full">
-                            {ready && widthPage < 1024 && itemsCart.size > 0 ?
+                            {widthPage < 1024 && itemsCart.size > 0 ?
                                 <>
                                     <CartSummary
                                         items={itemsCart}
@@ -152,10 +162,16 @@ const Cart = () => {
                             }
                             <section className="flex flex-col gap-20 items-start justify-start basis-2/3 w-full">
                                 {Array.from(itemsCart.values()).map((element) =>
-                                    <CartArticle items={itemsCart} setItems={setItemsCart} item={element} key={element.item_id}/>
+                                    <CartArticle setLoader={setLoader}
+                                                 setRefetch={setRender}
+                                                 items={itemsCart}
+                                                 setItems={setItemsCart}
+                                                 item={element}
+                                                 key={element.item_id}
+                                    />
                                 )}
                             </section>
-                            {ready && widthPage < 1024 ?
+                            {widthPage < 1024 ?
                                 <span className="pt-[1px] bg-neutral-500 w-full"/> :
                                 ""
                             }

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import LoginSection from "../components/login/loginSection";
 import SignupSection from "../components/login/signupSection";
 import {useResizer} from "../contexts/resizer-context";
@@ -12,6 +12,7 @@ const Login = () => {
     const {loading, logged} = useAuth()
 
     const fullPageRef = useRef<HTMLDivElement>(null)
+    const [redirectTo, setRedirectTo] = useState<string | null>(null)
     const {heightPage} = useResizer()
     const {navHeight} = useLayoutContext()
 
@@ -21,9 +22,15 @@ const Login = () => {
         }
     }, [loading, heightPage, navHeight])
 
+    useEffect(() => {
+        const {cart, orders} = router.query
+        if(cart !== undefined) setRedirectTo("cart")
+        else if(orders !== undefined) setRedirectTo("orders")
+    }, [router])
+
     if(loading) return <PageLoader display/>
     if(logged) {
-        router.push("/account")
+        router.push( redirectTo !== null ? `/${redirectTo}` : "/account")
         return <PageLoader display/>
     }
 
@@ -31,7 +38,7 @@ const Login = () => {
     return (
         <main ref={fullPageRef} className="flex md:flex-row flex-col items-center justify-center w-full h-full">
             <LoginSection/>
-            <SignupSection/>
+            <SignupSection redirectTo={redirectTo}/>
         </main>
     );
 };

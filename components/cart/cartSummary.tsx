@@ -5,12 +5,15 @@ import {useLayoutContext} from "../../contexts/layout-context";
 import Link from "next/link";
 import {NextPage} from "next";
 import {ItemType} from "../../pages/cart";
+import {useAuth} from "../../contexts/auth-context";
 
 type Props = {
     items: Map<number, ItemType>
 }
 
 const CartSummary: NextPage<Props> = ({items}) => {
+    const {logged} = useAuth()
+
     const fullPageRef = useRef<HTMLDivElement>(null)
     const {heightPage} = useResizer()
     const {navHeight} = useLayoutContext()
@@ -64,11 +67,15 @@ const CartSummary: NextPage<Props> = ({items}) => {
                     <span>You Saved £ {totalDiscounts} with Discounts</span>
                 </div>
             }
-            <Link href="/checkout">
-                <a href={"/checkout"} className="font-semibold cursor-pointer w-full text-lg bg-green-standard hover:bg-green-500 transition border-black border-2 rounded-lg shadow-lg p-4 text-white text-center">
+            <Link href={!logged ? "/login?cart" : "/checkout"}>
+                <a href={!logged ? "/login?cart" : "/checkout"} className="font-semibold cursor-pointer w-full text-lg bg-green-standard hover:bg-green-500 transition rounded-lg shadow-lg p-4 text-white text-center">
                     Proceed To Checkout
                 </a>
             </Link>
+            {
+                !logged &&
+                <span className="w-full text-sm text-neutral-500 text-center">You need to register before continuing with the order.</span>
+            }
         </section>
     );
 };

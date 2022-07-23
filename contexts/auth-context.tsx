@@ -124,12 +124,6 @@ export const AuthContext: NextPage<Props> = ({children}) => {
     }, [])
 
     useEffect(() => {
-        // if(accessToken.token === null && !accessToken.firstRender && userInfoNav.name !== null) {
-        //     setTimeout(() => {
-        //         window.location.reload()
-        //     }, 3000)
-        // }
-
         if(accessToken.token !== null && userInfoNav.name === null) {
             getUserInfoNavQuery({
                 context: {

@@ -25,6 +25,7 @@ type CreateNewUserType = {
 const Signup = () => {
     const {loading, logged} = useAuth()
     const router = useRouter()
+    const [redirectTo, setRedirectTo] = useState<string | null>(null)
 
     const fullPageRef = useRef<HTMLDivElement>(null)
     const {heightPage} = useResizer()
@@ -64,6 +65,11 @@ const Signup = () => {
         }
     }, [heightPage, navHeight])
 
+    useEffect(() => {
+        const {cart, orders} = router.query
+        if(cart !== undefined) setRedirectTo("cart")
+        else if(orders !== undefined) setRedirectTo("orders")
+    }, [router])
 
     const moveNext = (oldRef: number, newRef: number) => {
         const disappearingSection = refs.current[oldRef].current
@@ -116,7 +122,7 @@ const Signup = () => {
 
     if(loading) return <PageLoader display/>
     if(logged) {
-        router.push("/account")
+        router.push( redirectTo !== null ? `/${redirectTo}` : "/account")
         return <PageLoader display/>
     }
 

@@ -3,8 +3,13 @@ import Image from "next/image";
 import SignupPhoto from "../../public/media/photos/login/signup.jpg"
 import {BiSubdirectoryRight} from "react-icons/bi";
 import Link from "next/link";
+import {NextPage} from "next";
 
-const SignupSection = () => {
+type Props = {
+    redirectTo: string | null
+}
+
+const SignupSection: NextPage<Props> = ({redirectTo}) => {
     return (
         //border-4 border-black
         // md:rounded-r-lg rounded-b-lg
@@ -33,7 +38,7 @@ const SignupSection = () => {
                 </div>
             </div>
             <div className="button-animated hover:before:w-full before:bg-[#008c2e] z-0 smxl:w-1/2 w-2/3 bg-green-standard border-black border-2 rounded-lg">
-                <Link href="/signup">
+                <Link href={redirectTo !== null ? `/signup?${redirectTo}` : "/signup"}>
                     <a className="relative block z-10 p-4 text-center text-white shadow-lg text-lg">Signup Now</a>
                 </Link>
             </div>

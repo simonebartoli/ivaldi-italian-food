@@ -57,7 +57,7 @@ let actionType: string | null = null // DECIDE WHICH QUERY/MUTATION EXECUTE
 
 export const CartContext: NextPage<Props> = ({children}) => {
     const {logged, loading, accessToken, functions: {handleAuthErrors}} = useAuth()
-    const [storage, setStorage] = useState<Map<number, number>>(new Map())
+    const [cart, setCart] = useState<Map<number, number>>(new Map())
 
     const [item, setItem] = useState<ItemCartType | null>(null)
     const [localItems, setLocalItems] = useState<ItemCartType[] | null>(null)
@@ -105,7 +105,6 @@ export const CartContext: NextPage<Props> = ({children}) => {
         }
     })
 
-
     const [syncCarts] = useMutation<boolean, { data: ItemCartType[] }>(SYNC_CARTS, {
         context: {
             headers: {
@@ -139,7 +138,7 @@ export const CartContext: NextPage<Props> = ({children}) => {
                 items.set(element.item_id, element.amount)
             }
             localStorage.removeItem("cart")
-            setStorage(items)
+            setCart(items)
         },
         onError: async (error) => {
             const result = await handleAuthErrors(error)
@@ -197,30 +196,30 @@ export const CartContext: NextPage<Props> = ({children}) => {
     }, [logged])
 
     useEffect(() => {
-        if(storage.size > 0) {
+        if(cart.size > 0) {
             if(!logged){
                 const appStorage: ItemCartType[] = []
-                for(const [key, value] of storage.entries()) appStorage.push({item_id: key, amount: value})
+                for(const [key, value] of cart.entries()) appStorage.push({item_id: key, amount: value})
                 localStorage.setItem("cart", JSON.stringify(appStorage))
             }
         }
         else localStorage.removeItem("cart")
 
-    }, [storage])
+    }, [cart])
 
 
     useEffect(() => {
         if(error === false && item !== null){
-            let newStorage = new Map<number, number>(storage)
+            let newStorage = new Map<number, number>(cart)
             if(item.amount === 0){
                 newStorage.delete(item.item_id)
             }else{
-                newStorage = storage.has(item.item_id) ?
-                    newStorage.set(item.item_id, storage.get(item.item_id)! + item.amount) :
+                newStorage = cart.has(item.item_id) ?
+                    newStorage.set(item.item_id, cart.get(item.item_id)! + item.amount) :
                     newStorage.set(item.item_id, item.amount)
             }
 
-            setStorage(newStorage)
+            setCart(newStorage)
         }
     }, [error, item])
 
@@ -243,8 +242,8 @@ export const CartContext: NextPage<Props> = ({children}) => {
 
     const addToCart = async (item_id: number, amount: number) => {
         setItem(null)
-
         setItem({item_id: item_id, amount: amount})
+
         if(logged){
             addNewRecord({
                 variables: {
@@ -261,8 +260,8 @@ export const CartContext: NextPage<Props> = ({children}) => {
 
     const removeFromCart = async (item_id: number) => {
         setItem(null)
-
         setItem({item_id: item_id, amount: 0})
+
         if(logged){
             removeRecord({
                 variables: {
@@ -282,9 +281,9 @@ export const CartContext: NextPage<Props> = ({children}) => {
         if(!logged){
             if(data !== null){
                 const result = parseLocalStorageCart(data)
-                if(result !== false) setStorage(result)
+                if(result !== false) setCart(result)
             }else{
-                setStorage(new Map())
+                setCart(new Map())
             }
         }else{
             if(data !== null){
@@ -318,7 +317,7 @@ export const CartContext: NextPage<Props> = ({children}) => {
                             items.set(element.item_id, element.amount)
                         }
                         localStorage.removeItem("cart")
-                        setStorage(items)
+                        setCart(items)
                     },
                 })
             }
@@ -331,7 +330,7 @@ export const CartContext: NextPage<Props> = ({children}) => {
     }
 
     const value: ContextType = {
-        cart: storage,
+        cart: cart,
         error: error,
         item: item,
         functions: {
