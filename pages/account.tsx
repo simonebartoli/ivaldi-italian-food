@@ -35,13 +35,10 @@ const Account = () => {
     const [dob, setDob] = useState<string | null>(null)
     const [email, setEmail] = useState<string | null>(null)
     const {loading, logged, accessToken, functions: {handleAuthErrors}} = useAuth()
+    const [reTry, setReTry] = useState(false)
+
 
     const [getUserInfo] = useLazyQuery(GET_USER_INFO, {
-        context: {
-            headers: {
-                authorization: "Bearer " + accessToken.token,
-            }
-        },
         onCompleted: (data: GetUserInfoType) => {
             setFullName(`${data.getUserInfo.name} ${data.getUserInfo.surname}`)
             setDob(DateTime.fromISO(data.getUserInfo.dob).toFormat("d LLL yyyy"))
@@ -50,6 +47,7 @@ const Account = () => {
         onError: async (error) => {
             const result = await handleAuthErrors(error)
             if(result) {
+                setReTry(true)
                 return
             }
             console.log(error.message)
@@ -58,8 +56,28 @@ const Account = () => {
     const router = useRouter()
 
     useEffect(() => {
-        if(accessToken.token !== null) getUserInfo()
-    }, [accessToken])
+        if(!loading && logged) {
+            getUserInfo({
+                context: {
+                    headers: {
+                        authorization: "Bearer " + accessToken.token,
+                    }
+                }
+            })
+        }
+    }, [loading, logged])
+
+    useEffect(() => {
+        if(accessToken !== null && reTry){
+            getUserInfo({
+                context: {
+                    headers: {
+                        authorization: "Bearer " + accessToken.token,
+                    }
+                }
+            })
+        }
+    }, [accessToken, reTry])
 
     if(loading) {
         return <PageLoader display={true}/>

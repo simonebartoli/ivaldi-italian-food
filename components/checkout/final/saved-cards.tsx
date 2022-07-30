@@ -1,8 +1,8 @@
 import React from 'react';
 import Image from "next/image";
-import VisaImage from "../../public/media/photos/checkout/visa.png";
-import MastercardImage from "../../public/media/photos/checkout/mastercard.png";
-import AmericanImage from "../../public/media/photos/checkout/american-express.png";
+import VisaImage from "../../../public/media/photos/checkout/visa.png";
+import MastercardImage from "../../../public/media/photos/checkout/mastercard.png";
+import AmericanImage from "../../../public/media/photos/checkout/american-express.png";
 
 const SavedCards = () => {
     return (

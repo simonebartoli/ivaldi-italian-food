@@ -12,6 +12,7 @@ type RemoveItemCartType = {
 }
 type ContextType = {
     cart: Map<number, number>
+    cartReady: boolean
     error: ApolloError | null | false
     item: ItemCartType | null
     functions: {
@@ -54,10 +55,12 @@ const GET_USER_CART = gql`
 
 let reTryOperation = false // IN CASE OF TOKEN EXPIRED
 let actionType: string | null = null // DECIDE WHICH QUERY/MUTATION EXECUTE
+let firstRender: boolean = true
 
 export const CartContext: NextPage<Props> = ({children}) => {
     const {logged, loading, accessToken, functions: {handleAuthErrors}} = useAuth()
     const [cart, setCart] = useState<Map<number, number>>(new Map())
+    const [cartReady, setCartReady] = useState(false)
 
     const [item, setItem] = useState<ItemCartType | null>(null)
     const [localItems, setLocalItems] = useState<ItemCartType[] | null>(null)
@@ -192,10 +195,17 @@ export const CartContext: NextPage<Props> = ({children}) => {
     }, [accessToken, item, localItems])
 
     useEffect(() => {
-        updateCart()
-    }, [logged])
+        if(!loading) {
+            updateCart()
+        }
+    }, [loading, logged])
 
     useEffect(() => {
+        if(firstRender) firstRender = false
+        else {
+            if(!cartReady) setCartReady(true)
+        }
+
         if(cart.size > 0) {
             if(!logged){
                 const appStorage: ItemCartType[] = []
@@ -218,7 +228,6 @@ export const CartContext: NextPage<Props> = ({children}) => {
                     newStorage.set(item.item_id, cart.get(item.item_id)! + item.amount) :
                     newStorage.set(item.item_id, item.amount)
             }
-
             setCart(newStorage)
         }
     }, [error, item])
@@ -305,6 +314,7 @@ export const CartContext: NextPage<Props> = ({children}) => {
                     })
                 }
             }else{
+                console.log("PASS HERE 2")
                 getUserCart({
                     context: {
                         headers: {
@@ -331,6 +341,7 @@ export const CartContext: NextPage<Props> = ({children}) => {
 
     const value: ContextType = {
         cart: cart,
+        cartReady: cartReady,
         error: error,
         item: item,
         functions: {

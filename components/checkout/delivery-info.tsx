@@ -1,4 +1,4 @@
-import React, {forwardRef, useEffect, useState} from 'react';
+import React, {ChangeEvent, forwardRef, useEffect, useState} from 'react';
 import PhoneInput, {formatPhoneNumberIntl, isPossiblePhoneNumber} from "react-phone-number-input";
 import 'react-phone-number-input/style.css'
 import {E164Number} from "libphonenumber-js";
@@ -6,16 +6,47 @@ import {E164Number} from "libphonenumber-js";
 type Props = {
     moveBack: (oldRef: number, newRef: number) => void
     moveNext: (oldRef: number, newRef: number) => void
+
+    phoneNumber: {
+        value: string,
+        set: React.Dispatch<React.SetStateAction<string>>
+    }
+    deliveryInfo: {
+        value: string,
+        set: React.Dispatch<React.SetStateAction<string>>
+    }
+
+    setRenderCheckout: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const DeliveryInfo = forwardRef<HTMLDivElement, Props>(({moveBack, moveNext}, ref) => {
-    const [phoneNumber, setPhoneNumber] = useState<string | undefined>("")
+const DeliveryInfo = forwardRef<HTMLDivElement, Props>(({moveBack, moveNext, phoneNumber, deliveryInfo, setRenderCheckout}, ref) => {
     const [disabled, setDisabled] = useState(true)
+    const [errorDelivery, setErrorDelivery] = useState(false)
+    const [errorPhone, setErrorPhone] = useState(true)
 
     useEffect(() => {
-        if(isPossiblePhoneNumber(phoneNumber!)) setDisabled(false)
-        else setDisabled(true)
-    }, [phoneNumber])
+        if(isPossiblePhoneNumber(phoneNumber.value)) setErrorPhone(false)
+        else setErrorPhone(true)
+    }, [phoneNumber.value])
+
+    useEffect(() => {
+        if(errorPhone || errorDelivery) setDisabled(true)
+        else setDisabled(false)
+    }, [errorDelivery, errorPhone])
+
+    const handleChangeDeliveryInfo = (e: ChangeEvent<HTMLTextAreaElement>) => {
+        const newValue = e.target.value
+        deliveryInfo.set(newValue)
+
+        if(newValue.length > 100){
+            setErrorDelivery(true)
+        }else{
+            setErrorDelivery(false)
+        }
+    }
+    const handleNextButtonClick = () => {
+        setRenderCheckout(true)
+    }
 
     return (
         <section ref={ref} className="hidden flex flex-col items-center justify-center w-1/2 gap-16 py-8">
@@ -24,13 +55,16 @@ const DeliveryInfo = forwardRef<HTMLDivElement, Props>(({moveBack, moveNext}, re
                 <span className="text-lg text-center leading-8">
                     Please insert your phone number.<br/> This number will be used to contact you during the delivery.
                 </span>
-                <PhoneInput
-                    international={true}
-                    defaultCountry="GB"
-                    value={phoneNumber}
-                    onChange={(value ) => setPhoneNumber(formatPhoneNumberIntl(value as E164Number))}
-                    placeholder="Enter phone number"
-                />
+                <div className="space-y-4">
+                    {errorPhone && <span className="block w-full text-right text-red-600 italic">Your Phone Number is Not Valid</span>}
+                    <PhoneInput
+                        international={true}
+                        defaultCountry="GB"
+                        value={phoneNumber.value}
+                        onChange={(value ) => phoneNumber.set(formatPhoneNumberIntl(value as E164Number))}
+                        placeholder="Enter phone number"
+                    />
+                </div>
             </section>
             <span className="border-t-[1px] border-black w-full"/>
             <section className="flex flex-col gap-14 items-center w-full">
@@ -46,18 +80,23 @@ const DeliveryInfo = forwardRef<HTMLDivElement, Props>(({moveBack, moveNext}, re
                         in the next days.
                     </p>
                 </section>
-                <textarea
-                    placeholder={"Insert your preferred time slots here..."}
-                    className="w-full p-4 text-lg rounded-lg border-neutral-400 border-[1px] resize-none"
-                />
+                <div className="w-full space-y-4">
+                    {errorDelivery && <span className="block w-full text-right text-red-600 italic">Your Message is too long</span>}
+                    <textarea
+                        value={deliveryInfo.value}
+                        onChange={(e) => handleChangeDeliveryInfo(e)}
+                        placeholder={"Insert your preferred time slots here..."}
+                        className="w-full p-4 text-lg rounded-lg border-neutral-400 border-[1px] resize-none"
+                    />
+                </div>
             </section>
             <div className="mt-8 flex flex-row w-full justify-between items-center gap-8">
                 <button onClick={() => moveBack(2, 1)} className="hover:bg-red-500 transition rounded-lg w-1/2 p-4 text-white text-center text-lg shadow-lg bg-red-600">Back</button>
-                <button disabled={disabled} onClick={() => moveNext(2,3)} className="disabled:cursor-not-allowed disabled:bg-neutral-500 hover:bg-green-500 transition rounded-lg w-1/2 p-4 text-white text-center text-lg shadow-lg bg-green-standard">Next</button>
+                <button disabled={disabled} onClick={handleNextButtonClick} className="disabled:cursor-not-allowed disabled:bg-neutral-500 hover:bg-green-500 transition rounded-lg w-1/2 p-4 text-white text-center text-lg shadow-lg bg-green-standard">Next</button>
             </div>
         </section>
     );
 });
 
 DeliveryInfo.displayName = "DeliveryInfo"
-export default DeliveryInfo;
+export default React.memo(DeliveryInfo);

@@ -1,8 +1,24 @@
 import React from 'react';
 import Image from "next/image";
 import {useResizer} from "../../contexts/resizer-context";
+import {NextPage} from "next";
 
-const Product = () => {
+type Item = {
+    name: string
+    photo_loc: string
+    price_total: number
+    price_unit: string
+    vat: {
+        percentage: number
+    }
+}
+type ItemReact = Item & {item_id: number, amount: number}
+
+type Props = {
+    item: ItemReact
+}
+
+const Product: NextPage<Props> = ({item}) => {
     const {widthPage} = useResizer()
 
     return (
@@ -11,26 +27,26 @@ const Product = () => {
                 <div className="relative md:w-1/4 sm:w-1/2 smxl:w-1/4 smx:w-1/2 w-3/4 h-full shop-list">
                     <Image src="/media/photos/shop/ragu_funghi_300x.png" layout="fill" objectFit="contain" className="image"/>
                 </div>
-                <div className="lg:w-1/3 md:w-3/4 sm:w-full smxl:w-3/4 w-full flex flex-col gap-6">
-                    <h3 className="font-semibold text-lg">Grand Ragu&apos; Star Meat and Mushrooms Sauce (2x180g)</h3>
+                <div className="lg:w-3/5 md:w-3/4 sm:w-full smxl:w-3/4 w-full flex flex-col gap-6">
+                    <h3 className="font-semibold text-lg">{item.name}</h3>
                     <div className="flex flex-row gap-8 items-center">
                         <div>
-                            <span className="font-semibold text-xl">£5.20</span>
+                            <span className="font-semibold text-xl">£{item.price_total}</span>
                             <span> / </span>
-                            <span className="text-sm">KG</span>
+                            <span className="text-sm">{item.price_unit}</span>
                         </div>
                         <div>
-                            <span>VAT 22%</span>
+                            <span>VAT {item.vat.percentage}%</span>
                         </div>
                         <div>
-                            <span className="font-semibold">3 UNITS</span>
+                            <span className="font-semibold">{item.amount} UNITS</span>
                         </div>
                     </div>
                 </div>
             </div>
             {widthPage < 1024 && <span className="w-full border-t-[1px] border-dashed border-neutral-500"/>}
             <div className="flex flex-col justify-center items-center">
-                <span className="text-2xl font-semibold">£22.50</span>
+                <span className="text-2xl font-semibold">£{(item.price_total * item.amount).toFixed(2)}</span>
             </div>
         </section>
     );

@@ -1,0 +1,11 @@
+.StripeElement--focus{
+    @apply ring-2 ring-blue-500 shadow-lg
+}
+.StripeElement--complete{
+    @apply ring-2 ring-green-standard
+}
+.StripeElement--base{
+    @apply text-3xl
+}
+.StripeElement--invalid{
+    @apply ring-2 ring-red-600}

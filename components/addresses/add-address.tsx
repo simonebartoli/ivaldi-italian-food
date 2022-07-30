@@ -6,6 +6,7 @@ import {gql, useMutation} from "@apollo/client";
 import {toast} from "react-toastify";
 import {useAuth} from "../../contexts/auth-context";
 import 'react-toastify/dist/ReactToastify.css';
+import CSS from 'csstype';
 
 type AddNewAddressType = {
     data: {
@@ -25,6 +26,12 @@ const ADD_NEW_ADDRESS = gql`
 `
 
 type Props = {
+    style?: {
+        buttonDivStyle?: CSS.Properties
+        buttonStyle?: CSS.Properties
+        mainDiv?: CSS.Properties
+        insertManualAddressButton?: CSS.Properties
+    }
     billing: boolean
     setRenderFetchAddresses: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -49,7 +56,7 @@ export type Address = {
 }
 
 
-const AddAddress: NextPage<Props> = ({billing, setRenderFetchAddresses}) => {
+const AddAddress: NextPage<Props> = ({billing, setRenderFetchAddresses, style}) => {
     const {accessToken, functions: {handleAuthErrors}} = useAuth()
     const [reTry, setReTry] = useState(false)
 
@@ -99,7 +106,7 @@ const AddAddress: NextPage<Props> = ({billing, setRenderFetchAddresses}) => {
                     postcode: postcode.trim(),
                     city: city.trim(),
                     country: country.trim(),
-                    notes: notes,
+                    notes: notes === "" ? undefined : notes.trim(),
                     type: billing ? "BILLING" : "SHIPPING"
                 }
             }
@@ -129,8 +136,8 @@ const AddAddress: NextPage<Props> = ({billing, setRenderFetchAddresses}) => {
             {
                 addAddressVisible ?
                     <>
-                        <div className="p-8 w-full flex justify-end">
-                            <button onClick={() => setAddAddressVisible(false)} className="flex flex-row justify-center gap-4 items-center lg:w-1/3 md:w-1/2 w-full p-4 bg-red-600 hover:bg-red-500 transition text-white text-xl shadow-lg rounded-lg text-center">
+                        <div style={style?.buttonDivStyle} className="p-8 w-full flex justify-end">
+                            <button style={style?.buttonStyle} onClick={() => setAddAddressVisible(false)} className="flex flex-row justify-center gap-4 items-center lg:w-1/3 md:w-1/2 w-full p-4 bg-red-600 hover:bg-red-500 transition text-white text-xl shadow-lg rounded-lg text-center">
                                 Cancel
                             </button>
                         </div>
@@ -155,6 +162,7 @@ const AddAddress: NextPage<Props> = ({billing, setRenderFetchAddresses}) => {
                                 setManualInsert={setManualInsert}
                                 loading={loading}
                                 handleSaveAddressButtonClick={handleSaveAddressButtonClick}
+                                style={style}
                             />
                             <span className="border-t-[1px] border-dashed border-neutral-500 w-full"/>
                             <ManualSearchAddress
@@ -177,11 +185,12 @@ const AddAddress: NextPage<Props> = ({billing, setRenderFetchAddresses}) => {
                                 setManualInsert={setManualInsert}
                                 loading={loading}
                                 handleSaveAddressButtonClick={handleSaveAddressButtonClick}
+                                style={style}
                             />
                         </div>
                     </> :
-                    <div className="p-8 w-full flex justify-end">
-                        <button onClick={() => setAddAddressVisible(true)} className="flex flex-row justify-center gap-4 items-center lg:w-1/3 md:w-1/2 w-full p-4 bg-green-standard hover:bg-green-500 transition text-white text-xl shadow-lg rounded-lg text-center">
+                    <div style={style?.buttonDivStyle} className="p-8 w-full flex justify-end">
+                        <button style={style?.buttonStyle} onClick={() => setAddAddressVisible(true)} className="flex flex-row justify-center gap-4 items-center lg:w-1/3 md:w-1/2 w-full p-4 bg-green-standard hover:bg-green-500 transition text-white text-xl shadow-lg rounded-lg text-center">
                             Add Address
                         </button>
                     </div>

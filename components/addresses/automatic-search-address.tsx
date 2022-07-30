@@ -4,7 +4,7 @@ import {OpenStreetMapAPIType} from "./openstreet-api-types";
 import EditForm from "./edit-form";
 import {AiFillSave} from "react-icons/ai";
 import {Address} from "./add-address";
-
+import CSS from 'csstype';
 
 
 type Props = {
@@ -14,9 +14,23 @@ type Props = {
     setManualInsert: React.Dispatch<React.SetStateAction<boolean>>
     loading: boolean
     handleSaveAddressButtonClick: () => void
+
+    style?: {
+        mainDiv?: CSS.Properties
+    }
 }
 
-const AutomaticSearchAddress: NextPage<Props> = ({billing, address, manualInsert, setManualInsert, loading, handleSaveAddressButtonClick}) => {
+const AutomaticSearchAddress: NextPage<Props> =
+    ({
+         billing,
+         address,
+         manualInsert,
+         setManualInsert,
+         loading,
+         handleSaveAddressButtonClick,
+        style
+    }) => {
+
     const [searchValue, setSearchValue] = useState("")
     const [wait, setWait] = useState(false)
     const [makeRequest, setMakeRequest] = useState(false)
@@ -112,7 +126,7 @@ const AutomaticSearchAddress: NextPage<Props> = ({billing, address, manualInsert
     }
 
     return (
-        <div className="lg:w-2/3 w-full flex flex-col gap-4 w-full items-center justify-center">
+        <div style={style?.mainDiv} className="lg:w-2/3 w-full flex flex-col gap-4 w-full items-center justify-center">
             <span className="text-lg w-full text-center text-center">Search your address automatically</span>
             <div className="w-full flex flex-col gap-4 items-center justify-center">
                 <input onChange={(e) => handleInputChange(e)} value={searchValue} type="text"

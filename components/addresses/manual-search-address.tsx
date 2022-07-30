@@ -4,6 +4,7 @@ import EditForm from "./edit-form";
 import {Bars} from "react-loader-spinner";
 import {AiFillSave} from "react-icons/ai";
 import {Address} from "./add-address";
+import CSS from "csstype";
 
 
 type Props = {
@@ -13,9 +14,23 @@ type Props = {
     setManualInsert: React.Dispatch<React.SetStateAction<boolean>>
     loading: boolean
     handleSaveAddressButtonClick: () => void
+    style?: {
+        mainDiv?: CSS.Properties
+        insertManualAddressButton?: CSS.Properties
+    }
 }
 
-const ManualSearchAddress: NextPage<Props> = ({billing, address, manualInsert, setManualInsert, loading, handleSaveAddressButtonClick}) => {
+const ManualSearchAddress: NextPage<Props> =
+    ({
+         billing,
+         address,
+         manualInsert,
+         setManualInsert,
+         loading,
+         handleSaveAddressButtonClick,
+        style
+    }) => {
+
     const [buttonClicked, setButtonClicked] = useState(false)
     const [disabled, setDisabled] = useState(true)
 
@@ -31,13 +46,13 @@ const ManualSearchAddress: NextPage<Props> = ({billing, address, manualInsert, s
     return (
         <div className="flex flex-col gap-4 w-full items-center justify-center">
             <span className="text-lg text-center">Don&apos;t you find your address... Insert it here manually</span>
-            <button onClick={handleShowAddressFormButtonClick}
+            <button style={style?.insertManualAddressButton} onClick={handleShowAddressFormButtonClick}
                     className="mt-4 flex flex-row justify-center gap-4 items-center lg:w-2/3 w-full p-4 bg-neutral-400 hover:bg-green-500 transition text-white text-xl shadow-lg rounded-lg text-center">Insert
                 you address manually
             </button>
             {
                 (buttonClicked && manualInsert) &&
-                <div className="mt-10 lg:w-2/3 w-full flex flex-col items-center justify-center gap-8">
+                <div style={style?.mainDiv} className="mt-10 lg:w-2/3 w-full flex flex-col items-center justify-center gap-8">
                     <EditForm
                         currentAddress={{
                             firstAddress: "",

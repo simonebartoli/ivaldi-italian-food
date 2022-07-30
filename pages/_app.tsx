@@ -3,6 +3,8 @@ import "../styles/images.css"
 import "../styles/animations.css"
 import "../styles/swiper.css"
 import "../styles/phone.css"
+import "../styles/payments.css"
+
 
 import type { AppProps } from 'next/app'
 import Layout from "../components/layout";
