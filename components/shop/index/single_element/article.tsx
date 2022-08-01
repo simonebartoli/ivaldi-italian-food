@@ -8,7 +8,7 @@ import {useCart} from "../../../../contexts/cart-context";
 import 'react-toastify/dist/ReactToastify.css';
 import {toast} from "react-toastify";
 import {Bars} from "react-loader-spinner";
-import {Errors} from "../../../../enums/errors";
+import {SERVER_ERRORS_ENUM} from "../../../../enums/SERVER_ERRORS_ENUM";
 
 type Item = {
     item_id: number
@@ -36,7 +36,7 @@ const Article: NextPage<{item: Item, hidden?: boolean}> = ({item, hidden= false}
         if(error !== null && itemFromContext !== null && itemFromContext.item_id === item.item_id){
             if(error === false){
                 toast.success("Item Added To Your Cart.")
-            }else if(error.graphQLErrors[0] !== undefined && error.graphQLErrors[0].extensions.type === Errors.AMOUNT_NOT_AVAILABLE){
+            }else if(error.graphQLErrors[0] !== undefined && error.graphQLErrors[0].extensions.type === SERVER_ERRORS_ENUM.AMOUNT_NOT_AVAILABLE){
                 console.log(error.message)
 
                 toast.error("This Amount Is Not Available.")

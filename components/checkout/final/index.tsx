@@ -1,5 +1,5 @@
 import React, {forwardRef, useEffect, useMemo, useState} from 'react';
-import CheckoutForm from "./checkoutForm";
+import CheckoutStripe from "./checkoutStripe";
 import SavedCards from "./saved-cards";
 import {AddressReactType} from "../../../pages/checkout";
 import {gql, useMutation, useQuery} from "@apollo/client";
@@ -29,6 +29,7 @@ type CreateOrRetrievePaymentIntentVarType = {
 }
 type CreateOrRetrievePaymentIntentType = {
     createOrRetrievePaymentIntent: {
+        id: string
         client_secret: string
         amount: number
     }
@@ -77,6 +78,7 @@ const GET_ITEMS_CART = gql`
 const CREATE_OR_RETRIEVE_PAYMENT_INTENT = gql`
     mutation CREATE_OR_RETRIEVE_PAYMENT_INTENT($data: CreatePaymentIntentInput!) {
         createOrRetrievePaymentIntent(data: $data){
+            id
             client_secret
             amount
         }
@@ -90,7 +92,7 @@ const FinalIndex = forwardRef<HTMLDivElement, Props>(({moveBack, shippingAddress
     const {accessToken, functions: {handleAuthErrors}} = useAuth()
     const {cart} = useCart()
 
-    const [paymentIntent, setPaymentIntent] = useState<{ client_secret: string, amount: number } | null>(null)
+    const [paymentIntent, setPaymentIntent] = useState<{ client_secret: string, amount: number, id: string } | null>(null)
     const [reTry, setReTry] = useState(false)
 
     const [items, setItems] = useState<ItemReact[]>([])
@@ -150,6 +152,7 @@ const FinalIndex = forwardRef<HTMLDivElement, Props>(({moveBack, shippingAddress
         onCompleted: (data) => {
             console.log(data.createOrRetrievePaymentIntent.client_secret)
             setPaymentIntent({
+                id: data.createOrRetrievePaymentIntent.id,
                 client_secret: data.createOrRetrievePaymentIntent.client_secret,
                 amount: data.createOrRetrievePaymentIntent.amount
             })
@@ -202,14 +205,21 @@ const FinalIndex = forwardRef<HTMLDivElement, Props>(({moveBack, shippingAddress
             </div>
             <span className="w-full border-t-[1px] border-neutral-300"/>
             <Total total={total} vatTotal={vatTotal}/>
-            <Items items={items}/>
+            <Items items={items.map((element) => {
+                return {
+                    ...element,
+                    price_per_unit: element.price_total,
+                    price_total: Number((element.price_total*element.amount).toFixed(2)),
+                    vat: element.vat.percentage
+                }
+            })}/>
             <span className="w-full border-t-[1px] border-neutral-300"/>
             <SavedCards/>
             <span className="mt-4 w-full border-t-[1px] border-neutral-300"/>
             {
                 paymentIntent &&
                 <Elements stripe={stripePromise}>
-                    <CheckoutForm billingAddress={billingAddress} paymentIntent={paymentIntent}/>
+                    <CheckoutStripe billingAddress={billingAddress} paymentIntent={paymentIntent}/>
                 </Elements>
             }
         </section>

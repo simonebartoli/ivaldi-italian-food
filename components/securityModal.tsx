@@ -4,7 +4,7 @@ import {NextPage} from "next";
 import {useRouter} from "next/router";
 import {gql, useMutation} from "@apollo/client";
 import {useAuth} from "../contexts/auth-context";
-import {Errors} from "../enums/errors";
+import {SERVER_ERRORS_ENUM} from "../enums/SERVER_ERRORS_ENUM";
 import {toast} from "react-toastify";
 import {Bars} from "react-loader-spinner";
 import 'react-toastify/dist/ReactToastify.css';
@@ -38,7 +38,7 @@ const SecurityModal: NextPage<Props> = ({modalOpen, setModalOpen, sixDigitCode, 
             console.log(error.graphQLErrors)
             setLoading(false)
             const graphqlError = error.graphQLErrors[0].extensions.type as string
-            if(graphqlError === Errors.TOKEN_NOT_AUTHORIZED) toast.error("Click on the link sent to your email first")
+            if(graphqlError === SERVER_ERRORS_ENUM.TOKEN_NOT_AUTHORIZED) toast.error("Click on the link sent to your email first")
             else toast.error("There is a problem with your request, try to login to solve it.")
         }
     })

@@ -1,10 +1,10 @@
 /** @type {import('next').NextConfig} */
 const ContentSecurityPolicy = `
-  default-src *;
-  style-src 'self' 'unsafe-inline';
-  connect-src https://api.stripe.com;
-  frame-src https://js.stripe.com;
-  script-src 'self' https://js.stripe.com;
+  default-src * data: 'unsafe-inline' 'unsafe-eval' https://fonts.gstatic.com;
+  style-src * 'self' 'unsafe-inline';
+  frame-src 'self' 'unsafe-inline' https://js.stripe.com https://hooks.stripe.com;
+  connect-src 'self' https://api.stripe.com http://localhost:4000;
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com;
 `
 const securityHeaders = [{
   key: 'Content-Security-Policy',
@@ -12,7 +12,16 @@ const securityHeaders = [{
 }]
 
 const nextConfig = {
-  reactStrictMode: false
+  reactStrictMode: false,
+  // async headers() {
+  //   return [
+  //     {
+  //       // Apply these headers to all routes in your application.
+  //       source: '/checkout',
+  //       headers: securityHeaders
+  //     }
+  //   ]
+  // }
 }
 
 module.exports = nextConfig

@@ -8,9 +8,8 @@ type Item = {
     photo_loc: string
     price_total: number
     price_unit: string
-    vat: {
-        percentage: number
-    }
+    price_per_unit: number
+    vat: number
 }
 type ItemReact = Item & {item_id: number, amount: number}
 

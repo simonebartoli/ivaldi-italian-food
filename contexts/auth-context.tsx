@@ -1,7 +1,7 @@
 import React, {createContext, ReactNode, useEffect, useState} from 'react';
 import {NextPage} from "next";
 import {ApolloError, gql, useLazyQuery, useMutation} from "@apollo/client";
-import {Errors} from "../enums/errors";
+import {SERVER_ERRORS_ENUM} from "../enums/SERVER_ERRORS_ENUM";
 import {apolloClient} from "../pages/_app";
 
 type ContextType = {
@@ -165,7 +165,7 @@ export const AuthContext: NextPage<Props> = ({children}) => {
 
     const handleAuthErrors = async (error: ApolloError): Promise<boolean> => {
         const graphqlErrorCode = error.graphQLErrors[0].extensions.code
-        if(graphqlErrorCode === Errors.AUTH_ERROR){
+        if(graphqlErrorCode === SERVER_ERRORS_ENUM.AUTH_ERROR){
             return await generateAccessToken()
         }
         return false

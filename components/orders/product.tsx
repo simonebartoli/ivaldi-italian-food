@@ -7,10 +7,9 @@ type Item = {
     name: string
     photo_loc: string
     price_total: number
+    price_per_unit: number
     price_unit: string
-    vat: {
-        percentage: number
-    }
+    vat: number
 }
 type ItemReact = Item & {item_id: number, amount: number}
 
@@ -31,12 +30,12 @@ const Product: NextPage<Props> = ({item}) => {
                     <h3 className="font-semibold text-lg">{item.name}</h3>
                     <div className="flex flex-row gap-8 items-center">
                         <div>
-                            <span className="font-semibold text-xl">£{item.price_total}</span>
+                            <span className="font-semibold text-xl">£{item.price_per_unit}</span>
                             <span> / </span>
                             <span className="text-sm">{item.price_unit}</span>
                         </div>
                         <div>
-                            <span>VAT {item.vat.percentage}%</span>
+                            <span>VAT {item.vat}%</span>
                         </div>
                         <div>
                             <span className="font-semibold">{item.amount} UNITS</span>
@@ -46,7 +45,7 @@ const Product: NextPage<Props> = ({item}) => {
             </div>
             {widthPage < 1024 && <span className="w-full border-t-[1px] border-dashed border-neutral-500"/>}
             <div className="flex flex-col justify-center items-center">
-                <span className="text-2xl font-semibold">£{(item.price_total * item.amount).toFixed(2)}</span>
+                <span className="text-2xl font-semibold">£{item.price_total.toFixed(2)}</span>
             </div>
         </section>
     );

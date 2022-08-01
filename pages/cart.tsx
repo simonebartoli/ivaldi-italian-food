@@ -8,6 +8,7 @@ import PageLoader from "../components/page-loader";
 import {useLayoutContext} from "../contexts/layout-context";
 import Link from "next/link";
 import _ from "lodash";
+import {useAuth} from "../contexts/auth-context";
 
 type GetItemsCartType = {
     getItemsCart: ItemType[]
@@ -52,6 +53,7 @@ const Cart = () => {
     const {navHeight} = useLayoutContext()
 
     const {cart, functions: {updateCart}} = useCart()
+    const {logged} = useAuth()
 
     const fullPageRef = useRef<HTMLDivElement>(null)
     const [render, setRender] = useState(true)
@@ -110,7 +112,6 @@ const Cart = () => {
             })
 
             const equal = _.isEqual(_.sortBy(cartComparison, ["item_id"]), _.sortBy(itemsCartComparison, ["item_id"]))
-            console.log("EQUAL: " + equal)
             if(!equal) setRender(true)
         }
     }, [cart])
@@ -140,12 +141,14 @@ const Cart = () => {
                                         <a className="hover:bg-green-500 transition w-full p-4 bg-green-standard text-lg text-center text-white shadow-lg rounded-lg" href={"/shop"}>Go to Shop</a>
                                     </Link>
                                 </div>
-                                <div className="self-stretch lg:w-1/3 sm:w-1/2 w-full smxl:p-12 p-6 rounded-lg border-neutral-300 border-[1px] flex flex-col items-center justify-between bg-neutral-50 gap-8">
-                                    <span className="text-xl text-center">Do you have already an Account?</span>
-                                    <Link href={"/login?cart"}>
-                                        <a className="hover:bg-green-500 transition w-full p-4 bg-green-standard text-lg text-center text-white shadow-lg rounded-lg" href={"/login?cart"}>Login</a>
-                                    </Link>
-                                </div>
+                                {!logged &&
+                                    <div className="self-stretch lg:w-1/3 sm:w-1/2 w-full smxl:p-12 p-6 rounded-lg border-neutral-300 border-[1px] flex flex-col items-center justify-between bg-neutral-50 gap-8">
+                                        <span className="text-xl text-center">Do you have already an Account?</span>
+                                        <Link href={"/login?cart"}>
+                                            <a className="hover:bg-green-500 transition w-full p-4 bg-green-standard text-lg text-center text-white shadow-lg rounded-lg" href={"/login?cart"}>Login</a>
+                                        </Link>
+                                    </div>
+                                }
                             </div>
                         </div>
                         :

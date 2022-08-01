@@ -294,6 +294,8 @@ const Checkout = () => {
     }, [accessToken, reTry])
     useEffect(() => {
         if(renderFetchAddresses){
+            setRenderFetchAddresses(false)
+            console.log("RENDER ADDRESSES")
             getAddresses({
                 context: {
                     headers: {

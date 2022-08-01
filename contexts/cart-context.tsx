@@ -314,7 +314,6 @@ export const CartContext: NextPage<Props> = ({children}) => {
                     })
                 }
             }else{
-                console.log("PASS HERE 2")
                 getUserCart({
                     context: {
                         headers: {

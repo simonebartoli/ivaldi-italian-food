@@ -8,7 +8,7 @@ import {useCart} from "../../contexts/cart-context";
 import {ItemType} from "../../pages/cart";
 import 'react-toastify/dist/ReactToastify.css';
 import {toast} from "react-toastify";
-import {Errors} from "../../enums/errors";
+import {SERVER_ERRORS_ENUM} from "../../enums/SERVER_ERRORS_ENUM";
 
 type Props = {
     item: ItemType,
@@ -72,14 +72,14 @@ const CartArticle: NextPage<Props> = (
             if(error !== false){
                 if(actionType === ACTION_TYPE.EDIT) {
                     setDisabled(false)
-                    if(error.graphQLErrors[0] !== undefined && error.graphQLErrors[0].extensions.type === Errors.AMOUNT_NOT_AVAILABLE){
+                    if(error.graphQLErrors[0] !== undefined && error.graphQLErrors[0].extensions.type === SERVER_ERRORS_ENUM.AMOUNT_NOT_AVAILABLE){
                         setRefetch(true)
                         toast.error("This amount is no more available.")
                     }else{
                         toast.error("There is a problem. Try Again.")
                     }
                 }else if(actionType === ACTION_TYPE.REMOVE){
-                    if(error.graphQLErrors[0] !== undefined && error.graphQLErrors[0].extensions.type === Errors.ITEM_NOT_EXISTING){
+                    if(error.graphQLErrors[0] !== undefined && error.graphQLErrors[0].extensions.type === SERVER_ERRORS_ENUM.ITEM_NOT_EXISTING){
                         setRefetch(true)
                     }else{
                         toast.error("There is a problem. Try Again.")

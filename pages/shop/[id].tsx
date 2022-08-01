@@ -11,7 +11,7 @@ import PageLoader from "../../components/page-loader";
 import {useCart} from "../../contexts/cart-context";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import {Errors} from "../../enums/errors";
+import {SERVER_ERRORS_ENUM} from "../../enums/SERVER_ERRORS_ENUM";
 
 type ItemType = {
     item_id: number
@@ -103,10 +103,10 @@ const Product: NextPage<ItemType> = ({
                 setAvailableThisSession(availableThisSession - itemNumber)
             }else{
                 const errorType = error.graphQLErrors[0].extensions
-                if(errorType.type === Errors.AMOUNT_NOT_AVAILABLE){
+                if(errorType.type === SERVER_ERRORS_ENUM.AMOUNT_NOT_AVAILABLE){
                     toast.error("This quantity is not available")
                 }
-                else if(errorType.code === Errors.AUTH_ERROR){
+                else if(errorType.code === SERVER_ERRORS_ENUM.AUTH_ERROR){
                     toast.error("Your session has expired. Please Login Again")
                 }else{
                     toast.error("There is an Error. Please Try Again.")

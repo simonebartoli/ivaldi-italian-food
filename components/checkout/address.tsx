@@ -29,7 +29,7 @@ const Address: NextPage<Props> = ({address, addressSelected, setAddressSelected}
             <div className="w-full flex flex-col items-center justify-center gap-4">
                 <div className="text-xl flex flex-row justify-between items-center w-full text-lg">
                     <div className="flex flex-row gap-2 items-center">
-                        <span>{address.first_address},</span>
+                        <span>{address.first_address}{address.second_address && ", "}</span>
                         <span>{address.second_address}</span>
                     </div>
                     <div className="flex flex-row gap-2 items-center">

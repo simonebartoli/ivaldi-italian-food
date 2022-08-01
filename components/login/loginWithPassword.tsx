@@ -8,7 +8,7 @@ import {useAuth} from "../../contexts/auth-context";
 import {Bars} from "react-loader-spinner";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import {Errors} from "../../enums/errors";
+import {SERVER_ERRORS_ENUM} from "../../enums/SERVER_ERRORS_ENUM";
 import SecurityModal from "../securityModal";
 
 const LOGIN_WITH_PASSWORD = gql`
@@ -88,7 +88,7 @@ const LoginWithPassword = () => {
         },
         onError: (error) => {
             const graphqlError = error.graphQLErrors[0]
-            if(graphqlError.extensions.type === Errors.EMAIL_NOT_VERIFIED){
+            if(graphqlError.extensions.type === SERVER_ERRORS_ENUM.EMAIL_NOT_VERIFIED){
                 const code = (graphqlError.extensions.info as any).sixDigitCode as string
                 setModalOpen(true)
                 setSixDigitCode(code)

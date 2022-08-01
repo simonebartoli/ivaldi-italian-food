@@ -9,7 +9,7 @@ import {useAuth} from "../../contexts/auth-context";
 import 'react-toastify/dist/ReactToastify.css';
 import {toast} from "react-toastify";
 import {Bars} from "react-loader-spinner";
-import {Errors} from "../../enums/errors";
+import {SERVER_ERRORS_ENUM} from "../../enums/SERVER_ERRORS_ENUM";
 
 type Props = {
     email: string | null
@@ -52,7 +52,7 @@ const Email: NextPage<Props> = ({email, setEmail}) => {
             setLoading(false)
             console.log(error.message)
             if(error.graphQLErrors[0] !== undefined){
-                if(error.graphQLErrors[0].extensions.type === Errors.EMAIL_ALREADY_USED) {
+                if(error.graphQLErrors[0].extensions.type === SERVER_ERRORS_ENUM.EMAIL_ALREADY_USED) {
                     toast.error("This email has already been used. Try a different one.")
                     return
                 }

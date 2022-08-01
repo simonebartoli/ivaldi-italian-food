@@ -85,8 +85,8 @@ const BillingAddressList = forwardRef<HTMLDivElement, Props>(({
     }
 
     const checkIfSame = (address: AddressReactType, addressToCheck: AddressReactType): boolean => {
-        const newAddress = {...address, address_id: undefined, __typename: undefined}
-        const newAddressToCheck = {...addressToCheck, address_id: undefined, __typename: undefined}
+        const newAddress = {...address, address_id: undefined, __typename: undefined, country: undefined}
+        const newAddressToCheck = {...addressToCheck, address_id: undefined, __typename: undefined, country: undefined}
         return _.isEqual(newAddress, newAddressToCheck);
     }
 
@@ -135,12 +135,13 @@ const BillingAddressList = forwardRef<HTMLDivElement, Props>(({
         onCompleted: (data) => {
             setLoading(false)
             console.log("SUCCESS")
-            moveNext(1,2)
             setSelectedBillingAddress({
                 ...shippingAddress,
+                country: "United Kingdom",
                 address_id: data.addNewAddress
             })
             setRenderFetchAddresses(true)
+            moveNext(1,2)
         },
         onError: async (error) => {
             const result = await handleAuthErrors(error)

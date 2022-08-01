@@ -61,7 +61,11 @@ const DeliveryInfo = forwardRef<HTMLDivElement, Props>(({moveBack, moveNext, pho
                         international={true}
                         defaultCountry="GB"
                         value={phoneNumber.value}
-                        onChange={(value ) => phoneNumber.set(formatPhoneNumberIntl(value as E164Number))}
+                        onChange={(value ) => {
+                            const newValue = formatPhoneNumberIntl(value as E164Number)
+                            if(newValue !== "") phoneNumber.set(newValue)
+                            else if (value) phoneNumber.set(value)
+                        }}
                         placeholder="Enter phone number"
                     />
                 </div>

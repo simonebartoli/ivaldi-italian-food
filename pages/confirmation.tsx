@@ -3,11 +3,17 @@ import {useResizer} from "../contexts/resizer-context";
 import {useLayoutContext} from "../contexts/layout-context";
 import Image from "next/image";
 import ConfirmImage from "../public/media/photos/checkout/confirm.svg"
+import {useCart} from "../contexts/cart-context";
 
 const Confirmation = () => {
     const fullPageRef = useRef<HTMLDivElement>(null)
     const {widthPage, heightPage} = useResizer()
     const {navHeight} = useLayoutContext()
+    const {functions: {updateCart}} = useCart()
+
+    useEffect(() => {
+        updateCart()
+    }, [])
 
     useEffect(() => {
         if(navHeight !== undefined && fullPageRef.current !== null){

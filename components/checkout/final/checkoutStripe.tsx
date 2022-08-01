@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
     CardCvcElement,
     CardExpiryElement,
@@ -10,7 +10,7 @@ import {BsCreditCard2FrontFill, BsFillCalendar2WeekFill} from "react-icons/bs";
 import {FaLock} from "react-icons/fa";
 import CSS from "csstype";
 import {
-    PaymentRequest,
+    PaymentRequest, PaymentRequestPaymentMethodEvent,
     StripeCardCvcElementChangeEvent,
     StripeCardExpiryElementChangeEvent,
     StripeCardNumberElementChangeEvent
@@ -21,6 +21,20 @@ import {AddressReactType} from "../../../pages/checkout";
 import {useRouter} from "next/router";
 import {countries} from "../../../static-data/countries";
 import {DateTime} from "luxon";
+import {gql, useMutation} from "@apollo/client";
+import {useAuth} from "../../../contexts/auth-context";
+import {SERVER_ERRORS_ENUM} from "../../../enums/SERVER_ERRORS_ENUM";
+
+const ADD_PAYMENT_METHOD_TO_PAYMENT_INTENT = gql`
+    mutation ADD_PAYMENT_METHOD_TO_PAYMENT_INTENT ($data: AddPaymentMethodToPaymentIntentInput!) {
+        addPaymentMethodToPaymentIntent(data: $data)
+    }
+`
+const CONFIRM_PAYMENT = gql`
+    mutation CONFIRM_PAYMENT ($payment_intent_id: String!) {
+        confirmPayment(payment_intent_id: $payment_intent_id)
+    }
+`
 
 enum ElementEnum {
     CARD,
@@ -28,18 +42,31 @@ enum ElementEnum {
     CVC
 }
 
+
+type AddPaymentMethodToPaymentIntentVarType = {
+    data: {
+        payment_intent_id: string,
+        payment_method_id: string,
+        save_card: boolean
+    }
+}
+type ConfirmPaymentVarType = {
+    payment_intent_id: string
+}
 type Props = {
     paymentIntent: {
+        id: string
         client_secret: string,
         amount: number
     }
     billingAddress: AddressReactType
 }
 
-const CheckoutForm: NextPage<Props> = ({paymentIntent, billingAddress}) => {
+const CheckoutStripe: NextPage<Props> = ({paymentIntent, billingAddress}) => {
     const stripe = useStripe();
     const elements = useElements();
     const router = useRouter()
+    const {accessToken, functions: {handleAuthErrors}} = useAuth()
 
     const [error, setError] = useState<string | null>(null)
     const [options] = useState({
@@ -55,6 +82,7 @@ const CheckoutForm: NextPage<Props> = ({paymentIntent, billingAddress}) => {
     const [cardError, setCardError] = useState<string | false | "REQUIRED">("REQUIRED")
     const [calendarError, setCalendarError] = useState<string | false | "REQUIRED">("REQUIRED")
     const [cvcError, setCvcError] = useState<string | false | "REQUIRED">("REQUIRED")
+    const paymentMethodId = useRef<string>("")
 
     const [cardIconColor, setCardIconColor] = useState<CSS.Properties | undefined>(undefined)
     const [calendarIconColor, setCalendarIconColor] = useState<CSS.Properties | undefined>(undefined)
@@ -65,9 +93,73 @@ const CheckoutForm: NextPage<Props> = ({paymentIntent, billingAddress}) => {
     }, [cardError, calendarError, cvcError])
     const [loading, setLoading] = useState(false)
 
+    const [reTry, setReTry] = useState(false)
+    const actionType = useRef<"NO_ACTION" | "ADD_PAYMENT_METHOD" | "CONFIRM_PAYMENT">("NO_ACTION")
+
     const [paymentRequest, setPaymentRequest] = useState<null | PaymentRequest>(null);
+    const walletPaymentEvent = useRef<null | PaymentRequestPaymentMethodEvent>(null)
+    const paymentButtonEventHandlerRenderRef = useRef(true)
 
-
+    const [AddPaymentMethodToPaymentIntent] = useMutation<boolean, AddPaymentMethodToPaymentIntentVarType>(ADD_PAYMENT_METHOD_TO_PAYMENT_INTENT, {
+        context: {
+            headers: {
+                authorization: "Bearer " + accessToken.token,
+            }
+        },
+        onCompleted: async () => {
+            if(walletPaymentEvent.current !== null) walletPaymentEvent.current?.complete("success")
+            router.replace("/confirmation")
+        },
+        onError: async (error) => {
+            const result = await handleAuthErrors(error)
+            if(result) {
+                actionType.current = "ADD_PAYMENT_METHOD"
+                setReTry(true)
+                return
+            }
+            if(error.graphQLErrors[0].extensions.type === SERVER_ERRORS_ENUM.PAYMENT_REQUIRES_ACTIONS){
+                console.log("TO CONFIRM")
+                const result = await stripe!.handleCardAction(paymentIntent.client_secret)
+                if(result.error){
+                    if(walletPaymentEvent.current !== null) walletPaymentEvent.current?.complete("fail")
+                    setError(result.error.message as string)
+                    setLoading(false)
+                }else{
+                    ConfirmPayment({
+                        variables: {
+                            payment_intent_id: paymentIntent.id
+                        }
+                    })
+                }
+            }else{
+                if(walletPaymentEvent.current !== null) walletPaymentEvent.current?.complete("fail")
+                setError(error.message)
+                setLoading(false)
+            }
+        }
+    })
+    const [ConfirmPayment] = useMutation<boolean, ConfirmPaymentVarType>(CONFIRM_PAYMENT, {
+        context: {
+            headers: {
+                authorization: "Bearer " + accessToken.token,
+            }
+        },
+        onCompleted: () => {
+            if(walletPaymentEvent.current !== null) walletPaymentEvent.current?.complete("success")
+            router.replace("/confirmation")
+        },
+        onError: async (error) => {
+            const result = await handleAuthErrors(error)
+            if(result) {
+                actionType.current = "CONFIRM_PAYMENT"
+                setReTry(true)
+                return
+            }
+            if(walletPaymentEvent.current !== null) walletPaymentEvent.current?.complete("fail")
+            setError(error.message)
+            setLoading(false)
+        }
+    })
 
     const handleInputError = (e: StripeCardNumberElementChangeEvent | StripeCardExpiryElementChangeEvent | StripeCardCvcElementChangeEvent, type: ElementEnum) => {
         if(e.error){
@@ -128,33 +220,38 @@ const CheckoutForm: NextPage<Props> = ({paymentIntent, billingAddress}) => {
             return;
         }
 
-
-        const result = await stripe.confirmCardPayment(paymentIntent.client_secret, {
-            payment_method: {
-                card: elements.getElement("cardNumber")!,
-                billing_details: {
-                    address: {
-                        line1: billingAddress.first_address,
-                        line2: billingAddress.second_address ? billingAddress.second_address : undefined,
-                        postal_code: billingAddress.postcode,
-                        city: billingAddress.city,
-                        country: countries.find((element) => element.name === billingAddress.country)!.code
-                    }
+        const result = await stripe.createPaymentMethod({
+            type: "card",
+            card: elements.getElement("cardNumber")!,
+            billing_details: {
+                address: {
+                    line1: billingAddress.first_address,
+                    line2: billingAddress.second_address ? billingAddress.second_address : undefined,
+                    postal_code: billingAddress.postcode,
+                    city: billingAddress.city,
+                    country: countries.find((element) => element.name === billingAddress.country)!.code
                 }
-            },
-            save_payment_method: saveCardDetails,
-        });
+            }
+        })
+
+        console.log(result)
         if (result.error) {
             // Show error to your customer (for example, payment details incomplete)
             setError(result.error.message as string);
-            setLoading(false)
         } else {
-            router.replace("/confirmation")
-            // Your customer will be redirected to your `return_url`. For some payment
-            // methods like iDEAL, your customer will be redirected to an intermediate
-            // site first to authorize the payment, then redirected to the `return_url`.
+            paymentMethodId.current = result.paymentMethod.id
+            AddPaymentMethodToPaymentIntent({
+                variables: {
+                    data: {
+                        payment_intent_id: paymentIntent.id,
+                        payment_method_id: result.paymentMethod.id,
+                        save_card: saveCardDetails
+                    }
+                }
+            })
         }
     };
+
 
     useEffect(() => {
         if (stripe) {
@@ -177,6 +274,45 @@ const CheckoutForm: NextPage<Props> = ({paymentIntent, billingAddress}) => {
             });
         }
     }, [stripe]);
+    useEffect(() => {
+        if(stripe && paymentRequest && paymentButtonEventHandlerRenderRef.current){
+            paymentButtonEventHandlerRenderRef.current = false
+            paymentRequest.on('paymentmethod', async (ev) => {
+                // Confirm the PaymentIntent without handling potential next actions (yet).
+                paymentMethodId.current = ev.paymentMethod.id
+                walletPaymentEvent.current = ev
+                AddPaymentMethodToPaymentIntent({
+                    variables: {
+                        data: {
+                            payment_intent_id: paymentIntent.id,
+                            payment_method_id: ev.paymentMethod.id,
+                            save_card: saveCardDetails
+                        }
+                    }
+                })
+            });
+        }
+    }, [stripe, paymentRequest])
+    useEffect(() => {
+        if(accessToken.token !== null && reTry && actionType.current !== "NO_ACTION"){
+            if(actionType.current === "ADD_PAYMENT_METHOD") AddPaymentMethodToPaymentIntent({
+                variables: {
+                    data: {
+                        payment_intent_id: paymentIntent.id,
+                        payment_method_id: paymentMethodId.current,
+                        save_card: saveCardDetails
+                    }
+                }
+            })
+            else if(actionType.current === "CONFIRM_PAYMENT") ConfirmPayment({
+                variables: {
+                    payment_intent_id: paymentIntent.id
+                }
+            })
+            actionType.current = "NO_ACTION"
+            setReTry(false)
+        }
+    }, [accessToken.token, reTry])
 
     return (
         <section className="flex flex-col items-center justify-center gap-8 py-8 w-full">
@@ -245,4 +381,4 @@ const CheckoutForm: NextPage<Props> = ({paymentIntent, billingAddress}) => {
     );
 };
 
-export default CheckoutForm;
+export default CheckoutStripe;
