@@ -6,7 +6,7 @@ import {
     useElements,
     useStripe
 } from "@stripe/react-stripe-js";
-import {BsCreditCard2FrontFill, BsFillCalendar2WeekFill} from "react-icons/bs";
+import {BsCreditCard2Back, BsCreditCard2FrontFill, BsFillCalendar2WeekFill} from "react-icons/bs";
 import {FaLock} from "react-icons/fa";
 import CSS from "csstype";
 import {
@@ -24,6 +24,7 @@ import {DateTime} from "luxon";
 import {gql, useMutation} from "@apollo/client";
 import {useAuth} from "../../../contexts/auth-context";
 import {SERVER_ERRORS_ENUM} from "../../../enums/SERVER_ERRORS_ENUM";
+import PageLoader from "../../page-loader";
 
 const ADD_PAYMENT_METHOD_TO_PAYMENT_INTENT = gql`
     mutation ADD_PAYMENT_METHOD_TO_PAYMENT_INTENT ($data: AddPaymentMethodToPaymentIntentInput!) {
@@ -31,8 +32,8 @@ const ADD_PAYMENT_METHOD_TO_PAYMENT_INTENT = gql`
     }
 `
 const CONFIRM_PAYMENT = gql`
-    mutation CONFIRM_PAYMENT ($payment_intent_id: String!) {
-        confirmPayment(payment_intent_id: $payment_intent_id)
+    mutation CONFIRM_PAYMENT ($data: ConfirmPaymentInput!) {
+        confirmPayment(data: $data)
     }
 `
 
@@ -51,7 +52,10 @@ type AddPaymentMethodToPaymentIntentVarType = {
     }
 }
 type ConfirmPaymentVarType = {
-    payment_intent_id: string
+    data: {
+        payment_intent_id: string
+        cvc?: string
+    }
 }
 type Props = {
     paymentIntent: {
@@ -92,6 +96,7 @@ const CheckoutStripe: NextPage<Props> = ({paymentIntent, billingAddress}) => {
         return (cardError !== false || calendarError !== false || cvcError !== false)
     }, [cardError, calendarError, cvcError])
     const [loading, setLoading] = useState(false)
+    const [showAddNewCard, setShowAddNewCard] = useState(false)
 
     const [reTry, setReTry] = useState(false)
     const actionType = useRef<"NO_ACTION" | "ADD_PAYMENT_METHOD" | "CONFIRM_PAYMENT">("NO_ACTION")
@@ -127,7 +132,9 @@ const CheckoutStripe: NextPage<Props> = ({paymentIntent, billingAddress}) => {
                 }else{
                     ConfirmPayment({
                         variables: {
-                            payment_intent_id: paymentIntent.id
+                            data: {
+                                payment_intent_id: paymentIntent.id
+                            }
                         }
                     })
                 }
@@ -286,7 +293,7 @@ const CheckoutStripe: NextPage<Props> = ({paymentIntent, billingAddress}) => {
                         data: {
                             payment_intent_id: paymentIntent.id,
                             payment_method_id: ev.paymentMethod.id,
-                            save_card: saveCardDetails
+                            save_card: false
                         }
                     }
                 })
@@ -306,7 +313,9 @@ const CheckoutStripe: NextPage<Props> = ({paymentIntent, billingAddress}) => {
             })
             else if(actionType.current === "CONFIRM_PAYMENT") ConfirmPayment({
                 variables: {
-                    payment_intent_id: paymentIntent.id
+                    data: {
+                        payment_intent_id: paymentIntent.id
+                    }
                 }
             })
             actionType.current = "NO_ACTION"
@@ -314,9 +323,12 @@ const CheckoutStripe: NextPage<Props> = ({paymentIntent, billingAddress}) => {
         }
     }, [accessToken.token, reTry])
 
+    if(!stripe || !elements) {
+        return <PageLoader display/>
+    }
+
     return (
-        <section className="flex flex-col items-center justify-center gap-8 py-8 w-full">
-            <h2 className="text-3xl mb-8">Your Payment Details</h2>
+        <>
             {paymentRequest &&
                 <PaymentRequestButtonElement
                     className="w-full transition-all"
@@ -329,55 +341,60 @@ const CheckoutStripe: NextPage<Props> = ({paymentIntent, billingAddress}) => {
                     }}
                 />
             }
-
-            <form onSubmit={(e) => handleCardPaymentFormSubmit(e)} className="w-full flex flex-col gap-14">
-                <div className="w-full flex flex-col gap-6">
-                    <div className="space-y-2">
-                        <span>Card Number</span>
-                        <div className="relative">
-                            <CardNumberElement className="transition-all p-5 bg-neutral-100 rounded-xl text-lg "
-                                               onChange={(e) => handleInputError(e, ElementEnum.CARD)}
-                            />
-                            <BsCreditCard2FrontFill style={cardIconColor} className="text-3xl absolute top-1/2 right-[1.25rem] -translate-y-1/2"/>
-                        </div>
-                        <span className="block text-red-600 italic">{cardError !== "REQUIRED" && cardError}</span>
-                    </div>
-                    <div className="flex flex-row justify-between gap-8">
-                        <div className="w-full space-y-2">
-                            <span>Expiry Date</span>
+            <div className="w-full flex flex-col gap-12 items-center justify-center">
+                <span onClick={() => setShowAddNewCard(true)} className="transition hover:shadow-xl cursor-pointer hover:bg-green-500 text-xl flex flex-row items-center justify-center gap-6 text-white bg-green-standard w-full p-4 rounded-lg shadow-lg text-center">
+                    Add New Card
+                    <BsCreditCard2Back className="text-3xl mt-1"/>
+                </span>
+                <form style={{display: showAddNewCard ? "flex" : "none"}} onSubmit={(e) => handleCardPaymentFormSubmit(e)} className="w-full flex-col gap-14">
+                    <div className="w-full flex flex-col gap-6">
+                        <div className="space-y-2">
+                            <span>Card Number</span>
                             <div className="relative">
-                                <CardExpiryElement className="transition-all w-full p-5 bg-neutral-100 rounded-xl text-lg"
-                                                   onChange={(e) => handleInputError(e, ElementEnum.DATE)}
+                                <CardNumberElement className="transition-all p-5 bg-neutral-100 rounded-xl text-lg "
+                                                   onChange={(e) => handleInputError(e, ElementEnum.CARD)}
                                 />
-                                <BsFillCalendar2WeekFill style={calendarIconColor} className="text-2xl absolute top-1/2 right-[1.25rem] -translate-y-1/2"/>
+                                <BsCreditCard2FrontFill style={cardIconColor} className="text-3xl absolute top-1/2 right-[1.25rem] -translate-y-1/2"/>
                             </div>
-                            <span className="block text-red-600 italic">{calendarError !== "REQUIRED" && calendarError}</span>
+                            <span className="block text-red-600 italic">{cardError !== "REQUIRED" && cardError}</span>
                         </div>
-                        <div className="w-full space-y-2">
-                            <span>CVC</span>
-                            <div className="relative">
-                                <CardCvcElement className="transition-all w-full p-5 bg-neutral-100 rounded-xl text-lg"
-                                                onChange={(e) => handleInputError(e, ElementEnum.CVC)}
-                                />
-                                <FaLock style={cvcIconColor} className="text-2xl absolute top-1/2 right-[1.25rem] -translate-y-1/2"/>
+                        <div className="flex flex-row justify-between gap-8">
+                            <div className="w-full space-y-2">
+                                <span>Expiry Date</span>
+                                <div className="relative">
+                                    <CardExpiryElement className="transition-all w-full p-5 bg-neutral-100 rounded-xl text-lg"
+                                                       onChange={(e) => handleInputError(e, ElementEnum.DATE)}
+                                    />
+                                    <BsFillCalendar2WeekFill style={calendarIconColor} className="text-2xl absolute top-1/2 right-[1.25rem] -translate-y-1/2"/>
+                                </div>
+                                <span className="block text-red-600 italic">{calendarError !== "REQUIRED" && calendarError}</span>
                             </div>
-                            <span className="block text-red-600 italic">{cvcError !== "REQUIRED" && cvcError}</span>
+                            <div className="w-full space-y-2">
+                                <span>CVC</span>
+                                <div className="relative">
+                                    <CardCvcElement className="transition-all w-full p-5 bg-neutral-100 rounded-xl text-lg"
+                                                    onChange={(e) => handleInputError(e, ElementEnum.CVC)}
+                                    />
+                                    <FaLock style={cvcIconColor} className="text-2xl absolute top-1/2 right-[1.25rem] -translate-y-1/2"/>
+                                </div>
+                                <span className="block text-red-600 italic">{cvcError !== "REQUIRED" && cvcError}</span>
+                            </div>
+                        </div>
+                        <div className="flex flex-row gap-6 items-center justify-start">
+                            <input checked={saveCardDetails} onChange={() => setSaveCardDetails(!saveCardDetails)} type="checkbox" className="scale-125"/>
+                            <span>Save Your Card Details for Future Purchases</span>
                         </div>
                     </div>
-                    <div className="flex flex-row gap-6 items-center justify-start">
-                        <input checked={saveCardDetails} onChange={() => setSaveCardDetails(!saveCardDetails)} type="checkbox" className="scale-125"/>
-                        <span>Save Your Card Details for Future Purchases</span>
-                    </div>
-                </div>
-                <button className="flex items-center justify-center disabled:cursor-not-allowed disabled:bg-neutral-500 hover:bg-green-500 transition rounded-lg w-full p-4 text-white text-center text-lg shadow-lg bg-green-standard"
-                        disabled={(elements === null || disabled || loading)}>
-                    {
-                        loading ? <Bars height={24} color={"white"}/> : "Submit"
-                    }
-                </button>
-                {error !== null && <span className="text-lg text-red-600 text-center">{error}</span>}
-            </form>
-        </section>
+                    <button className="flex items-center justify-center disabled:cursor-not-allowed disabled:bg-neutral-500 hover:bg-green-500 transition rounded-lg w-full p-4 text-white text-center text-lg shadow-lg bg-green-standard"
+                            disabled={(disabled || loading)}>
+                        {
+                            loading ? <Bars height={24} color={"white"}/> : "Submit"
+                        }
+                    </button>
+                    {error !== null && <span className="text-lg text-red-600 text-center">{error}</span>}
+                </form>
+            </div>
+        </>
     );
 };
 

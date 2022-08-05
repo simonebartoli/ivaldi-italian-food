@@ -61,14 +61,6 @@ const GET_ORDERS_FULL = gql`
                     city
                     notes
                 }
-                billing_address {
-                    first_address
-                    second_address
-                    postcode
-                    city
-                    country
-                    notes
-                }
                 items {
                     item_id
                     price_total
@@ -93,6 +85,7 @@ const Orders = () => {
 
     const router = useRouter()
     const [GetOrdersFull] = useLazyQuery<GetOrdersFullType>(GET_ORDERS_FULL, {
+        fetchPolicy: "cache-and-network",
         onCompleted: (data) => {
             setOrders(data.getOrders_FULL)
         },

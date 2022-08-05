@@ -4,16 +4,19 @@ import {useLayoutContext} from "../contexts/layout-context";
 import Image from "next/image";
 import ConfirmImage from "../public/media/photos/checkout/confirm.svg"
 import {useCart} from "../contexts/cart-context";
+import {useAuth} from "../contexts/auth-context";
 
 const Confirmation = () => {
     const fullPageRef = useRef<HTMLDivElement>(null)
     const {widthPage, heightPage} = useResizer()
     const {navHeight} = useLayoutContext()
+
+    const {logged, loading} = useAuth()
     const {functions: {updateCart}} = useCart()
 
     useEffect(() => {
-        updateCart()
-    }, [])
+        if(!loading && logged) updateCart()
+    }, [logged, loading])
 
     useEffect(() => {
         if(navHeight !== undefined && fullPageRef.current !== null){

@@ -30,15 +30,15 @@ const Total: NextPage<Props> = ({summary}) => {
             </div>
             <div className="flex smxl:flex-row flex-col gap-6 smxl:items-center items-start">
                 <span className="sm:text-xl text-2xl text-green-standard font-semibold">TOTAL (NO VAT):</span>
-                <span className="sm:text-xl text-2xl font-semibold">£{summary.price_total}</span>
+                <span className="sm:text-xl text-2xl font-semibold">£{summary.price_total.toFixed(2)}</span>
             </div>
             <div className="flex smxl:flex-row flex-col gap-6 smxl:items-center items-start">
                 <span className="sm:text-xl text-2xl text-green-standard font-semibold">VAT:</span>
-                <span className="sm:text-xl text-2xl font-semibold">£{summary.vat_total}</span>
+                <span className="sm:text-xl text-2xl font-semibold">£{summary.vat_total.toFixed(2)}</span>
             </div>
             <div className="flex smxl:flex-row flex-col gap-6 smxl:items-center items-start pt-6 border-t-[1px] border-neutral-500 border-dashed">
                 <span className="sm:text-xl text-2xl text-green-standard font-semibold">TOTAL (WITH VAT):</span>
-                <span className="sm:text-xl text-2xl font-semibold">£{summary.price_total + summary.vat_total}</span>
+                <span className="sm:text-xl text-2xl font-semibold">£{(summary.price_total + summary.vat_total).toFixed(2)}</span>
             </div>
         </div>
     );

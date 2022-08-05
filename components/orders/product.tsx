@@ -30,7 +30,7 @@ const Product: NextPage<Props> = ({item}) => {
                     <h3 className="font-semibold text-lg">{item.name}</h3>
                     <div className="flex flex-row gap-8 items-center">
                         <div>
-                            <span className="font-semibold text-xl">£{item.price_per_unit}</span>
+                            <span className="font-semibold text-xl">£{item.price_per_unit.toFixed(2)}</span>
                             <span> / </span>
                             <span className="text-sm">{item.price_unit}</span>
                         </div>

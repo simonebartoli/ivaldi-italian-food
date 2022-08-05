@@ -319,15 +319,7 @@ export const CartContext: NextPage<Props> = ({children}) => {
                         headers: {
                             authorization: "Bearer " + accessToken.token
                         }
-                    },
-                    onCompleted: (data) => {
-                        const items = new Map<number, number>()
-                        for(const element of data.getUserCart){
-                            items.set(element.item_id, element.amount)
-                        }
-                        localStorage.removeItem("cart")
-                        setCart(items)
-                    },
+                    }
                 })
             }
         }

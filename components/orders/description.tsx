@@ -40,7 +40,7 @@ const Description: NextPage<Props> = ({orderOpen, setOrderOpen, order}) => {
             <div className="flex flex-row items-center justify-center gap-8">
                 <div className="space-x-4">
                     <span className="text-2xl">TOTAL</span>
-                    <span className="text-2xl font-semibold text-green-standard">£{order.price_total}</span>
+                    <span className="text-2xl font-semibold text-green-standard">£{order.price_total.toFixed(2)}</span>
                 </div>
                 <div ref={circleRef} className="transition-all">
                     <IoArrowDownCircle className="text-4xl"/>

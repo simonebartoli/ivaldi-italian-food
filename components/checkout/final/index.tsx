@@ -214,14 +214,22 @@ const FinalIndex = forwardRef<HTMLDivElement, Props>(({moveBack, shippingAddress
                 }
             })}/>
             <span className="w-full border-t-[1px] border-neutral-300"/>
-            <SavedCards/>
-            <span className="mt-4 w-full border-t-[1px] border-neutral-300"/>
             {
                 paymentIntent &&
                 <Elements stripe={stripePromise}>
-                    <CheckoutStripe billingAddress={billingAddress} paymentIntent={paymentIntent}/>
+                    <SavedCards paymentIntent={paymentIntent}/>
                 </Elements>
             }
+            <span className="mt-4 w-full border-t-[1px] border-neutral-300"/>
+            <section className="flex flex-col items-center justify-center gap-8 py-8 w-full">
+                <h2 className="text-3xl mb-8">Your Payment Details</h2>
+                {
+                    paymentIntent &&
+                    <Elements stripe={stripePromise}>
+                        <CheckoutStripe billingAddress={billingAddress} paymentIntent={paymentIntent}/>
+                    </Elements>
+                }
+            </section>
         </section>
     );
 });

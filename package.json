@@ -39,6 +39,7 @@
     "react-responsive-modal": "^6.2.0",
     "react-slidedown": "^2.4.7",
     "react-toastify": "^9.0.5",
+    "sass": "^1.54.2",
     "sharp": "^0.30.7",
     "swiper": "^8.2.2",
     "typewriter-effect": "^2.18.2",
