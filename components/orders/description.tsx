@@ -32,10 +32,10 @@ const Description: NextPage<Props> = ({orderOpen, setOrderOpen, order}) => {
 
     return (
         <div onClick={handleOrderOpenClick} className="p-8 cursor-pointer w-full flex lg:flex-row flex-col gap-8 lg:gap-0 justify-between items-center">
-            <div className="flex flex-row gap-6">
+            <div className="flex smxl:flex-row flex-col items-center gap-6">
                 <span className="text-2xl font-semibold text-green-standard uppercase">{order.status}</span>
-                <span className="text-2xl"> - </span>
-                <span className="text-2xl">{DateTime.fromISO(order.datetime).toLocaleString(DateTime.DATETIME_SHORT)}</span>
+                <span className="text-2xl smxl:block hidden"> - </span>
+                <span className="smxl:text-2xl text-lg">{DateTime.fromISO(order.datetime).toLocaleString(DateTime.DATETIME_SHORT)}</span>
             </div>
             <div className="flex flex-row items-center justify-center gap-8">
                 <div className="space-x-4">

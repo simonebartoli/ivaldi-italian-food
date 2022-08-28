@@ -2,12 +2,12 @@ import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
 import Filters from "../components/library/filter/filters";
 import {useResizer} from "../contexts/resizer-context";
 import {useLayoutContext} from "../contexts/layout-context";
-import PriceSlider from "../components/library/price-slider";
 import Article from "../components/shop/index/single_element/article";
 import {GetServerSideProps, NextPage} from "next";
 import {apolloClient} from "./_app";
 import {gql, useLazyQuery} from "@apollo/client";
 import handleViewport from "react-in-viewport";
+import PriceRange from "../components/library/price-range";
 
 type Item = {
     item_id: number
@@ -19,18 +19,16 @@ type Item = {
     price_total: number
     amount_available: number
     importance: number
-    hidden: boolean
 }
 
-type GetItemsType = {
+type GetItemsPaginationType = {
     getItems_pagination: Item[]
 }
-
 type GetItemsPaginationVarType = {
     discountOnly?: boolean
     priceRange?: {
-        min: number,
-        max: number
+        min?: number,
+        max?: number
     }
     outOfStock?: boolean
     order?: "Most Relevant" | "Price Ascending" | "Price Descending" | "Higher Discounts"
@@ -38,7 +36,6 @@ type GetItemsPaginationVarType = {
     offset: number
     limit: number
 }
-
 const GET_ITEMS_PAGINATION = gql`
     query GET_ITEMS_PAGINATION ($offset: Int!, $limit: Int!, $discountOnly: Boolean, $priceRange: Price, $outOfStock: Boolean, $keywords: String!, $order: String) {
         getItems_pagination(offset: $offset, limit: $limit, discountOnly: $discountOnly, priceRange: $priceRange, outOfStock: $outOfStock, keywords: $keywords, order: $order) {
@@ -64,26 +61,14 @@ const OFFSET_BASE = 0
 const LIMIT_BASE = 10
 const INCREMENT = 10
 
-const orderSearch = (items: Item[], priceRange?: { min: number, max: number }): Item[] => {
+const orderSearch = (items: Item[]): Item[] => {
     let data: Item[] = [...items]
-    if(priceRange === undefined){
-        data = data.map((element) => {
-            return {
-                ...element,
-                hidden: false,
-                item_id: Number(element.item_id)
-            }
-        })
-    }else{
-        data = data.map((element) => {
-            return {
-                ...element,
-                hidden: (!(element.price_total > priceRange.min && element.price_total < priceRange.max)),
-                // FALSE WHEN INSIDE THE RANGE
-                item_id: Number(element.item_id)
-            }
-        })
-    }
+    data = data.map((element) => {
+        return {
+            ...element,
+            item_id: Number(element.item_id)
+        }
+    })
     return data
 }
 
@@ -106,21 +91,24 @@ const Search: NextPage<Props> = ({query, itemsServer, order}) => {
     const [fetchPriceRange, setFetchPriceRange] = useState(false)
     const fetchMore = useRef(true)
 
-
-    const [minMax, setMinMax] = useState<{min: number, max: number} | null>(null)
     const [min, setMin] = useState(0)
     const [max, setMax] = useState(0)
+    const [minTypedByUser, setMinTypedByUser] = useState(false)
+    const [maxTypedByUser, setMaxTypedByUser] = useState(false)
+
+    const minMaxToCheck = useRef(true)
 
     const [items, setItems] = useState<Item[]>([])
 
 
-    const [getItemsPagination] = useLazyQuery<GetItemsType, GetItemsPaginationVarType>(GET_ITEMS_PAGINATION, {
+    const [getItemsPagination] = useLazyQuery<GetItemsPaginationType, GetItemsPaginationVarType>(GET_ITEMS_PAGINATION, {
         onCompleted: (data) => {
             try{
                 if(data.getItems_pagination.length !== 0){
                     if(data.getItems_pagination.length < INCREMENT){
                         fetchMore.current = false
                     }
+                    minMaxToCheck.current = true
                     setItems([...items, ...orderSearch(data.getItems_pagination)])
                 }else{
                     fetchMore.current = false
@@ -148,26 +136,6 @@ const Search: NextPage<Props> = ({query, itemsServer, order}) => {
         }
     }, [widthPage, heightPage, navHeight, searchBarHeight])
 
-    useEffect(() => {
-        let min = 0
-        let max = 0
-
-        setMinMax(null)
-
-        for(const item of items){
-            if(max === 0) max = item.price_total
-            if(item.price_total > max) max = item.price_total
-
-            if(min === 0) min = item.price_total
-            if(item.price_total < min) min = item.price_total
-        }
-
-        if(min === 0 && max === 0) setMinMax(null)
-        else setMinMax({
-            min: min,
-            max: max
-        })
-    }, [items])
 
 
     useEffect(() => {
@@ -180,7 +148,10 @@ const Search: NextPage<Props> = ({query, itemsServer, order}) => {
     useEffect(() => {
         setOutOfStock(false)
         setDiscountOnly(false)
-        setItems(itemsServer)
+        setMaxTypedByUser(false)
+        setMinTypedByUser(false)
+        setItems(orderSearch(itemsServer))
+        minMaxToCheck.current = true
         fetchMore.current = true
         setOffsetLimit({
             offset: OFFSET_BASE + INCREMENT,
@@ -191,10 +162,25 @@ const Search: NextPage<Props> = ({query, itemsServer, order}) => {
     useEffect(() => {
         if(fetchPriceRange){
             window.scroll(0,0)
-            setItems(orderSearch(items, {min: min, max: max}))
+            fetchItems()
             setFetchPriceRange(false)
         }
     }, [min, max, fetchPriceRange])
+    useEffect(() => {
+        if(minMaxToCheck.current){
+            let min = 0
+            let max = 0
+            if(items.length > 0){
+                for(const item of items){
+                    if((item.price_total < min || min === 0) && !minTypedByUser) min = item.price_total
+                    if((item.price_total > max || max === 0) && !maxTypedByUser) max = item.price_total
+                }
+                minMaxToCheck.current = false
+                if(min !== 0) setMin(min)
+                if(max !== 0) setMax(max)
+            }
+        }
+    }, [items])
 
 
     const handleScrollDownFetchMore = () => {
@@ -205,6 +191,10 @@ const Search: NextPage<Props> = ({query, itemsServer, order}) => {
                     discountOnly: discountOnly,
                     keywords: query,
                     order: order === null ? undefined : order,
+                    priceRange: {
+                        min: minTypedByUser ? min : undefined,
+                        max: maxTypedByUser ? max : undefined
+                    },
                     offset: offsetLimit.offset,
                     limit: offsetLimit.limit
                 }
@@ -234,18 +224,23 @@ const Search: NextPage<Props> = ({query, itemsServer, order}) => {
             limit: LIMIT_BASE + INCREMENT
         })
         try{
-            const result = await apolloClient.query<GetItemsType, GetItemsPaginationVarType>({
+            const result = await apolloClient.query<GetItemsPaginationType, GetItemsPaginationVarType>({
                 query: GET_ITEMS_PAGINATION,
                 variables: {
                     outOfStock: outOfStock,
                     discountOnly: discountOnly,
                     keywords: query,
                     order: order === null ? undefined : order,
+                    priceRange: {
+                      min: minTypedByUser ? min : undefined,
+                      max: maxTypedByUser ? max : undefined
+                    },
                     offset: OFFSET_BASE,
                     limit: LIMIT_BASE
                 }
             })
             if(result.data.getItems_pagination.length < INCREMENT) fetchMore.current = false
+            minMaxToCheck.current = true
             setItems(orderSearch(result.data.getItems_pagination))
         }catch (e) {
 
@@ -253,9 +248,31 @@ const Search: NextPage<Props> = ({query, itemsServer, order}) => {
     }
 
 
+
     return (
         <main ref={fullPageRef} className="flex flex-col h-full">
-            <Filters highContrastSearchBar={highContrastSearchBar}/>
+            <Filters
+                highContrastSearchBar={highContrastSearchBar}
+                priceRange={{
+                    priceMin: {
+                        value: min,
+                        set: setMin
+                    },
+                    priceMax: {
+                        value: max,
+                        set: setMax
+                    },
+                    setFetchPriceRange: setFetchPriceRange,
+                    setMinTypedByUser: setMinTypedByUser,
+                    setMaxTypedByUser: setMaxTypedByUser
+                }}
+                extraProperty={{
+                    outOfStock: outOfStock,
+                    discountOnly: discountOnly,
+                    handleOutOfStockOptionClick: handleOutOfStockOptionClick,
+                    handleDiscountOnlyOptionClick: handleDiscountOnlyOptionClick
+                }}
+            />
             <div ref={mainRef} className="relative h-full flex flex-row">
                 <div ref={extraFilters} className="sticky hidden bg-neutral-100 mdxl:w-1/4 md:w-1/3 w-2/5 h-full sm:flex flex-col items-start gap-10 p-10">
                     <div className="flex flex-row gap-6 items-center justify-center text-xl">
@@ -266,16 +283,13 @@ const Search: NextPage<Props> = ({query, itemsServer, order}) => {
                         <input checked={outOfStock} onChange={(e) => handleOutOfStockOptionClick(e)} type="checkbox" className="scale-125"/>
                         <span>Show Also Out of Stock</span>
                     </div>
-                    {minMax !== null &&
-                        <PriceSlider
-                            min={minMax.min}
-                            max={minMax.max}
-                            priceMin={min}
-                            priceMax={max}
-                            setPriceMin={setMin}
-                            setPriceMax={setMax}
-                            setFetchPriceRange={setFetchPriceRange}
-                        />}
+                    <PriceRange
+                        priceMin={{value: min, set: setMin}}
+                        priceMax={{value: max, set: setMax}}
+                        setFetchPriceRange={setFetchPriceRange}
+                        setMinTypedByUser={setMinTypedByUser}
+                        setMaxTypedByUser={setMaxTypedByUser}
+                    />
                 </div>
                 <div className="bg-white flex flex-col gap-4 mdxl:w-3/4 md:w-2/3 sm:w-3/5 w-full smxl:p-8 p-4 items-center justify-center">
                     <span className="text-neutral-500 text-lg pb-8 underline-offset-8 underline">Search Results for:&nbsp;
@@ -291,14 +305,12 @@ const Search: NextPage<Props> = ({query, itemsServer, order}) => {
                         <div className="grid lg:grid-cols-3 mdx:grid-cols-2 grid-cols-1 gap-x-8 gap-y-14">
                             {
                                 items.map((item) => {
-                                    if(!item.hidden) {
-                                        return (
-                                            <Article
-                                                key={item.item_id}
-                                                item={item}
-                                            />
-                                        )
-                                    }
+                                    return (
+                                        <Article
+                                            key={item.item_id}
+                                            item={item}
+                                        />
+                                    )
                                 })
                             }
                             <ViewportBlock onEnterViewport={handleScrollDownFetchMore}/>
@@ -332,9 +344,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
             props: {}
         }
     }
-
     try {
-        const result = await apolloClient.query<GetItemsType, GetItemsPaginationVarType>({
+        const result = await apolloClient.query<GetItemsPaginationType, GetItemsPaginationVarType>({
             query: GET_ITEMS_PAGINATION,
             variables: {
                 keywords: query,

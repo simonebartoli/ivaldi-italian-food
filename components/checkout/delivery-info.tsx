@@ -1,7 +1,8 @@
 import React, {ChangeEvent, forwardRef, useEffect, useState} from 'react';
-import PhoneInput, {formatPhoneNumberIntl, isPossiblePhoneNumber} from "react-phone-number-input";
+import PhoneInput, {formatPhoneNumberIntl, isValidPhoneNumber} from "react-phone-number-input";
 import 'react-phone-number-input/style.css'
 import {E164Number} from "libphonenumber-js";
+import {useResizer} from "../../contexts/resizer-context";
 
 type Props = {
     moveBack: (oldRef: number, newRef: number) => void
@@ -20,12 +21,14 @@ type Props = {
 }
 
 const DeliveryInfo = forwardRef<HTMLDivElement, Props>(({moveBack, moveNext, phoneNumber, deliveryInfo, setRenderCheckout}, ref) => {
+    const {widthPage} = useResizer()
+
     const [disabled, setDisabled] = useState(true)
     const [errorDelivery, setErrorDelivery] = useState(false)
     const [errorPhone, setErrorPhone] = useState(true)
 
     useEffect(() => {
-        if(isPossiblePhoneNumber(phoneNumber.value)) setErrorPhone(false)
+        if(isValidPhoneNumber(phoneNumber.value)) setErrorPhone(false)
         else setErrorPhone(true)
     }, [phoneNumber.value])
 
@@ -49,18 +52,22 @@ const DeliveryInfo = forwardRef<HTMLDivElement, Props>(({moveBack, moveNext, pho
     }
 
     return (
-        <section ref={ref} className="hidden flex flex-col items-center justify-center w-1/2 gap-16 py-8">
+        <section ref={ref} className="hidden flex flex-col items-center justify-center xls:w-1/2 mdx:w-2/3 md:w-3/4 w-full gap-16 py-8">
             <section className="flex flex-col gap-14 items-center">
-                <h2 className="text-3xl">Insert Your Phone Number</h2>
+                <h2 className="text-3xl text-center">Insert Your Phone Number</h2>
                 <span className="text-lg text-center leading-8">
                     Please insert your phone number.<br/> This number will be used to contact you during the delivery.
                 </span>
                 <div className="space-y-4">
                     {errorPhone && <span className="block w-full text-right text-red-600 italic">Your Phone Number is Not Valid</span>}
                     <PhoneInput
+
                         international={true}
                         defaultCountry="GB"
                         value={phoneNumber.value}
+                        style={{
+                            width: widthPage <= 640 ? `${widthPage - 48}px`: "auto"
+                        }}
                         onChange={(value ) => {
                             const newValue = formatPhoneNumberIntl(value as E164Number)
                             if(newValue !== "") phoneNumber.set(newValue)
@@ -72,7 +79,7 @@ const DeliveryInfo = forwardRef<HTMLDivElement, Props>(({moveBack, moveNext, pho
             </section>
             <span className="border-t-[1px] border-black w-full"/>
             <section className="flex flex-col gap-14 items-center w-full">
-                <h2 className="text-3xl">Your Delivery Preferences</h2>
+                <h2 className="text-3xl text-center">Your Delivery Preferences</h2>
                 <section className="p-8 bg-neutral-100 rounded-lg w-full flex flex-col gap-6 shadow-lg">
                     <h3 className="text-xl">How Does Deliveries Works?</h3>
                     <p className="leading-8">
@@ -88,6 +95,7 @@ const DeliveryInfo = forwardRef<HTMLDivElement, Props>(({moveBack, moveNext, pho
                     {errorDelivery && <span className="block w-full text-right text-red-600 italic">Your Message is too long</span>}
                     <textarea
                         value={deliveryInfo.value}
+                        rows={5}
                         onChange={(e) => handleChangeDeliveryInfo(e)}
                         placeholder={"Insert your preferred time slots here..."}
                         className="w-full p-4 text-lg rounded-lg border-neutral-400 border-[1px] resize-none"

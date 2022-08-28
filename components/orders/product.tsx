@@ -28,17 +28,19 @@ const Product: NextPage<Props> = ({item}) => {
                 </div>
                 <div className="lg:w-3/5 md:w-3/4 sm:w-full smxl:w-3/4 w-full flex flex-col gap-6">
                     <h3 className="font-semibold text-lg">{item.name}</h3>
-                    <div className="flex flex-row gap-8 items-center">
+                    <div className="flex smxl:flex-row flex-col gap-8 smxl:items-center items-start">
                         <div>
                             <span className="font-semibold text-xl">£{item.price_per_unit.toFixed(2)}</span>
                             <span> / </span>
                             <span className="text-sm">{item.price_unit}</span>
                         </div>
-                        <div>
-                            <span>VAT {item.vat}%</span>
-                        </div>
-                        <div>
-                            <span className="font-semibold">{item.amount} UNITS</span>
+                        <div className="flex flex-row gap-8 items-center">
+                            <div>
+                                <span>VAT {item.vat}%</span>
+                            </div>
+                            <div>
+                                <span className="font-semibold">{item.amount} UNITS</span>
+                            </div>
                         </div>
                     </div>
                 </div>

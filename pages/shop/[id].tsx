@@ -208,7 +208,7 @@ const Product: NextPage<ItemType> = ({
                         <button
                             onClick={handleAddToCartButton}
                             disabled={availableThisSession === 0}
-                            className="disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:text-black hover:bg-orange-400 transition cursor-pointer p-4 bg-orange-500 h-fit w-full text-xl text-center text-white border-2 border-black rounded-lg basis-4/5">Add to Cart</button>
+                            className="disabled:cursor-not-allowed shadow-lg disabled:bg-neutral-300 disabled:text-black hover:bg-orange-400 transition cursor-pointer p-4 bg-orange-500 h-fit w-full text-xl text-center text-white rounded-lg basis-4/5">Add to Cart</button>
                     </div>
                 </div>
             </article>

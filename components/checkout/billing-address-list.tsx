@@ -182,8 +182,8 @@ const BillingAddressList = forwardRef<HTMLDivElement, Props>(({
     }, [accessToken, reTry])
 
     return (
-        <section ref={ref} className="hidden flex flex-col items-center justify-center w-1/2 gap-8 py-8">
-            <h2 className="text-3xl mb-8">Select your Billing Address</h2>
+        <section ref={ref} className="hidden flex flex-col items-center justify-center xls:w-1/2 mdx:w-2/3 md:w-3/4 w-full gap-12 px-4 py-8">
+            <h2 className="text-3xl mb-8 text-center">Select your Billing Address</h2>
             <div className="flex flex-row gap-8">
                 <input ref={sameAsShippingRef} onChange={handleSameAsShippingInputClick} checked={sameAsShipping} type="checkbox" className="scale-125"/>
                 <span className="text-xl">Same as Shipping Address</span>

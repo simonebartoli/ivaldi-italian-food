@@ -8,7 +8,7 @@ import BreadImage from "../../../public/media/photos/shop/bread.jpg";
 const BestCategories = () => {
     return (
         <section className="flex flex-col gap-8">
-            <h2 className="text-3xl text-center font-semibold leading-10">Browse Our Fantastic Products</h2>
+            <h2 className="text-3xl text-center font-semibold leading-10 px-4">Browse Our Fantastic Products</h2>
             <div className="grid xls:grid-cols-4 sm:grid-cols-2 grid-cols-1 items-stretch">
                 <div className="relative group cursor-pointer">
                     <div className="transition-all homepage-image z-10 group-hover:opacity-[35%]"/>

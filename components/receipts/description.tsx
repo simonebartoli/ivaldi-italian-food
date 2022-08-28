@@ -38,14 +38,14 @@ const Description: NextPage<Props> = ({orderOpen, setOrderOpen, receipt}) => {
     return (
         <div onClick={handleOrderOpenClick} className="p-8 cursor-pointer w-full flex lg:flex-row flex-col gap-8 lg:gap-0 justify-between items-center">
             <div className="flex mdx:flex-row flex-col mdx:gap-6 gap-4 items-center justify-center">
-                <div className="flex flex-row gap-4 items-center justify-center">
+                <div className="flex flex-row gap-4 items-center justify-center text-2xl">
                     <span className="text-xl uppercase">N.INVOICE</span>
-                    <span className="font-semibold text-green-standard text-xl">
+                    <span className="font-semibold text-green-standard text-2xl">
                         {String(receipt.receipt_number).padStart(7, "0")}
                     </span>
                 </div>
                 <span className="mdx:block hidden text-xl"> - </span>
-                <span className="text-xl">{DateTime.fromISO(receipt.datetime).toLocaleString(DateTime.DATETIME_SHORT)}</span>
+                <span className="mdx:text-xl text-lg">{DateTime.fromISO(receipt.datetime).toLocaleString(DateTime.DATETIME_SHORT)}</span>
             </div>
             <div className="flex flex-row items-center justify-center gap-8">
                 <div className="space-x-4">

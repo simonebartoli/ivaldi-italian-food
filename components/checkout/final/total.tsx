@@ -18,7 +18,7 @@ const Total: NextPage<Props> = ({total, vatTotal}) => {
                 <span>£{vatTotal}</span>
             </div>
             <span className="border-t-[1px] bg-neutral-500 w-full"/>
-            <div className="w-full flex flex-row justify-between items-center">
+            <div className="w-full flex smxl:flex-row smxl:gap-0 gap-6 flex-col justify-between smxl:items-center items-end">
                 <span className="font-semibold text-3xl">Total (with VAT):</span>
                 <span className="text-3xl font-semibold">£{total}</span>
             </div>

@@ -116,7 +116,7 @@ const CartArticle: NextPage<Props> = (
 
     return (
         <article className="flex smxl:flex-row flex-col gap-4 items-center w-full">
-            <div className="shop-list relative smxl:w-1/2 w-full">
+            <div className="shop-list relative smxl:w-1/2 w-3/4">
                 <Image
                     alt="this is a photo" src={"/media/photos/shop/ragu_funghi_300x.webp"} layout={"fill"}
                     className="image"
@@ -138,7 +138,7 @@ const CartArticle: NextPage<Props> = (
                                 max={amount_available}
                                 itemNumber={amountSelected}
                                 setItemNumber={setAmountSelected}
-                                options={{fontText: "text-2xl", sizeIcons: "text-2xl"}}
+                                options={{fontText: "text-3xl", sizeIcons: "text-3xl"}}
                                 disable={disabled}
                             />
                             {

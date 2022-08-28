@@ -10,6 +10,7 @@ import {SERVER_ERRORS_ENUM} from "../../../enums/SERVER_ERRORS_ENUM";
 import {useRouter} from "next/router";
 import PageLoader from "../../page-loader";
 import ActionStopper from "../../library/action-stopper";
+import {useResizer} from "../../../contexts/resizer-context";
 
 // --------------------------------------
 // GET PAYMENT METHODS
@@ -180,6 +181,8 @@ type CardProps = {
 }
 
 const Card: NextPage<CardProps> = ({card, paymentIntent}) => {
+    const {widthPage} = useResizer()
+
     const [cvc, setCVC] = useState("")
     const [cvcError, setCVCError] = useState<string | null>("")
     const [error, setError] = useState("")
@@ -364,15 +367,17 @@ const Card: NextPage<CardProps> = ({card, paymentIntent}) => {
     return (
         <div className="group w-full gap-12 bg-neutral-100 hover:bg-neutral-200 transition shadow-lg rounded-lg flex flex-col justify-center items-center">
             {loading && <ActionStopper/>}
-            <div onClick={() => setShowPaymentForm(!showPaymentForm)} className="p-6 text-neutral-700 group-hover:text-black w-full transition cursor-pointer flex flex-row justify-between items-center">
-                <div className="w-1/5 flex items-center justify-center">
-                    <div className="relative h-[50px] w-full items-center justify-center flex">
-                        <Image alt={`${card.brand} Image`} src={`/media/photos/checkout/${card.brand}.png`} layout="fill" objectFit="contain"/>
+            <div onClick={() => setShowPaymentForm(!showPaymentForm)} className="p-6 text-neutral-700 group-hover:text-black w-full transition cursor-pointer flex smxl:flex-row flex-col justify-between items-center">
+                <div className="flex flex-row justify-between items-center smxl:w-2/3 w-full">
+                    <div className="w-1/5 flex items-center justify-center">
+                        <div className="relative h-[50px] w-full items-center justify-center flex">
+                            <Image alt={`${card.brand} Image`} src={`/media/photos/checkout/${card.brand}.png`} layout="fill" objectFit="contain"/>
+                        </div>
                     </div>
+                    <span className="text-2xl"><span className="text-lg">XXXX XXXX XXXX</span> {card.last4}</span>
                 </div>
-                <span className="text-2xl"><span className="text-lg">XXXX XXXX XXXX</span> {card.last4}</span>
-                <div className="text-2xl">
-                    {DateTime.fromISO(card.exp_date).toFormat("LL/yy")}
+                <div className="smxl:text-2xl text-lg smxl:w-auto w-full text-right">
+                    {widthPage <= 500 ? "Expiry Date: ": ""}{DateTime.fromISO(card.exp_date).toFormat("LL/yy")}
                 </div>
             </div>
             <form onSubmit={(e) => handlePayment(e)} style={{display: showPaymentForm ? "flex" : "none"}} className="w-full flex-col gap-4 p-6 pt-0 items-center justify-center">

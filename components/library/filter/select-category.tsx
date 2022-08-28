@@ -30,6 +30,7 @@ const GET_CATEGORIES_FULL = gql`
 const SelectCategory = () => {
     const router = useRouter()
 
+    const [query, setQuery] = useState<string | string[] | undefined>(router.query.query)
     const [categories, setCategories] = useState<Category[]>([{
         name: "Relevant",
         sub_categories: []
@@ -66,6 +67,32 @@ const SelectCategory = () => {
         setCategoriesNoSub(newCategories)
 
     }, [categories])
+    useEffect(() => {
+        if(query !== undefined && !Array.isArray(query)){
+            let found = false
+            for(const cat of categories){
+                if(cat.name === query){
+                    setCategorySelected(query)
+                    found = true
+                    break
+                }
+                for(const sub of cat.sub_categories){
+                    if(sub.name === query){
+                        setCategorySelected(query)
+                        found = true
+                        break
+                    }
+                }
+            }
+            for(const cat of categoriesNoSub){
+                if(cat.name === query){
+                    found = true
+                    setCategorySelected(query)
+                    break
+                }
+            }
+        }
+    }, [categories, categoriesNoSub, query])
 
     const handleClickCategory = (name: string) => {
         setCategorySelected(name)
@@ -75,22 +102,24 @@ const SelectCategory = () => {
             router.push("/shop")
         }
     }
-
     const handleContextMenuClick = () => {
         if(contextMenuRef.current !== null){
             contextMenuRef.current.classList.toggle("animate-slideUp")
             contextMenuRef.current.classList.toggle("animate-slideDown")
             if(contextMenuRef.current.classList.contains("hidden")) {
                 contextMenuRef.current.classList.toggle("hidden")
-                setTimeout(() => contextMenuRef.current!.classList.toggle("pointer-events-none"), 250)
+                setTimeout(() => {
+                    if(contextMenuRef.current !== null) contextMenuRef.current.classList.toggle("pointer-events-none")
+                }, 250)
             }
             else {
                 contextMenuRef.current.classList.toggle("pointer-events-none")
-                setTimeout(() => contextMenuRef.current!.classList.toggle("hidden"), 250)
+                setTimeout(() => {
+                    if(contextMenuRef.current !== null) contextMenuRef.current!.classList.toggle("hidden")
+                }, 250)
             }
         }
     }
-
 
 
 

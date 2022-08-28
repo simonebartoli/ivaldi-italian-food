@@ -11,6 +11,9 @@ import {useAuth} from "../../../contexts/auth-context";
 import {useRouter} from "next/router";
 import {Elements} from "@stripe/react-stripe-js";
 import {loadStripe} from "@stripe/stripe-js";
+import CheckoutPayPal from "./checkoutPayPal";
+import {toast} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 type Props = {
     moveBack: (oldRef: number, newRef: number) => void
@@ -19,6 +22,17 @@ type Props = {
     phoneNumber: string
 }
 
+// PAYMENT INTENTS CREATE / RETRIEVE
+const CREATE_OR_RETRIEVE_PAYMENT_INTENT = gql`
+    mutation CREATE_OR_RETRIEVE_PAYMENT_INTENT($data: CreatePaymentIntentInput!) {
+        createOrRetrievePaymentIntent(data: $data){
+            id
+            client_secret
+            amount
+        }
+    }
+`
+const stripePromise = loadStripe('pk_test_51LHx5kILFxyKM1maBgbPWiLi1fcn545wLVdmeOUhX62ddzSoBUdLJ53yB2u9LNYdo9upTw7IdCe2nIlNyinYvubC00zipLMrxk');
 type CreateOrRetrievePaymentIntentVarType = {
     data: {
         shipping_address: AddressReactType,
@@ -34,32 +48,10 @@ type CreateOrRetrievePaymentIntentType = {
         amount: number
     }
 }
-
-// ITEMS CART TYPES
-type Item = {
-    name: string
-    photo_loc: string
-    price_total: number
-    price_unit: string
-    vat: {
-        percentage: number
-    }
-}
-type ItemReact = Item & {item_id: number, amount: number}
-type ItemServer = Item & {item_id: string}
-
-type GetItemsCartType = {
-    getItemsCart: ItemServer[]
-}
-type GetItemsCartVarType = {
-    items: {
-        item_id: number,
-        amount: number
-    }[]
-}
 // ------------------------------------------------
 
 
+// ITEMS CART TYPES
 const GET_ITEMS_CART = gql`
     query GET_ITEMS_CART ($items: [ItemCart!]!) {
         getItemsCart(items: $items){
@@ -75,16 +67,27 @@ const GET_ITEMS_CART = gql`
     }
 `
 
-const CREATE_OR_RETRIEVE_PAYMENT_INTENT = gql`
-    mutation CREATE_OR_RETRIEVE_PAYMENT_INTENT($data: CreatePaymentIntentInput!) {
-        createOrRetrievePaymentIntent(data: $data){
-            id
-            client_secret
-            amount
-        }
+type Item = {
+    name: string
+    photo_loc: string
+    price_total: number
+    price_unit: string
+    vat: {
+        percentage: number
     }
-`
-const stripePromise = loadStripe('pk_test_51LHx5kILFxyKM1maBgbPWiLi1fcn545wLVdmeOUhX62ddzSoBUdLJ53yB2u9LNYdo9upTw7IdCe2nIlNyinYvubC00zipLMrxk');
+}
+type ItemReact = Item & {item_id: number, amount: number}
+type ItemServer = Item & {item_id: string}
+type GetItemsCartType = {
+    getItemsCart: ItemServer[]
+}
+type GetItemsCartVarType = {
+    items: {
+        item_id: number,
+        amount: number
+    }[]
+}
+// ------------------------------------------------
 
 const FinalIndex = forwardRef<HTMLDivElement, Props>(({moveBack, shippingAddress, billingAddress, phoneNumber}, ref) => {
     const router = useRouter()
@@ -163,7 +166,9 @@ const FinalIndex = forwardRef<HTMLDivElement, Props>(({moveBack, shippingAddress
                 setReTry(true)
                 return
             }
+            toast.error("The Data Inserted Are Not Valid")
             console.log(error.message)
+            setTimeout(() => window.location.reload(), 2000)
         }
     })
 
@@ -196,7 +201,7 @@ const FinalIndex = forwardRef<HTMLDivElement, Props>(({moveBack, shippingAddress
     }, [accessToken, reTry])
 
     return (
-        <section ref={ref} className="hidden flex flex-col items-center justify-center w-1/2 gap-8 py-8">
+        <section ref={ref} className="hidden flex flex-col items-center justify-center xls:w-1/2 mdx:w-2/3 md:w-3/4 w-full gap-8 py-8">
             <h2 className="text-3xl">Checkout</h2>
             <Addresses shippingAddress={shippingAddress} billingAddress={billingAddress}/>
             <div className="p-4 flex flex-row gap-4 text-lg items-start w-full">
@@ -223,6 +228,11 @@ const FinalIndex = forwardRef<HTMLDivElement, Props>(({moveBack, shippingAddress
             <span className="mt-4 w-full border-t-[1px] border-neutral-300"/>
             <section className="flex flex-col items-center justify-center gap-8 py-8 w-full">
                 <h2 className="text-3xl mb-8">Your Payment Details</h2>
+                <CheckoutPayPal shipping_address={shippingAddress}
+                                billing_address={billingAddress}
+                                phone_number={phoneNumber}
+                                delivery_suggested={""}
+                />
                 {
                     paymentIntent &&
                     <Elements stripe={stripePromise}>

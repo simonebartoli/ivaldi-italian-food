@@ -15,7 +15,7 @@ const Navbar = () => {
     const {heightPage, widthPage} = useResizer()
     const {navHeight, setNavHeight, navbarRef} = useLayoutContext()
 
-    const mobileNavRef : RefObject<HTMLDivElement> = useRef(null)
+    const mobileNavRef: RefObject<HTMLDivElement> = useRef(null)
     const [navOpen, setNavOpen] = useState(false)
     const [accountNavOpen, setAccountNavOpen] = useState(false)
 
@@ -25,25 +25,25 @@ const Navbar = () => {
         setNavHeight(navbarRef.current?.clientHeight)
     }, [heightPage, widthPage])
     useEffect(() => {
-        if(mobileNavRef.current !== null && navHeight !== undefined) {
+        if (mobileNavRef.current !== null && navHeight !== undefined) {
             mobileNavRef.current.style.top = `${navHeight}px`
             mobileNavRef.current.style.height = `${heightPage - navHeight}px`
         }
     }, [navHeight, heightPage])
 
-    useEffect(() =>{
+    useEffect(() => {
         let total = 0
-        for(const value of cart.values()) total += value
+        for (const value of cart.values()) total += value
         setCartNumber(total)
     }, [cart])
 
     const onNavClick = () => {
-        if(navbarRef.current !== null){
+        if (navbarRef.current !== null) {
             navbarRef.current.classList.toggle("z-40")
             navbarRef.current.classList.toggle("z-50")
         }
         setNavOpen(!navOpen)
-        if(mobileNavRef.current !== null) {
+        if (mobileNavRef.current !== null) {
             mobileNavRef.current.classList.toggle("w-0")
             mobileNavRef.current.classList.toggle("w-full")
         }
@@ -51,7 +51,7 @@ const Navbar = () => {
 
     const closeNav = () => {
         setNavOpen(false)
-        if(mobileNavRef.current !== null) {
+        if (mobileNavRef.current !== null) {
             mobileNavRef.current.classList.add("w-0")
             mobileNavRef.current.classList.remove("w-full")
         }
@@ -73,7 +73,8 @@ const Navbar = () => {
                     <span className="text-green-standard">Food</span>
                 </a>
             </Link>
-            <div className="mdx:flex hidden flex-row justify-around items-center text-lg mdx:basis-2/3 xls:basis-1/2 font-navbar">
+            <div
+                className="mdx:flex hidden flex-row justify-around items-center text-lg mdx:basis-2/3 xls:basis-1/2 font-navbar">
                 <Link href={"/shop"}>
                     <a className="hover:text-green-standard transition cursor-pointer">Shop</a>
                 </Link>
@@ -107,57 +108,88 @@ const Navbar = () => {
                     </div>
                 }
             </div>
-            <div className="mdx:hidden flex items-center overflow-y-scroll">
+            <div className="mdx:hidden flex items-center gap-6 overflow-y-scroll">
+                <Link href="/cart">
+                    <div className="flex flex-row items-center gap-2 cursor-pointer" onClick={closeNav}>
+                        <FiShoppingCart className="text-2xl hover:text-green-standard transition"/>
+                        <span className="rounded-full bg-orange-500 text-white px-2 text-sm">{cartNumber}</span>
+                    </div>
+                </Link>
                 {!navOpen ?
                     <AiOutlineMenu className="text-2xl hover:text-green-standard transition" onClick={onNavClick}/>
                     :
                     <AiOutlineClose className="text-2xl hover:text-red-600 transition" onClick={onNavClick}/>
                 }
                 {/*REPLACE GAP AND JUSTIFY BETWEEN WITH JUSTIFY START ONLY WHEN LOGGED*/}
-                <div ref={mobileNavRef} className="py-8 overflow-y-scroll transition-all bg-white flex flex-col items-center gap-20 justify-start absolute w-0 overflow-hidden right-0 text-xl font-navbar">
-                    <div className="flex flex-col gap-6 items-center justify-center w-full">
-                        <div onClick={handlePrivateAccountNavClick} className="flex flex-row gap-4 justify-center items-center hover:text-green-standard transition cursor-pointer">
-                            <span>Your Private Area</span>
-                            <IoMdArrowDropdown/>
+
+                <div ref={mobileNavRef}
+                     className="py-8 overflow-y-scroll transition-all bg-white flex flex-col items-center gap-20 justify-start absolute w-0 overflow-hidden right-0 text-xl font-navbar">
+                    {
+                        userInfoNav.name !== null &&
+                        <div className="flex flex-col gap-6 items-center justify-center w-full">
+                            <div onClick={handlePrivateAccountNavClick}
+                                 className="flex flex-row gap-4 justify-center items-center hover:text-green-standard transition cursor-pointer">
+                                <span>Your Private Area</span>
+                                <IoMdArrowDropdown/>
+                            </div>
+                            {
+                                accountNavOpen ?
+                                    <div
+                                        className="p-8 flex flex-col gap-10 items-center justify-center bg-neutral-100 w-5/6">
+                                        <Link href="/account">
+                                            <a onClick={onNavClick} href={"/account"}
+                                               className="text-center hover:text-green-standard transition cursor-pointer">Your
+                                                Account</a>
+                                        </Link>
+                                        <Link href="/orders">
+                                            <a href={"/orders"} onClick={onNavClick}
+                                               className="text-center hover:text-green-standard transition cursor-pointer">Your
+                                                Orders</a>
+                                        </Link>
+                                        <Link href="/receipts">
+                                            <a href={"/receipts"} onClick={onNavClick}
+                                               className="text-center hover:text-green-standard transition cursor-pointer">Your
+                                                Receipts</a>
+                                        </Link>
+                                        <Link href="/shipping-addresses">
+                                            <a href={"/shipping-addresses"} onClick={onNavClick}
+                                               className="text-center hover:text-green-standard transition cursor-pointer">Your
+                                                Shipping Addresses</a>
+                                        </Link>
+                                        <Link href="/billing-addresses">
+                                            <a href={"/billing-addresses"} onClick={onNavClick}
+                                               className="text-center hover:text-green-standard transition cursor-pointer">Your
+                                                Delivery Addresses</a>
+                                        </Link>
+                                    </div>
+                                    : null
+                            }
                         </div>
-                        {
-                            accountNavOpen ?
-                                <div className="p-8 flex flex-col gap-10 items-center justify-center bg-neutral-100 w-5/6">
-                                    <Link href="/account">
-                                        <a onClick={onNavClick} href={"/account"} className="text-center hover:text-green-standard transition cursor-pointer">Your Account</a>
-                                    </Link>
-                                    <Link href="/orders">
-                                        <a href={"/orders"} onClick={onNavClick} className="text-center hover:text-green-standard transition cursor-pointer">Your Orders</a>
-                                    </Link>
-                                    <Link href="/receipts">
-                                        <a href={"/receipts"} className="text-center hover:text-green-standard transition cursor-pointer">Your Receipts</a>
-                                    </Link>
-                                    <Link href="/shipping-addresses">
-                                        <a href={"/shipping-addresses"} className="text-center hover:text-green-standard transition cursor-pointer">Your Shipping Addresses</a>
-                                    </Link>
-                                    <Link href="/billing-addresses">
-                                        <a href={"/billing-addresses"} className="text-center hover:text-green-standard transition cursor-pointer">Your Delivery Addresses</a>
-                                    </Link>
-                                </div>
-                                : null
-                        }
-                    </div>
-                    <Link href="/login">
-                        <a className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>Log In / Sign Up</a>
-                    </Link>
-                    <Link href="/cart">
-                        <div className="flex flex-row items-center gap-4 cursor-pointer" onClick={onNavClick}>
-                            <FiShoppingCart className="text-2xl hover:text-green-standard transition"/>
-                            <span className="rounded-full bg-orange-500 text-white px-2 text-sm">10</span>
+                    }
+                    {
+                        userInfoNav.name === null &&
+                        <Link href="/login">
+                            <a className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>Log
+                                In / Sign Up</a>
+                        </Link>
+                    }
+                    {
+                        userInfoNav.name !== null &&
+                        <div onClick={handleLogoutClick} className="flex flex-row items-center gap-4 cursor-pointer">
+                            <span>Logout</span>
+                            <FiLogOut className="text-xl hover:text-red-600 transition"/>
                         </div>
-                    </Link>
+                    }
                     <span className="p-[0.5px] bg-neutral-500 w-3/4"/>
                     <Link href={"/shop"}>
-                        <span className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>Shop</span>
+                        <span className="hover:text-green-standard transition cursor-pointer"
+                              onClick={onNavClick}>Shop</span>
                     </Link>
-                    <span className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>Faqs</span>
+                    <span className="hover:text-green-standard transition cursor-pointer"
+                          onClick={onNavClick}>Faqs</span>
                     <Link href="/contact">
-                        <a className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>Contact Us</a>
+                        <a className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>Contact
+                            Us</a>
                     </Link>
                 </div>
             </div>

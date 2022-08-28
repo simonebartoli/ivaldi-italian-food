@@ -11,6 +11,25 @@ import {useResizer} from "../../../contexts/resizer-context";
 import {gql, useLazyQuery} from "@apollo/client";
 
 type Props = {
+    priceRange?: {
+        priceMin: {
+            value: number
+            set: React.Dispatch<React.SetStateAction<number>>
+        }
+        priceMax: {
+            value: number
+            set: React.Dispatch<React.SetStateAction<number>>
+        }
+        setFetchPriceRange: React.Dispatch<React.SetStateAction<boolean>>
+        setMinTypedByUser: React.Dispatch<React.SetStateAction<boolean>>
+        setMaxTypedByUser: React.Dispatch<React.SetStateAction<boolean>>
+    }
+    extraProperty?: {
+        outOfStock: boolean
+        discountOnly: boolean
+        handleDiscountOnlyOptionClick: (e: ChangeEvent<HTMLInputElement>) => void
+        handleOutOfStockOptionClick: (e: ChangeEvent<HTMLInputElement>) => void
+    }
     highContrastSearchBar: (status: boolean) => void
 }
 
@@ -48,7 +67,7 @@ const GET_ITEMS_PAGINATION = gql`
     }
 `
 
-const Filters: NextPage<Props> = ({highContrastSearchBar}) => {
+const Filters: NextPage<Props> = ({highContrastSearchBar, priceRange, extraProperty}) => {
     const router = useRouter()
     const {widthPage} = useResizer()
 
@@ -86,6 +105,8 @@ const Filters: NextPage<Props> = ({highContrastSearchBar}) => {
 
     const handleSearchButtonClick = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+        setItems([])
+        setSearch("")
         highContrastSearchBar(false)
         router.push("/search?query=" + search + "&order=" + order)
     }
@@ -157,7 +178,9 @@ const Filters: NextPage<Props> = ({highContrastSearchBar}) => {
             </div>
             <OrderBy order={order} setOrder={setOrder} setRender={setRender}/>
             {ready && widthPage <= 950 && <SearchResults items={items}/>}
-            <FilterMobile/>
+
+            <FilterMobile priceRange={priceRange} extraProperty={extraProperty}/>
+
         </section>
     );
 };
