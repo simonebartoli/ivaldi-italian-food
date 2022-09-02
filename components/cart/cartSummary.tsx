@@ -6,13 +6,16 @@ import Link from "next/link";
 import {NextPage} from "next";
 import {ItemType} from "../../pages/cart";
 import {useAuth} from "../../contexts/auth-context";
+import {useHoliday} from "../../contexts/holiday-context";
 
 type Props = {
     items: Map<number, ItemType>
+    minimumOrderPrice: number
 }
 
-const CartSummary: NextPage<Props> = ({items}) => {
+const CartSummary: NextPage<Props> = ({items, minimumOrderPrice}) => {
     const {logged} = useAuth()
+    const {holidayPeriod} = useHoliday()
 
     const fullPageRef = useRef<HTMLDivElement>(null)
     const {heightPage} = useResizer()
@@ -67,11 +70,17 @@ const CartSummary: NextPage<Props> = ({items}) => {
                     <span>You Saved £ {totalDiscounts} with Discounts</span>
                 </div>
             }
-            <Link href={!logged ? "/login?cart" : "/checkout"}>
-                <a href={!logged ? "/login?cart" : "/checkout"} className="font-semibold cursor-pointer w-full text-lg bg-green-standard hover:bg-green-500 transition rounded-lg shadow-lg p-4 text-white text-center">
-                    Proceed To Checkout
-                </a>
-            </Link>
+            {
+                total >= minimumOrderPrice && minimumOrderPrice !== 0 && !holidayPeriod  ?
+                    <Link href={!logged ? "/login?cart" : "/checkout"}>
+                        <a href={!logged ? "/login?cart" : "/checkout"} className="font-semibold cursor-pointer w-full text-lg bg-green-standard hover:bg-green-500 transition rounded-lg shadow-lg p-4 text-white text-center">
+                            Proceed To Checkout
+                        </a>
+                    </Link>
+                    : holidayPeriod ?
+                        <span className="text-red-600 text-center leading-8">This is an holiday period, there will be no deliveries in this time</span>
+                    :   <span className="text-red-600 text-center leading-8">To Proceed to the checkout, your order needs to be at least £{minimumOrderPrice.toFixed(2)}.</span>
+            }
             {
                 !logged &&
                 <span className="w-full text-sm text-neutral-500 text-center">You need to register before continuing with the order.</span>

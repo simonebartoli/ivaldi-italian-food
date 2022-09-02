@@ -8,6 +8,7 @@ import {apolloClient} from "./_app";
 import {gql, useLazyQuery} from "@apollo/client";
 import handleViewport from "react-in-viewport";
 import PriceRange from "../components/library/price-range";
+import Head from "next/head";
 
 type Item = {
     item_id: number
@@ -251,6 +252,14 @@ const Search: NextPage<Props> = ({query, itemsServer, order}) => {
 
     return (
         <main ref={fullPageRef} className="flex flex-col h-full">
+            <Head>
+                <title>{`Search "${query}" - Ivaldi Italian Food`}</title>
+                <meta name="robots" content="noindex, follow"/>
+                <meta httpEquiv="Content-Type" content="text/html; charset=utf-8"/>
+                <meta name="language" content="English"/>
+                <meta name="revisit-after" content="5 days"/>
+                <meta name="author" content="Ivaldi Italian Food"/>
+            </Head>
             <Filters
                 highContrastSearchBar={highContrastSearchBar}
                 priceRange={{

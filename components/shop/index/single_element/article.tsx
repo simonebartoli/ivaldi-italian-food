@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import {toast} from "react-toastify";
 import {Bars} from "react-loader-spinner";
 import {SERVER_ERRORS_ENUM} from "../../../../enums/SERVER_ERRORS_ENUM";
+import {useRouter} from "next/router";
 
 type Item = {
     item_id: number
@@ -25,6 +26,7 @@ const Article: NextPage<{item: Item, hidden?: boolean}> = ({item, hidden= false}
     const [ready, setReady] = useState(false)
     const [loading, setLoading] = useState(false)
     const [disabled, setDisabled] = useState(false)
+    const router = useRouter()
 
     const {item: itemFromContext, error, functions: {addToCart, resetErrorItemStatus}} = useCart()
 
@@ -87,9 +89,9 @@ const Article: NextPage<{item: Item, hidden?: boolean}> = ({item, hidden= false}
                 <span className="text-lg text-center">{item.name}</span>
             </div>
             <div className="flex flex-col gap-4 w-full">
-                <Link href={"/shop/" + item.item_id}>
+                <Link href={"/shop/" + item.item_id + "?query=" + router.query.query}>
                     <div className="cursor-pointer w-full p-2 flex flex-row gap-4 items-center justify-center bg-green-standard text-white rounded-lg shadow-md border-neutral-400 border-[1px] text-lg">
-                        <a href={"/shop/" + item.item_id}>Check Product</a>
+                        <a href={"/shop/" + item.item_id + "?query=" + router.query.query}>Check Product</a>
                         <IoSearchSharp/>
                     </div>
                 </Link>

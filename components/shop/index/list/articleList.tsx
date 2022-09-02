@@ -55,6 +55,7 @@ const ArticleList = () => {
                             <Article key={index} item={{
                                 item_id: 1,
                                 name: "test",
+                                amount_available: 10,
                                 photo_loc: "test",
                                 price_total: 10.50,
                                 discount: {

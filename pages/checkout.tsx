@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useResizer} from "../contexts/resizer-context";
 import {useLayoutContext} from "../contexts/layout-context";
 import FinalIndex from "../components/checkout/final";
@@ -7,12 +7,13 @@ import {useAuth} from "../contexts/auth-context";
 import {useRouter} from "next/router";
 import PageLoader from "../components/page-loader";
 import {useCart} from "../contexts/cart-context";
-import {gql, useLazyQuery} from "@apollo/client";
+import {gql, useLazyQuery, useQuery} from "@apollo/client";
 import _ from "lodash";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import BillingAddressList from "../components/checkout/billing-address-list";
 import DeliveryInfo from "../components/checkout/delivery-info";
+import {useHoliday} from "../contexts/holiday-context";
 
 // GET CART TYPES
 type CartType = {
@@ -85,6 +86,56 @@ const GET_ADDRESSES = gql`
 `
 // ------------------------------------------------
 
+// GET MINIMUM ORDER PRICE
+const GET_MINIMUM_ORDER_PRICE = gql`
+    query GET_MINIMUM_ORDER_PRICE {
+        getMinimumOrderPrice
+    }
+`
+type GetMinimumOrderPriceType = {
+    getMinimumOrderPrice: number
+}
+// ------------------------------------------------
+
+// ITEMS CART TYPES
+const GET_ITEMS_CART = gql`
+    query GET_ITEMS_CART ($items: [ItemCartInput!]!) {
+        getItemsCart(items: $items){
+            item_id
+            name
+            photo_loc
+            price_total
+            price_unit
+            vat {
+                percentage
+            }
+        }
+    }
+`
+
+type Item = {
+    name: string
+    photo_loc: string
+    price_total: number
+    price_unit: string
+    vat: {
+        percentage: number
+    }
+}
+type ItemReact = Item & {item_id: number, amount: number}
+type ItemServer = Item & {item_id: string}
+type GetItemsCartType = {
+    getItemsCart: ItemServer[]
+}
+type GetItemsCartVarType = {
+    items: {
+        item_id: number,
+        amount: number
+    }[]
+}
+// ------------------------------------------------
+
+
 enum ACTION_TYPE_ENUM {
     NO_ACTION,
     CART,
@@ -97,6 +148,7 @@ const Checkout = () => {
     const [reTry, setReTry] = useState(false)
 
     const {cart, cartReady} = useCart()
+    const {holidayPeriod} = useHoliday()
 
     const router = useRouter()
     const actionType = useRef(ACTION_TYPE_ENUM.NO_ACTION)
@@ -112,10 +164,18 @@ const Checkout = () => {
     const [selectedBillingAddress, setSelectedBillingAddress] = useState<null | AddressReactType>(null)
     const [renderFetchAddresses, setRenderFetchAddresses] = useState(false)
     const [renderCheckout, setRenderCheckout] = useState(false)
+    const [items, setItems] = useState<ItemReact[]>([])
 
     const [phoneNumber, setPhoneNumber] = useState("+44 ")
     const [deliveryInfo, setDeliveryInfo] = useState("")
-
+    const [minimumOrderPrice, setMinimumOrderPrice] = useState(0)
+    const total = useMemo(() => {
+        let total = 0
+        if(items.length > 0){
+            items.forEach((element) => total += element.price_total * element.amount)
+        }
+        return total
+    }, [items])
 
     const shippingSectionRef = useRef<HTMLDivElement>(null)
     const billingSectionRef = useRef<HTMLDivElement>(null)
@@ -179,7 +239,42 @@ const Checkout = () => {
             router.push("/cart")
         }
     }
+    const getCartFormatted = () => {
+        const cartFormatted: { item_id: number, amount: number }[] = []
+        for(const [key, value] of Array.from(cart.entries())) cartFormatted.push({
+            item_id: key,
+            amount: value
+        })
+        return cartFormatted
+    }
 
+    const {loading: loadingGetMinimumOrderPrice} = useQuery<GetMinimumOrderPriceType>(GET_MINIMUM_ORDER_PRICE, {
+        onCompleted: (data) => {
+            setMinimumOrderPrice(data.getMinimumOrderPrice)
+        }
+    })
+    const [getItemsCart] = useLazyQuery<GetItemsCartType, GetItemsCartVarType>(GET_ITEMS_CART, {
+        variables: {
+            items: getCartFormatted()
+        },
+        fetchPolicy: "cache-and-network",
+        onCompleted: (data) => {
+            const newItems: ItemReact[] = []
+            for(const item of data.getItemsCart){
+                if(cart.has(Number(item.item_id))){
+                    newItems.push({
+                        ...item,
+                        item_id: Number(item.item_id),
+                        amount: cart.get(Number(item.item_id))!
+                    })
+                }
+            }
+            setItems(newItems)
+        },
+        onError: async () => {
+            router.push("/cart")
+        }
+    })
     const [getUserCart] = useLazyQuery<GetCartType>(GET_CART, {
         fetchPolicy: "network-only",
         onCompleted: (data) => {
@@ -256,9 +351,9 @@ const Checkout = () => {
     useEffect(() => {
         if(cartReady){
             if(cart.size === 0){
-                console.log("ERROR 1")
                 router.push("/cart")
             }else{
+                getItemsCart()
                 getUserCart({
                     context: {
                         headers: {
@@ -309,11 +404,20 @@ const Checkout = () => {
         if(renderCheckout) moveNext(2,3)
     }, [renderCheckout])
 
-    if(loading || cart.size === 0) {
+    if(holidayPeriod){
+        router.push("/cart")
+        return <PageLoader display/>
+    }
+
+    if(loading || cart.size === 0 || loadingGetMinimumOrderPrice || items.length === 0) {
         return <PageLoader display={true}/>
     }
     if(!logged) {
         router.push("/login")
+        return <PageLoader display/>
+    }
+    if(cart.size > 0 && items.length > 0 && total < minimumOrderPrice){
+        router.push("/cart")
         return <PageLoader display/>
     }
 
@@ -361,7 +465,9 @@ const Checkout = () => {
                     moveBack={moveBack}
                     billingAddress={selectedBillingAddress}
                     shippingAddress={selectedShippingAddress}
+                    delivery_suggested={deliveryInfo}
                     phoneNumber={phoneNumber}
+                    items={items}
                 />
             }
         </main>

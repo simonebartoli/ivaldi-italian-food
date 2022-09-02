@@ -6,6 +6,8 @@ import {useAuth} from "../contexts/auth-context";
 import {useRouter} from "next/router";
 import {gql, useLazyQuery} from "@apollo/client";
 import PageLoader from "../components/page-loader";
+import Head from "next/head";
+import {HOST, TWITTER_USERNAME} from "../settings";
 
 type GetBillingAddressesType = {
     getUserInfo: {
@@ -40,6 +42,31 @@ const GET_BILLING_ADDRESSES = gql`
     }
 `
 
+const MetaBillingAddress = () => {
+    return (
+        <Head>
+            <title>{`Billing Addresses - Ivaldi Italian Food`}</title>
+            <meta name="description" content={"Check, modify and add billing addresses in this page."}/>
+            <meta name="keywords" content={"addresses,billing,edit,add,remove,check,expedition,shipping"}/>
+            <meta name="robots" content="index, follow"/>
+            <meta httpEquiv="Content-Type" content="text/html; charset=utf-8"/>
+            <meta name="language" content="English"/>
+            <meta name="revisit-after" content="5 days"/>
+            <meta name="author" content="Ivaldi Italian Food"/>
+
+            <meta property="og:title" content={`Billing Addresses - Ivaldi Italian Food`}/>
+            <meta property="og:site_name" content={HOST}/>
+            <meta property="og:url" content={`${HOST}/billing-addresses`}/>
+            <meta property="og:description" content={"Check, modify and add billing addresses in this page."}/>
+            <meta property="og:type" content="product"/>
+
+            <meta name="twitter:card" content="summary"/>
+            <meta name="twitter:site" content={TWITTER_USERNAME}/>
+            <meta name="twitter:title" content={`${HOST}/billing-addresses`}/>
+            <meta name="twitter:description" content={"Check, modify and add billing addresses in this page."}/>
+        </Head>
+    )
+}
 
 const BillingAddresses = () => {
     const {loading, logged, accessToken, functions: {handleAuthErrors}} = useAuth()
@@ -81,7 +108,12 @@ const BillingAddresses = () => {
     }, [accessToken, renderFetchAddresses])
 
 
-    if(loading) return <PageLoader display/>
+    if(loading) return (
+        <>
+            <MetaBillingAddress/>
+            <PageLoader display/>
+        </>
+    )
     if(!logged) {
         router.push("/login")
         return <PageLoader display/>
@@ -89,6 +121,7 @@ const BillingAddresses = () => {
 
     return (
         <LayoutPrivate className={"self-stretch flex h-full flex-col gap-16 items-center justify-start smxl:p-8 smx:p-4 px-0 py-4"}>
+            <MetaBillingAddress/>
             <h1 className="p-4 text-3xl">My Billing Addresses</h1>
             <AddAddress billing={true} setRenderFetchAddresses={setRenderFetchAddresses}/>
             {

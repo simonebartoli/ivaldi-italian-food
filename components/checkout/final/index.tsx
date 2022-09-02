@@ -19,7 +19,9 @@ type Props = {
     moveBack: (oldRef: number, newRef: number) => void
     shippingAddress: AddressReactType
     billingAddress: AddressReactType
+    delivery_suggested: string
     phoneNumber: string
+    items: ItemReact[]
 }
 
 // PAYMENT INTENTS CREATE / RETRIEVE
@@ -51,22 +53,6 @@ type CreateOrRetrievePaymentIntentType = {
 // ------------------------------------------------
 
 
-// ITEMS CART TYPES
-const GET_ITEMS_CART = gql`
-    query GET_ITEMS_CART ($items: [ItemCart!]!) {
-        getItemsCart(items: $items){
-            item_id
-            name
-            photo_loc
-            price_total
-            price_unit
-            vat {
-                percentage
-            }
-        }
-    }
-`
-
 type Item = {
     name: string
     photo_loc: string
@@ -77,28 +63,15 @@ type Item = {
     }
 }
 type ItemReact = Item & {item_id: number, amount: number}
-type ItemServer = Item & {item_id: string}
-type GetItemsCartType = {
-    getItemsCart: ItemServer[]
-}
-type GetItemsCartVarType = {
-    items: {
-        item_id: number,
-        amount: number
-    }[]
-}
 // ------------------------------------------------
 
-const FinalIndex = forwardRef<HTMLDivElement, Props>(({moveBack, shippingAddress, billingAddress, phoneNumber}, ref) => {
-    const router = useRouter()
+const FinalIndex = forwardRef<HTMLDivElement, Props>(({moveBack, shippingAddress, billingAddress, phoneNumber, delivery_suggested, items}, ref) => {
 
     const {accessToken, functions: {handleAuthErrors}} = useAuth()
-    const {cart} = useCart()
 
     const [paymentIntent, setPaymentIntent] = useState<{ client_secret: string, amount: number, id: string } | null>(null)
     const [reTry, setReTry] = useState(false)
 
-    const [items, setItems] = useState<ItemReact[]>([])
     const total = useMemo<number>(() => {
         let newTotal = 0
         if(items.length === 0) return newTotal
@@ -116,36 +89,6 @@ const FinalIndex = forwardRef<HTMLDivElement, Props>(({moveBack, shippingAddress
         return Number(newTotal.toFixed(2))
     }, [items])
 
-    const getCartFormatted = () => {
-        const cartFormatted: { item_id: number, amount: number }[] = []
-        for(const [key, value] of Array.from(cart.entries())) cartFormatted.push({
-            item_id: key,
-            amount: value
-        })
-        return cartFormatted
-    }
-
-    const {} = useQuery<GetItemsCartType, GetItemsCartVarType>(GET_ITEMS_CART, {
-        variables: {
-            items: getCartFormatted()
-        },
-        onCompleted: (data) => {
-            const newItems: ItemReact[] = []
-            for(const item of data.getItemsCart){
-                if(cart.has(Number(item.item_id))){
-                    newItems.push({
-                        ...item,
-                        item_id: Number(item.item_id),
-                        amount: cart.get(Number(item.item_id))!
-                    })
-                }
-            }
-            setItems(newItems)
-        },
-        onError: async () => {
-            router.push("/cart")
-        }
-    })
     const [createOrRetrievePaymentIntent] = useMutation<CreateOrRetrievePaymentIntentType, CreateOrRetrievePaymentIntentVarType>(CREATE_OR_RETRIEVE_PAYMENT_INTENT, {
         context: {
             headers: {
@@ -179,7 +122,8 @@ const FinalIndex = forwardRef<HTMLDivElement, Props>(({moveBack, shippingAddress
                     data: {
                         billing_address: billingAddress,
                         shipping_address: shippingAddress,
-                        phone_number: phoneNumber
+                        phone_number: phoneNumber,
+                        delivery_suggested: delivery_suggested
                     }
                 }
             })
@@ -193,7 +137,8 @@ const FinalIndex = forwardRef<HTMLDivElement, Props>(({moveBack, shippingAddress
                     data: {
                         billing_address: billingAddress,
                         shipping_address: shippingAddress,
-                        phone_number: phoneNumber
+                        phone_number: phoneNumber,
+                        delivery_suggested: delivery_suggested
                     }
                 }
             })
@@ -231,7 +176,7 @@ const FinalIndex = forwardRef<HTMLDivElement, Props>(({moveBack, shippingAddress
                 <CheckoutPayPal shipping_address={shippingAddress}
                                 billing_address={billingAddress}
                                 phone_number={phoneNumber}
-                                delivery_suggested={""}
+                                delivery_suggested={delivery_suggested}
                 />
                 {
                     paymentIntent &&

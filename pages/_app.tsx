@@ -10,12 +10,17 @@ import type { AppProps } from 'next/app'
 import Layout from "../components/layout";
 import {ResizerContext} from "../contexts/resizer-context";
 import {LayoutContext} from "../contexts/layout-context";
-import {ApolloClient, ApolloProvider, createHttpLink, InMemoryCache} from "@apollo/client";
+import {ApolloClient, ApolloProvider, createHttpLink, from, InMemoryCache} from "@apollo/client";
 import {setContext} from "@apollo/client/link/context";
 import {AuthContext} from "../contexts/auth-context";
 import {ToastContainer} from "react-toastify";
 import {CartContext} from "../contexts/cart-context";
+import {onError} from "@apollo/client/link/error";
+import {HolidayContext} from "../contexts/holiday-context";
 
+const errorLink = onError(({networkError }) => {
+    if (networkError) console.log(`[Network error]: ${networkError.message}`);
+});
 const httpLink = createHttpLink({
     uri: "http://localhost:4000/graphql"
 })
@@ -29,11 +34,12 @@ const authLink = setContext((_, {headers}) => {
 })
 
 export const apolloClient = new ApolloClient({
-    link: authLink.concat(httpLink),
+    link: from([authLink, errorLink, httpLink]),
     cache: new InMemoryCache()
 })
 
 function MyApp({ Component, pageProps }: AppProps) {
+
   return (
       <ApolloProvider client={apolloClient}>
           <ToastContainer
@@ -49,13 +55,15 @@ function MyApp({ Component, pageProps }: AppProps) {
           />
           <AuthContext>
               <CartContext>
-                  <ResizerContext>
-                      <LayoutContext>
-                          <Layout>
-                                <Component {...pageProps} />
-                          </Layout>
-                      </LayoutContext>
-                  </ResizerContext>
+                  <HolidayContext>
+                      <ResizerContext>
+                          <LayoutContext>
+                              <Layout>
+                                    <Component {...pageProps} />
+                              </Layout>
+                          </LayoutContext>
+                      </ResizerContext>
+                  </HolidayContext>
               </CartContext>
           </AuthContext>
       </ApolloProvider>

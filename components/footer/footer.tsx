@@ -6,6 +6,7 @@ import {BsTelephone} from "react-icons/bs";
 import {MdOutlineAlternateEmail} from "react-icons/md";
 import {useResizer} from "../../contexts/resizer-context";
 import {useLayoutContext} from "../../contexts/layout-context";
+import Link from "next/link";
 
 
 const Footer = () => {
@@ -24,9 +25,15 @@ const Footer = () => {
                     <span className="font-semibold text-2xl">Web Pages</span>
                     <div>
                         <ul className="list-disc list-inside space-y-4">
-                            <li className="pl-2"><span className="pl-2">Shop</span></li>
-                            <li className="pl-2"><span className="pl-2">Faqs</span></li>
-                            <li className="pl-2"><span className="pl-2">Cart</span></li>
+                            <Link href={"/shop"}>
+                                <li className="pl-2"><a href={"/shop"} className="pl-2">Shop</a></li>
+                            </Link>
+                            <Link href={"/"}>
+                                <li className="pl-2"><a href={"/"} className="pl-2">Faqs</a></li>
+                            </Link>
+                            <Link href={"/cart"}>
+                                <li className="pl-2"><a href={"/cart"} className="pl-2">Cart</a></li>
+                            </Link>
                         </ul>
                     </div>
                 </div>
@@ -34,9 +41,15 @@ const Footer = () => {
                     <span className="font-semibold text-2xl">Personal Area</span>
                     <div>
                         <ul className="list-disc list-inside space-y-4">
-                            <li className="pl-2"><span className="pl-2">My Orders</span></li>
-                            <li className="pl-2"><span className="pl-2">My Shipping Address</span></li>
-                            <li className="pl-2"><span className="pl-2">My Payment Method</span></li>
+                            <Link href={"/orders"}>
+                                <li className="pl-2"><a href={"/orders"} className="pl-2">My Orders</a></li>
+                            </Link>
+                            <Link href={"/shipping-address"}>
+                                <li className="pl-2"><a href={"/shipping-address"} className="pl-2">My Shipping Address</a></li>
+                            </Link>
+                            <Link href={"/receipts"}>
+                                <li className="pl-2"><a href={"/receipts"} className="pl-2">My Receipts</a></li>
+                            </Link>
                         </ul>
                     </div>
                 </div>

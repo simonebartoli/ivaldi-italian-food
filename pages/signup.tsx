@@ -11,6 +11,8 @@ import {toast} from "react-toastify";
 import {useAuth} from "../contexts/auth-context";
 import PageLoader from "../components/page-loader";
 import {useRouter} from "next/router";
+import Head from "next/head";
+import {HOST, TWITTER_USERNAME} from "../settings";
 
 const CREATE_NEW_USER = gql`
     mutation CREATE_NEW_USER ($data: CreateNewUserInput!) {
@@ -128,6 +130,27 @@ const Signup = () => {
 
     return (
         <main ref={fullPageRef} className="overflow-hidden flex flex-col gap-16 items-center justify-center p-8">
+            <Head>
+                <title>{`Sign Up - Ivaldi Italian Food`}</title>
+                <meta name="description" content={"Register to have the possibility to make purchases, manage orders and collect receipts."}/>
+                <meta name="keywords" content={"login,private,dashboard,orders,receipts,email,password,security,details,signup,registration,purchase"}/>
+                <meta name="robots" content="index, follow"/>
+                <meta httpEquiv="Content-Type" content="text/html; charset=utf-8"/>
+                <meta name="language" content="English"/>
+                <meta name="revisit-after" content="5 days"/>
+                <meta name="author" content="Ivaldi Italian Food"/>
+
+                <meta property="og:title" content={`Sign Up - Ivaldi Italian Food`}/>
+                <meta property="og:site_name" content={HOST}/>
+                <meta property="og:url" content={`${HOST}/signup`}/>
+                <meta property="og:description" content={"Register to have the possibility to make purchases, manage orders and collect receipts."}/>
+                <meta property="og:type" content="product"/>
+
+                <meta name="twitter:card" content="summary"/>
+                <meta name="twitter:site" content={TWITTER_USERNAME}/>
+                <meta name="twitter:title" content={`${HOST}/signup`}/>
+                <meta name="twitter:description" content={"Register to have the possibility to make purchases, manage orders and collect receipts."}/>
+            </Head>
             <SecurityModal
                 modalOpen={modalOpen}
                 setModalOpen={setModalOpen}

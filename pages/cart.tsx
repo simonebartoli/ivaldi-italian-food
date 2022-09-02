@@ -3,12 +3,13 @@ import CartArticle from "../components/cart/cartArticle";
 import CartSummary from "../components/cart/cartSummary";
 import {useResizer} from "../contexts/resizer-context";
 import {ItemCartType, useCart} from "../contexts/cart-context";
-import {gql, useLazyQuery} from "@apollo/client";
+import {gql, useLazyQuery, useQuery} from "@apollo/client";
 import PageLoader from "../components/page-loader";
 import {useLayoutContext} from "../contexts/layout-context";
 import Link from "next/link";
 import _ from "lodash";
 import {useAuth} from "../contexts/auth-context";
+import Head from "next/head";
 
 type GetItemsCartType = {
     getItemsCart: ItemType[]
@@ -28,9 +29,8 @@ export type ItemType = {
         percentage: number
     } | null
 }
-
 const GET_ITEMS_CART = gql`
-    query GET_ITEMS_CART($items: [ItemCart!]!) {
+    query GET_ITEMS_CART($items: [ItemCartInput!]!) {
         getItemsCart(items: $items){
             item_id
             name
@@ -48,6 +48,15 @@ const GET_ITEMS_CART = gql`
     }
 `
 
+const GET_MINIMUM_ORDER_PRICE = gql`
+    query GET_MINIMUM_ORDER_PRICE {
+        getMinimumOrderPrice
+    }
+`
+type GetMinimumOrderPriceType = {
+    getMinimumOrderPrice: number
+}
+
 const Cart = () => {
     const {widthPage, heightPage} = useResizer()
     const {navHeight} = useLayoutContext()
@@ -58,7 +67,13 @@ const Cart = () => {
     const fullPageRef = useRef<HTMLDivElement>(null)
     const [render, setRender] = useState(true)
     const [loader, setLoader] = useState(true)
+    const [minimumOrderPrice, setMinimumOrderPrice] = useState(0)
 
+    const {loading: loadingGetMinimumOrderPrice} = useQuery<GetMinimumOrderPriceType>(GET_MINIMUM_ORDER_PRICE, {
+        onCompleted: (data) => {
+            setMinimumOrderPrice(data.getMinimumOrderPrice)
+        }
+    })
     const [itemsCart, setItemsCart] = useState<Map<number, ItemType>>(new Map())
     const [getItemsCart, {loading}] = useLazyQuery<GetItemsCartType, {items: ItemCartType[]}>(GET_ITEMS_CART, {
         fetchPolicy: "cache-and-network",
@@ -129,7 +144,15 @@ const Cart = () => {
 
     return (
         <main className="flex flex-col justify-center w-full items-center p-8">
-            {(loading && loader) ? <PageLoader display/> :
+            <Head>
+                <title>{`Cart - Ivaldi Italian Food`}</title>
+                <meta name="robots" content="noindex, follow"/>
+                <meta httpEquiv="Content-Type" content="text/html; charset=utf-8"/>
+                <meta name="language" content="English"/>
+                <meta name="revisit-after" content="5 days"/>
+                <meta name="author" content="Ivaldi Italian Food"/>
+            </Head>
+            {((loading || loadingGetMinimumOrderPrice) && loader) ? <PageLoader display/> :
                 <>
                     {itemsCart.size === 0 ?
                         <div ref={fullPageRef} className="w-full flex flex-col gap-8 items-center justify-center">
@@ -157,6 +180,7 @@ const Cart = () => {
                             {widthPage < 1024 && itemsCart.size > 0 ?
                                 <>
                                     <CartSummary
+                                        minimumOrderPrice={minimumOrderPrice}
                                         items={itemsCart}
                                     />
                                     <span className="pt-[1px] bg-neutral-500 w-full"/>
@@ -181,6 +205,7 @@ const Cart = () => {
                             {
                                 itemsCart.size > 0 &&
                                 <CartSummary
+                                    minimumOrderPrice={minimumOrderPrice}
                                     items={itemsCart}
                                 />
                             }

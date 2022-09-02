@@ -10,6 +10,7 @@ export type ItemCartType = {
 type RemoveItemCartType = {
     item_id: number
 }
+
 type ContextType = {
     cart: Map<number, number>
     cartReady: boolean
@@ -22,9 +23,7 @@ type ContextType = {
         resetErrorItemStatus: () => void
     }
 }
-
 const cartContext = createContext<undefined | ContextType>(undefined)
-
 type Props = {
     children: ReactNode
 }
@@ -50,6 +49,11 @@ const GET_USER_CART = gql`
             item_id
             amount
         }
+    }
+`
+const CHECK_IF_CART_AVAILABLE = gql`
+    query CHECK_IF_CART_AVAILABLE($cart: [ItemCartInput!]!){
+        checkIfCartAvailable(items: $cart)
     }
 `
 
@@ -193,13 +197,11 @@ export const CartContext: NextPage<Props> = ({children}) => {
             reTryOperation = false
         }
     }, [accessToken, item, localItems])
-
     useEffect(() => {
         if(!loading) {
             updateCart()
         }
     }, [loading, logged])
-
     useEffect(() => {
         if(firstRender) firstRender = false
         else {
@@ -216,8 +218,6 @@ export const CartContext: NextPage<Props> = ({children}) => {
         else localStorage.removeItem("cart")
 
     }, [cart])
-
-
     useEffect(() => {
         if(error === false && item !== null){
             let newStorage = new Map<number, number>(cart)
@@ -266,7 +266,6 @@ export const CartContext: NextPage<Props> = ({children}) => {
             setError(false)
         }
     }
-
     const removeFromCart = async (item_id: number) => {
         setItem(null)
         setItem({item_id: item_id, amount: 0})
@@ -283,7 +282,6 @@ export const CartContext: NextPage<Props> = ({children}) => {
             setError(false)
         }
     }
-
     const updateCart = () => {
         const data = localStorage.getItem("cart")
 
@@ -323,6 +321,10 @@ export const CartContext: NextPage<Props> = ({children}) => {
                 })
             }
         }
+    }
+    const checkIfCartAvailable = () => {
+        const cartFormatted: ItemCartType[] = []
+        Array.from(cart.entries()).forEach(([key, value]) => cartFormatted.push({item_id: key, amount: value}))
     }
 
     const resetErrorItemStatus = () => {

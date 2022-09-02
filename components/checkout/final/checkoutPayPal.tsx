@@ -66,7 +66,7 @@ const CheckoutPayPal: NextPage<Props> = ({shipping_address, billing_address, pho
     const reTry = useRef(false)
     const resolveRef = useRef<((value: unknown) => void) | null>(null)
 
-    const delay = (ms: number) => {
+    const delay = () => {
         return new Promise(resolve => {
             // timer.current = setTimeout(() => resolve, ms)
             resolveRef.current = resolve
@@ -97,7 +97,7 @@ const CheckoutPayPal: NextPage<Props> = ({shipping_address, billing_address, pho
             const result = await handleAuthErrors(e as ApolloError)
             if(result){
                 reTry.current = true
-                await delay(10000)
+                await delay()
                 // console.log("HERE " + accessTokenPaypalCopy.current.token)
                 return await createOrder()
             }
@@ -124,7 +124,7 @@ const CheckoutPayPal: NextPage<Props> = ({shipping_address, billing_address, pho
             const result = await handleAuthErrors(e as ApolloError)
             if(result){
                 reTry.current = true
-                await delay(10000)
+                await delay()
                 // console.log("HERE " + accessTokenPaypalCopy.current.token)
                 return await capturePayment(payment_intent_id)
             }

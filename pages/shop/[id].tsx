@@ -12,11 +12,17 @@ import {useCart} from "../../contexts/cart-context";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import {SERVER_ERRORS_ENUM} from "../../enums/SERVER_ERRORS_ENUM";
+import Head from "next/head";
+import productJSONLD, {ProductJSONLDType} from "../../structured-data/product-JSONLD";
+import {DateTime} from "luxon";
+import {HOST, TWITTER_USERNAME} from "../../settings";
+import {useRouter} from "next/router";
 
 type ItemType = {
     item_id: number
     name: string
     description: string
+    keywords: string
     amount_available: number
     category: string[]
     photo_loc: string
@@ -30,11 +36,9 @@ type ItemType = {
         notes: string
     } | null
 }
-
 type GetItemType = {
     getItem: ItemType
 }
-
 const GET_ITEM = gql`
     query GET_ITEM($id: Int!) {
         getItem(id: $id){
@@ -57,28 +61,44 @@ const GET_ITEM = gql`
     }
 `
 
-const Product: NextPage<ItemType> = ({
+
+type GetKeywordsType = {
+    getKeywordsItem: string
+}
+type GetKeywordVarType = {
+    id: number
+}
+const GET_KEYWORDS = gql`
+    query GET_KEYWORDS($id: Int!){
+        getKeywordsItem(id: $id)
+    }
+`
+
+
+const Product: NextPage<ItemType & {JSONld: ProductJSONLDType}> = ({
     item_id,
     name,
     description,
+    keywords,
     amount_available,
     category,
     photo_loc,
     price_total,
     price_unit,
     vat,
-    discount
+    discount,
+    JSONld
                                      }) => {
 
     const mainRef = useRef<HTMLDivElement>(null)
     const {heightPage} = useResizer()
     const {navHeight} = useLayoutContext()
     const {cart, error, functions: {addToCart, resetErrorItemStatus}} = useCart()
+    const router = useRouter()
 
     const [ready, setReady] = useState(false)
     const [availableThisSession, setAvailableThisSession] = useState(0)
     const [itemNumber, setItemNumber] = useState(1)
-
 
     useEffect(() => {
         if(item_id !== undefined) {
@@ -120,24 +140,65 @@ const Product: NextPage<ItemType> = ({
         await addToCart(item_id, itemNumber)
     }
 
+    const redirect = (query: string) => {
+        router.push(query)
+    }
+
     useEffect(() => {
         setItemNumber(availableThisSession > 0 ? 1 : 0)
     }, [availableThisSession])
 
     return (
         <main ref={mainRef} className="flex flex-col gap-8 p-8 transition-all">
+            <Head>
+                <title>{`${name} - Ivaldi Italian Food`}</title>
+                <meta name="description" content={description}/>
+                <meta name="keywords" content={keywords}/>
+                <meta name="robots" content="index, follow"/>
+                <meta httpEquiv="Content-Type" content="text/html; charset=utf-8"/>
+                <meta name="language" content="English"/>
+                <meta name="revisit-after" content="5 days"/>
+                <meta name="author" content="Ivaldi Italian Food"/>
+
+                <meta property="og:title" content={`Check out ${name} on ${HOST}`}/>
+                <meta property="og:site_name" content={HOST}/>
+                <meta property="og:url" content={`${HOST}${router.asPath}`}/>
+                <meta property="og:description" content={description}/>
+                <meta property="og:type" content="product"/>
+                <meta property="og:image" content={`${HOST}${photo_loc}`}/>
+
+                <meta name="twitter:card" content="summary"/>
+                <meta name="twitter:site" content={TWITTER_USERNAME}/>
+                <meta name="twitter:title" content={`Check out ${name} on ${HOST}`}/>
+                <meta name="twitter:description" content={description}/>
+                <meta name="twitter:image" content={`${HOST}${photo_loc}`}/>
+
+                {
+                    JSONld &&
+                    <script
+                        type="application/ld+json"
+                        dangerouslySetInnerHTML={{__html: JSON.stringify(JSONld.__html)}}
+                        key="product-jsonld"
+                    />
+                }
+            </Head>
             {ready ? <>
             <div className="flex flex-row flex-wrap text-lg items-center gap-4 text-gray-500">
                 <div className="flex flex-row items-center gap-4">
                     <MdArrowForwardIos/>
                     <span
+                        onClick={() => redirect(("/shop"))}
                         className="cursor-pointer hover:text-black transition hover:underline underline-offset-8">Shop</span>
                 </div>
-                <div className="flex flex-row items-center gap-4">
-                    <MdArrowForwardIos/>
-                    <span
-                        className="cursor-pointer hover:text-black transition hover:underline underline-offset-8">Discounts</span>
-                </div>
+                {
+                    router.query.query &&
+                    <div className="flex flex-row items-center gap-4">
+                        <MdArrowForwardIos/>
+                        <span
+                            onClick={() => redirect(`/search?query=${router.query.query}`)}
+                            className="cursor-pointer hover:text-black transition hover:underline underline-offset-8">{router.query.query}</span>
+                    </div>
+                }
                 <div className="flex flex-row items-center gap-4">
                     <MdArrowForwardIos/>
                     <span
@@ -229,11 +290,18 @@ export const getStaticProps: GetStaticProps = async (context) => {
             props: {}
         }
     }
-    let result
+    let resultItem
+    let resultKeywords
 
     try{
-        result = await apolloClient.query<GetItemType>({
+        resultItem = await apolloClient.query<GetItemType>({
             query: GET_ITEM,
+            variables: {
+                id: id
+            }
+        })
+        resultKeywords = await apolloClient.query<GetKeywordsType, GetKeywordVarType>({
+            query: GET_KEYWORDS,
             variables: {
                 id: id
             }
@@ -247,13 +315,24 @@ export const getStaticProps: GetStaticProps = async (context) => {
             props: {}
         }
     }
-    const {data: {getItem}} = result
+    const {data: {getItem}} = resultItem
+
+    const productMetadata = {...productJSONLD}
+    productMetadata.__html.name = getItem.name
+    productMetadata.__html.brand.name = getItem.name
+    productMetadata.__html.description = getItem.description
+    productMetadata.__html.image = getItem.photo_loc
+    productMetadata.__html.offers.availability = String(getItem.amount_available)
+    productMetadata.__html.offers.price = String(getItem.price_total)
+    productMetadata.__html.offers.priceValidUntil = DateTime.now().plus({year: 1}).toString()
+    productMetadata.__html.offers.url = `/shop/${id}`
 
     return {
         props: {
             item_id: Number(getItem.item_id),
             name: getItem.name,
             description: getItem.description,
+            keywords: resultKeywords.data.getKeywordsItem,
             amount_available: getItem.amount_available,
             category: getItem.category,
             photo_loc: getItem.photo_loc,
@@ -265,7 +344,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
             discount: getItem.discount === null ? null : {
                 percentage: getItem.discount.percentage,
                 notes: getItem.discount.notes
-            }
+            },
+            JSONld: productMetadata
         }
     }
 }

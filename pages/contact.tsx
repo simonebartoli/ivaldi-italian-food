@@ -2,10 +2,33 @@ import React from 'react';
 import {BsFacebook, BsInstagram, BsTelephonePlus} from "react-icons/bs";
 import {HiOutlineMailOpen} from "react-icons/hi";
 import Form from "../components/contact/form";
+import Head from "next/head";
+import {HOST, TWITTER_USERNAME} from "../settings";
 
 const Contact = () => {
     return (
         <main className="flex flex-col items-center sm:p-8 px-4 py-8 pb-12 gap-8 w-full">
+            <Head>
+                <title>{`Contact - Ivaldi Italian Food`}</title>
+                <meta name="description" content={"Any problem, concern, queries... in this page you'll find all the information you need to solve your problems."}/>
+                <meta name="keywords" content={"queries,concerns,problems,questions,answer,contact,phone,email,address"}/>
+                <meta name="robots" content="index, follow"/>
+                <meta httpEquiv="Content-Type" content="text/html; charset=utf-8"/>
+                <meta name="language" content="English"/>
+                <meta name="revisit-after" content="5 days"/>
+                <meta name="author" content="Ivaldi Italian Food"/>
+
+                <meta property="og:title" content={`Contact - Ivaldi Italian Food`}/>
+                <meta property="og:site_name" content={HOST}/>
+                <meta property="og:url" content={`${HOST}/contact`}/>
+                <meta property="og:description" content={"Any problem, concern, queries... in this page you'll find all the information you need to solve your problems."}/>
+                <meta property="og:type" content="product"/>
+
+                <meta name="twitter:card" content="summary"/>
+                <meta name="twitter:site" content={TWITTER_USERNAME}/>
+                <meta name="twitter:title" content={`${HOST}/contact`}/>
+                <meta name="twitter:description" content={"Any problem, concern, queries... in this page you'll find all the information you need to solve your problems."}/>
+            </Head>
             <h1 className="text-4xl">Contact Us</h1>
             <section className="flex mdx:flex-row flex-col items-center justify-start w-full xls:gap-32 gap-20 p-3">
                 <article className="flex flex-col gap-12 basis-1/3 grow items-center">

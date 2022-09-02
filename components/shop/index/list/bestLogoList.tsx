@@ -10,8 +10,10 @@ import {Autoplay, Navigation} from "swiper";
 import {Swiper, SwiperSlide} from "swiper/react";
 import "swiper/css/bundle"
 import {useResizer} from "../../../../contexts/resizer-context";
+import {useRouter} from "next/router";
 
 const BestLogoList = () => {
+    const router = useRouter()
     const [slidesPerView, setSlidesPerView] = useState<number | "auto">(5)
 
     const {widthPage} = useResizer()
@@ -26,6 +28,10 @@ const BestLogoList = () => {
             setSlidesPerView(5)
         }
     }, [widthPage])
+
+    const redirect = (query: string) => {
+        router.push("/search?query=" + query)
+    }
 
     return (
         <section className="flex flex-col w-full items-center gap-8 pt-4 centered-swiper">
@@ -49,27 +55,27 @@ const BestLogoList = () => {
             >
                 <SwiperSlide>
                     <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
-                        <Image alt={"image"} src={BarillaImage} layout="fill" objectFit="cover" className="image"/>
+                        <Image onClick={() => redirect("barilla")} alt={"image"} src={BarillaImage} layout="fill" objectFit="cover" className="image"/>
                     </div>
                 </SwiperSlide>
                 <SwiperSlide>
                     <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
-                        <Image alt={"image"} src={MuttiImage} layout="fill" objectFit="cover" className="image"/>
+                        <Image onClick={() => redirect("mutti")} alt={"image"} src={MuttiImage} layout="fill" objectFit="cover" className="image"/>
                     </div>
                 </SwiperSlide>
                 <SwiperSlide>
                     <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
-                        <Image alt={"image"} src={MulinoBiancoImage} layout="fill" objectFit="cover" className="image"/>
+                        <Image onClick={() => redirect("mulino bianco")} alt={"image"} src={MulinoBiancoImage} layout="fill" objectFit="cover" className="image"/>
                     </div>
                 </SwiperSlide>
                 <SwiperSlide>
                     <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
-                        <Image alt={"image"} src={NutellaImage} layout="fill" objectFit="cover" className="image"/>
+                        <Image onClick={() => redirect("nutella")} alt={"image"} src={NutellaImage} layout="fill" objectFit="cover" className="image"/>
                     </div>
                 </SwiperSlide>
                 <SwiperSlide>
                     <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
-                        <Image alt={"image"} src={RummoImage} layout="fill" objectFit="cover" className="image"/>
+                        <Image onClick={() => redirect("rummo")} alt={"image"} src={RummoImage} layout="fill" objectFit="cover" className="image"/>
                     </div>
                 </SwiperSlide>
             </Swiper>

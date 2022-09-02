@@ -1,5 +1,28 @@
-import React, {useEffect, useState} from 'react';
+import React, {FormEvent, useEffect, useState} from 'react';
 import validator from "validator";
+import {gql, useMutation} from "@apollo/client";
+import {toast} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"
+import {Bars} from "react-loader-spinner";
+
+const CREATE_NEW_CONTACT_REQUEST = gql`
+    mutation CREATE_NEW_CONTACT_REQUEST($data: CreateNewContactRequestInput!) {
+        createNewContactRequest(data: $data)
+    }
+`
+type CreateNewContactRequestType = {
+    createNewContactRequest: true
+}
+type CreateNewContactRequestVarType = {
+    data: {
+        name: string,
+        surname: string,
+        email: string,
+        phone_number: string,
+        message: string
+    }
+}
+
 
 const Form = () => {
     const [errors, setErrors] = useState({
@@ -9,7 +32,6 @@ const Form = () => {
         phone: "",
         message: ""
     })
-
     const [inputsValue, setInputsValue] = useState({
         name: "",
         surname: "",
@@ -26,6 +48,28 @@ const Form = () => {
         message: false
     })
     const [disabled, setDisabled] = useState(true)
+    const [loading, setLoading] = useState(false)
+
+    const [CreateNewContactRequest] = useMutation<CreateNewContactRequestType, CreateNewContactRequestVarType>(CREATE_NEW_CONTACT_REQUEST, {
+        variables: {
+            data: {
+                name: inputsValue.name,
+                surname: inputsValue.surname,
+                email: inputsValue.email,
+                phone_number: inputsValue.phone,
+                message: inputsValue.message
+            }
+        },
+        onCompleted: () => {
+            setLoading(false)
+            resetRequestStatus()
+            toast.success("Your Request Has Been Received Correctly 😃")
+        },
+        onError: (error) => {
+            setLoading(false)
+            toast.error(error.message)
+        }
+    })
 
     useEffect(() => {
         let OK = true
@@ -37,6 +81,30 @@ const Form = () => {
         }
         setDisabled(!OK)
     }, [approved])
+
+    const resetRequestStatus = () => {
+        setInputsValue({
+            name: "",
+            surname: "",
+            email: "",
+            phone: "",
+            message: ""
+        })
+        setErrors({
+            name: "",
+            surname: "",
+            email: "",
+            phone: "",
+            message: ""
+        })
+        setApproved({
+            name: false,
+            surname: false,
+            email: false,
+            phone: false,
+            message: false
+        })
+    }
 
     const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value
@@ -103,8 +171,14 @@ const Form = () => {
         }
     }
 
+    const onFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        setLoading(true)
+        CreateNewContactRequest()
+    }
+
     return (
-        <form className="flex flex-col gap-8 items-center w-full h-full">
+        <form onSubmit={(e) => onFormSubmit(e)} className="flex flex-col gap-8 items-center w-full h-full">
             <div className="flex xls:flex-row flex-col justify-between w-full gap-8">
                 <div className="flex flex-col grow gap-2">
                     <div className={"flex flex-row justify-between items-center"}>
@@ -142,9 +216,14 @@ const Form = () => {
                 </div>
                 <textarea onChange={onChangeMessage} value={inputsValue.message} placeholder="Insert your message here..." rows={5} id="message" className="resize-none border-[1px] border-neutral-400 p-3 text-lg h-full rounded-lg"/>
             </div>
-            <div className="bg-green-standard button-animated hover:before:w-full before:bg-[#008c2e] w-full">
-                <input disabled={disabled} type="submit" value="Get in Touch" className="relative z-10 transition disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:text-black cursor-pointer w-full p-4  text-white font-semibold text-center text-lg border-2 border-black shadow-lg"/>
-            </div>
+            <button disabled={disabled || loading} type="submit" className="flex items-center justify-center relative z-10 transition disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:text-neutral-700 hover:bg-green-500 cursor-pointer bg-green-standard w-full p-4  text-white font-semibold text-center text-lg shadow-lg rounded-lg">
+                {
+                    loading ?
+                        <Bars height={24} color={"white"}/>
+                        :
+                        "Get In Touch"
+                }
+            </button>
         </form>
     );
 };
