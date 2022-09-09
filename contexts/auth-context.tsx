@@ -3,12 +3,14 @@ import {NextPage} from "next";
 import {ApolloError, gql, useLazyQuery, useMutation} from "@apollo/client";
 import {SERVER_ERRORS_ENUM} from "../enums/SERVER_ERRORS_ENUM";
 import {apolloClient} from "../pages/_app";
+import * as jose from 'jose'
 
 type ContextType = {
     accessToken: AccessTokenType
     userInfoNav: UserInfoNavType
     loading: boolean
     logged: boolean
+    isAdmin: boolean
     functions: {
         generateAccessToken: () => void
         logout: () => void
@@ -76,18 +78,34 @@ const useLoginAuth = (
             if (accessToken.token !== null) {
                 setLoginStatus({
                     loading: false,
-                    logged: true
+                    logged: true,
                 })
             } else {
                 setLoginStatus({
                     loading: false,
-                    logged: false
+                    logged: false,
                 })
             }
         }
         if(!accessToken.firstRender) checkIfLogged()
     }, [accessToken])
     return loginStatus
+}
+
+const useRoleChecker = (accessToken: AccessTokenType) => {
+    const [isAdmin, setIsAdmin] = useState(false)
+    useEffect(() => {
+        if(accessToken.token !== null){
+            const role = jose.decodeProtectedHeader(accessToken.token).role as string
+            if(role === "admin"){
+                setIsAdmin(true)
+            }else{
+                setIsAdmin(false)
+            }
+        }
+    }, [accessToken])
+
+    return isAdmin
 }
 
 
@@ -172,11 +190,13 @@ export const AuthContext: NextPage<Props> = ({children}) => {
     }
 
     const {loading, logged} = useLoginAuth(accessToken, generateAccessToken)
+    const isAdmin = useRoleChecker(accessToken)
 
     const value = {
         accessToken,
         userInfoNav,
         loading,
+        isAdmin,
         logged,
         functions: {
             generateAccessToken,

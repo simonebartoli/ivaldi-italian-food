@@ -41,7 +41,7 @@ export const HolidayContext: NextPage<Props> = ({children}) => {
         fetchPolicy: "cache-and-network",
         onCompleted: (data) => {
             setHoliday(data.getHolidays)
-            setHolidayPeriod(true)
+            if(DateTime.now() >= DateTime.fromISO(data.getHolidays.start_date)) setHolidayPeriod(true)
         },
         onError: () => console.log("No Holidays Found")
     })

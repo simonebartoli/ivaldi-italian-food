@@ -3,10 +3,12 @@ import {useResizer} from "../../contexts/resizer-context";
 import {useLayoutContext} from "../../contexts/layout-context";
 import {BsGeoAltFill} from "react-icons/bs";
 import {IoHome, IoNewspaper, IoPersonCircleSharp} from "react-icons/io5";
-import {FaFileSignature} from "react-icons/fa";
+import {FaFileSignature, FaSitemap} from "react-icons/fa";
 import Link from "next/link";
+import {useAuth} from "../../contexts/auth-context";
 
 const NavbarAccount = () => {
+    const {isAdmin} = useAuth()
     const {heightPage, widthPage} = useResizer()
     const {navHeight, accountNavbarRef, setAccountNavbarWidth} = useLayoutContext()
 
@@ -25,30 +27,44 @@ const NavbarAccount = () => {
                     <a href={"/account"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Account</a>
                 </div>
             </Link>
-            <Link href="/orders">
-                <div className="flex flex-row gap-6 items-center cursor-pointer">
-                    <IoNewspaper className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
-                    <a href={"/orders"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Orders</a>
-                </div>
-            </Link>
-            <Link href="/receipts">
-                <div className="flex flex-row gap-6 items-center cursor-pointer">
-                    <FaFileSignature className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
-                    <a href={"/receipts"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Receipts</a>
-                </div>
-            </Link>
-            <Link href="/shipping-addresses">
-                <div className="flex flex-row gap-6 items-center cursor-pointer">
-                    <IoHome className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
-                    <a href={"/shipping-addresses"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Shipping Addresses</a>
-                </div>
-            </Link>
-            <Link href="/billing-addresses">
-                <div className="flex flex-row gap-6 items-center cursor-pointer">
-                    <BsGeoAltFill className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
-                    <a href={"/billing-addresses"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Billing Addresses</a>
-                </div>
-            </Link>
+            {
+                isAdmin ?
+                    <>
+                        <Link href="/items">
+                            <div className="flex flex-row gap-6 items-center cursor-pointer">
+                                <FaSitemap className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
+                                <a href={"/items"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">Items</a>
+                            </div>
+                        </Link>
+                    </>
+                    :
+                    <>
+                        <Link href="/orders">
+                            <div className="flex flex-row gap-6 items-center cursor-pointer">
+                                <IoNewspaper className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
+                                <a href={"/orders"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Orders</a>
+                            </div>
+                        </Link>
+                        <Link href="/receipts">
+                            <div className="flex flex-row gap-6 items-center cursor-pointer">
+                                <FaFileSignature className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
+                                <a href={"/receipts"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Receipts</a>
+                            </div>
+                        </Link>
+                        <Link href="/shipping-addresses">
+                            <div className="flex flex-row gap-6 items-center cursor-pointer">
+                                <IoHome className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
+                                <a href={"/shipping-addresses"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Shipping Addresses</a>
+                            </div>
+                        </Link>
+                        <Link href="/billing-addresses">
+                            <div className="flex flex-row gap-6 items-center cursor-pointer">
+                                <BsGeoAltFill className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
+                                <a href={"/billing-addresses"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Billing Addresses</a>
+                            </div>
+                        </Link>
+                    </>
+            }
         </nav>
     );
 };

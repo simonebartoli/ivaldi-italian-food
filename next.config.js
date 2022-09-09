@@ -13,6 +13,9 @@ const securityHeaders = [{
 
 const nextConfig = {
   reactStrictMode: false,
+  images: {
+    domains: ["localhost"]
+  }
   // async headers() {
   //   return [
   //     {

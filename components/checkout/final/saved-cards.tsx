@@ -240,7 +240,7 @@ const Card: NextPage<CardProps> = ({card, paymentIntent}) => {
                                 payment_intent_id: paymentIntent.id,
                                 payment_method_id: card.payment_method_id,
                                 save_card: false,
-                                cvc: cvcToken.current
+                                // cvc: cvcToken.current
                             }
                         }
                     })
@@ -310,7 +310,7 @@ const Card: NextPage<CardProps> = ({card, paymentIntent}) => {
                 authorization: "Bearer " + accessToken.token,
             }
         },
-        onCompleted: (data) => {
+        onCompleted: () => {
             router.replace("/confirmation")
             setLoading(false)
         },

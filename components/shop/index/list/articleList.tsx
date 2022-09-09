@@ -5,12 +5,66 @@ import {Swiper, SwiperSlide} from "swiper/react";
 import {Navigation} from "swiper";
 import "swiper/css/bundle"
 import {useResizer} from "../../../../contexts/resizer-context";
+import {gql, useQuery} from "@apollo/client";
 
+type Item = {
+    item_id: number
+    name: string
+    discount: {
+        percentage: number
+    } | null
+    photo_loc: string
+    price_total: number
+    amount_available: number
+    importance: number
+}
+
+type GetItemsPaginationType = {
+    getItems_pagination: Item[]
+}
+type GetItemsPaginationVarType = {
+    discountOnly: true
+    outOfStock: false
+    order: "Higher Discounts"
+    keywords: "All Products"
+    offset: 0
+    limit: 10
+}
+const GET_ITEMS_PAGINATION = gql`
+    query GET_ITEMS_PAGINATION ($offset: Int!, $limit: Int!, $discountOnly: Boolean, $priceRange: Price, $outOfStock: Boolean, $keywords: String!, $order: String) {
+        getItems_pagination(offset: $offset, limit: $limit, discountOnly: $discountOnly, priceRange: $priceRange, outOfStock: $outOfStock, keywords: $keywords, order: $order) {
+            item_id
+            name
+            discount {
+                percentage
+            }
+            photo_loc
+            price_total
+            amount_available
+        }
+    }
+`
 
 const ArticleList = () => {
     const [slidesPerView, setSlidesPerView] = useState<number | "auto">(4)
     const [slidesPerGroup, setSlidesPerGroup] = useState(4)
     const [slidesPerGroupAuto, setSlidesPerGroupAuto] = useState(false)
+    const [items, setItems] = useState<Item[]>([])
+
+
+    const {} = useQuery<GetItemsPaginationType, GetItemsPaginationVarType>(GET_ITEMS_PAGINATION, {
+        variables: {
+            keywords: "All Products",
+            limit: 10,
+            discountOnly: true,
+            offset: 0,
+            order: "Higher Discounts",
+            outOfStock: false
+        },
+        onCompleted: (data) => {
+            setItems(data.getItems_pagination)
+        }
+    })
 
     const {widthPage} = useResizer()
     useEffect(() => {
@@ -50,17 +104,17 @@ const ArticleList = () => {
                     modules={[Navigation]}
                     className=""
                 >
-                    {(new Array(13).fill([])).map((element, index) =>
-                        <SwiperSlide key={index}>
-                            <Article key={index} item={{
-                                item_id: 1,
-                                name: "test",
-                                amount_available: 10,
+                    {items.map((element) =>
+                        <SwiperSlide key={element.item_id}>
+                            <Article key={element.item_id} item={{
+                                item_id: Number(element.item_id),
+                                name: element.name,
+                                amount_available: element.amount_available,
                                 photo_loc: "test",
-                                price_total: 10.50,
-                                discount: {
-                                    percentage: 20
-                                }
+                                price_total: element.price_total,
+                                discount: element.discount ? {
+                                    percentage: element.discount.percentage
+                                } : null
                             }}/>
                         </SwiperSlide>
                     )}
