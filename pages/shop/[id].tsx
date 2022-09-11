@@ -252,7 +252,7 @@ const Product: NextPage<ItemType & {JSONld: ProductJSONLDType}> = ({
                                 </div>
                                 {
                                     discount !== null &&
-                                    <span className="text-xl italic line-through text-red-600">£ {(price_total * (discount.percentage/100 + 1)).toFixed(2)}</span>
+                                    <span className="text-xl italic line-through text-red-600">£ {(price_total / (1 - discount.percentage/100)).toFixed(2)}</span>
                                 }
                             </div>
                             <span className="text-lg">{price_total} x {itemNumber} = <span className="text-green-standard">£ {(price_total * itemNumber).toFixed(2)}</span></span>

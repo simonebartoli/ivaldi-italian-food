@@ -1,17 +1,21 @@
 import React from 'react';
 import Product from "./product";
 import Total from "./total";
-import {ItemType} from "../../pages/orders";
+import {ItemType, OrderDeliveryType, OrderType, RefundType} from "../../pages/orders";
 import {NextPage} from "next";
 import {AddressReactType} from "../../pages/checkout";
 
 type Props = {
     items: ItemType[]
     summary: {
+        status: string
+        user: OrderType["user"]
+        order_delivery: OrderDeliveryType
         reference: string
         shipping_address: AddressReactType
         price_total: number
         vat_total: number
+        refund: RefundType[] | null
     }
 }
 
@@ -21,7 +25,25 @@ const ProductsList: NextPage<Props> = ({items, summary}) => {
             <span className="w-full pt-2 text-center text-sm border-t-[1px] border-neutral-500 border-dashed">Order Details</span>
             {
                 items.map((item, _) =>
-                    <Product item={item} key={_}/>
+                    <Product
+                        item={{
+                            ...item,
+                            refund_total: (() => {
+                                let total = 0
+                                if(summary.refund !== null) {
+                                    summary.refund.forEach(_ => {
+                                        _.archive.forEach(__ => {
+                                            if(__.item_id === item.item_id) {
+                                                total += __.price_total
+                                            }
+                                        })
+                                    })
+                                }
+                                return total
+                            })()
+                        }}
+                        key={_}
+                    />
                 )
             }
             <span className="border-t-[1px] border-dashed border-neutral-500 w-full"/>

@@ -145,7 +145,7 @@ type PropsItem = {
 }
 const Item: NextPage<PropsItem> = ({item, refetch}) => {
     const circleRef = useRef<HTMLDivElement>(null)
-    const [orderOpen, setOrderOpen] = useState(true)
+    const [orderOpen, setOrderOpen] = useState(false)
 
     useEffect(() => {
         if(circleRef.current !== null){

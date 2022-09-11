@@ -10,6 +10,7 @@ type Item = {
     price_per_unit: number
     price_unit: string
     vat: number
+    refund_total: number
 }
 type ItemReact = Item & {item_id: number, amount: number}
 
@@ -46,8 +47,12 @@ const Product: NextPage<Props> = ({item}) => {
                 </div>
             </div>
             {widthPage < 1024 && <span className="w-full border-t-[1px] border-dashed border-neutral-500"/>}
-            <div className="flex flex-col justify-center items-center">
+            <div className="flex flex-col justify-center items-end gap-3">
                 <span className="text-2xl font-semibold">£{item.price_total.toFixed(2)}</span>
+                {
+                    item.refund_total > 0 &&
+                    <span className="text-red-600">{`£ ${item.refund_total} Refunded`}</span>
+                }
             </div>
         </section>
     );

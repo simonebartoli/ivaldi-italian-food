@@ -16,7 +16,7 @@ type Props = {
 const Name: NextPage<Props> = ({product, invalid}) => {
     const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value
-        if(newValue.length < 3 || newValue.length > 20) invalid.set(true)
+        if(newValue.length < 3 || newValue.length > 49) invalid.set(true)
         else invalid.set(false)
 
         product.set({

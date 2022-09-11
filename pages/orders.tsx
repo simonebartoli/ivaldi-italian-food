@@ -7,13 +7,16 @@ import OrdersReceiptsFilters from "../components/library/orders-receipts-filters
 import PageLoader from "../components/page-loader";
 import {useAuth} from "../contexts/auth-context";
 import {useRouter} from "next/router";
-import {gql, useLazyQuery} from "@apollo/client";
+import {ApolloQueryResult, gql, useLazyQuery} from "@apollo/client";
 import {AddressReactType} from "./checkout";
 import {NextPage} from "next";
 import {DateTime} from "luxon";
 import { validate as uuidValidate } from 'uuid';
 import Head from "next/head";
 import {HOST, TWITTER_USERNAME} from "../settings";
+import DeliveredForm from "../components/orders/modal/delivered-form";
+import RefundForm from "../components/orders/modal/refund-form";
+import TimeslotModal from "../components/orders/modal/timeslot-modal";
 
 type GetOrdersFullVarType = {
     filters: {
@@ -35,14 +38,36 @@ type OrderType = {
     price_total: number
     vat_total: number
     archive: ArchiveType
+    user: UserType
+    order_delivery: OrderDeliveryType
     reference: string
+    refund: RefundType[] | null
 }
-
+type OrderDeliveryType = {
+    actual: string | null
+    confirmed: string | null
+    suggested: string | null
+}
 type ArchiveType = {
     shipping_address: AddressReactType
     billing_address: AddressReactType
     items: ItemType[]
 }
+type UserType = {
+    name: string
+    surname: string
+    email: string
+}
+type RefundType = {
+    notes: string
+    archive: {
+        price_total: number
+        item_id: number
+        amount_refunded: number
+    }[]
+    datetime: string
+}
+
 export type ItemType = {
     item_id: number
     price_total: number
@@ -64,6 +89,25 @@ const GET_ORDERS_FULL = gql`
             status
             price_total
             reference
+            refund {
+                notes
+                archive {
+                    item_id
+                    amount_refunded
+                    price_total
+                }
+                datetime
+            }
+            user {
+                name
+                surname
+                email
+            }
+            order_delivery {
+                actual
+                confirmed
+                suggested
+            }
             archive {
                 shipping_address {
                     first_address
@@ -128,7 +172,7 @@ const Orders = () => {
     const [resetFilters, setResetFilters] = useState<boolean>(false)
 
     const router = useRouter()
-    const [GetOrdersFull] = useLazyQuery<GetOrdersFullType, GetOrdersFullVarType>(GET_ORDERS_FULL, {
+    const [GetOrdersFull, {refetch}] = useLazyQuery<GetOrdersFullType, GetOrdersFullVarType>(GET_ORDERS_FULL, {
         fetchPolicy: "cache-and-network",
         onCompleted: (data) => {
             setOrders(data.getOrders_FULL)
@@ -258,7 +302,7 @@ const Orders = () => {
             }
             {
                 orders.map((order) =>
-                    <Order order={order} key={order.order_id}/>
+                    <Order refetch={refetch} order={order} key={order.order_id}/>
                 )
             }
         </LayoutPrivate>
@@ -268,19 +312,42 @@ const Orders = () => {
 
 type OrderProps = {
     order: OrderType
+    refetch: (variables?: (Partial<GetOrdersFullVarType> | undefined)) => Promise<ApolloQueryResult<GetOrdersFullType>>
 }
-const Order: NextPage<OrderProps> = ({order}) => {
+const Order: NextPage<OrderProps> = ({order, refetch}) => {
     const [orderOpen, setOrderOpen] = useState(false)
+    const [deliveredModal, setDeliveredModal] = useState(false)
+    const [refundModal, setRefundModal] = useState(false)
+    const [timeslotModal, setTimeslotModal] = useState(false)
+
+    const [invalid, setInvalid] = useState(true)
 
     return (
         <div className="flex flex-col justify-center items-center bg-neutral-50 rounded-lg w-full shadow-md">
             <Description
                 orderOpen={orderOpen}
                 setOrderOpen={setOrderOpen}
+                modal={{
+                    setDeliveredModal: setDeliveredModal,
+                    setRefundModal: setRefundModal,
+                    setConfirmTimeslotModal: setTimeslotModal
+                }}
                 order={{
+                    order_delivery: order.order_delivery,
                     price_total: order.price_total,
                     status: order.status,
-                    datetime: order.datetime
+                    datetime: order.datetime,
+                    refund_total: (() => {
+                        let total = 0
+                        if(order.refund !== null) {
+                            order.refund.forEach((_) => {
+                                _.archive.forEach(__ => {
+                                    total += __.price_total
+                                })
+                            })
+                        }
+                        return total
+                    })()
                 }}
             />
             {
@@ -288,16 +355,58 @@ const Order: NextPage<OrderProps> = ({order}) => {
                     <ProductsList
                         items={order.archive.items}
                         summary={{
+                            order_delivery: order.order_delivery,
+                            user: order.user,
+                            status: order.status,
                             price_total: order.price_total,
                             vat_total: order.vat_total,
                             reference: order.reference,
-                            shipping_address: order.archive.shipping_address
+                            shipping_address: order.archive.shipping_address,
+                            refund: order.refund
                         }}
                     />
                     : null
+            }
+            {
+                deliveredModal &&
+                <DeliveredForm
+                    modalOpen={{
+                        value: deliveredModal,
+                        set: setDeliveredModal
+                    }}
+                    refetch={refetch}
+                    reference={order.reference}
+                />
+            }
+            {
+                refundModal &&
+                <RefundForm
+                    modalOpen={{
+                        value: refundModal,
+                        set: setRefundModal
+                    }}
+                    invalid={{
+                        value: invalid,
+                        set: setInvalid
+                    }}
+                    refetch={refetch}
+                    order={order}
+                />
+            }
+            {
+                timeslotModal &&
+                <TimeslotModal
+                    modalOpen={{
+                        value: timeslotModal,
+                        set: setTimeslotModal
+                    }}
+                    refetch={refetch}
+                    reference={order.reference}
+                />
             }
         </div>
     )
 }
 
 export default Orders;
+export type {OrderType, OrderDeliveryType, RefundType}

@@ -43,7 +43,7 @@ const CartSummary: NextPage<Props> = ({items, minimumOrderPrice}) => {
             totalNoVat += item.price_total * item.amount * (1 - (item.vat.percentage / 100))
             totalVat += item.price_total * item.amount * (item.vat.percentage / 100)
             numOfItems += item.amount
-            if(item.discount?.percentage !== undefined) discounts += item.price_total * item.amount * (item.discount.percentage / 100)
+            if(item.discount?.percentage !== undefined) discounts += (item.price_total / (1 - item.discount.percentage / 100) * item.amount) - item.price_total * item.amount
         }
         setTotal(Number((totalVat + totalNoVat).toFixed(2)))
         setVat(Number(totalVat.toFixed(2)))

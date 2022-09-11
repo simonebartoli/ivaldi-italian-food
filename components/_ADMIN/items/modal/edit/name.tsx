@@ -21,7 +21,7 @@ const Name: NextPage<Props> = ({item, currentProperty, invalid}) => {
         const newValue = e.target.value
 
         if(newValue !== item.name) {
-            if(newValue.length < 3 || newValue.length > 20) invalid.set(true)
+            if(newValue.length < 3 || newValue.length > 49) invalid.set(true)
             else invalid.set(false)
             currentProperty.set({...currentProperty.value, name: newValue})
         }else {

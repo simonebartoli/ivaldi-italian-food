@@ -9,7 +9,7 @@ type Props = {
     handleFormSubmit: () => void
     loading: boolean
 
-    type: "EDIT" | "REMOVE" | "ADD"
+    type: "EDIT" | "REMOVE" | "ADD" | "DELIVERED" | "REFUNDED"
     currentProperty?: CurrentProduct
 }
 const Buttons: NextPage<Props> = ({invalid, currentProperty, setModalOpen, handleFormSubmit, loading, type}) => {
@@ -48,21 +48,21 @@ const Buttons: NextPage<Props> = ({invalid, currentProperty, setModalOpen, handl
                     disabled={invalid || !checkIfChanged() || loading || !checkIfAllPropertySet()}
                     className={
                         `flex items-center justify-center disabled:cursor-not-allowed disabled:bg-neutral-500 p-3 w-1/2 
-                        text-lg ${(type === "EDIT" || type === "ADD") ? "bg-green-standard hover:bg-green-500" : "bg-red-600 hover:bg-red-500"} text-white rounded-lg shadow-md transition`
+                        text-lg ${(type === "EDIT" || type === "ADD" || type === "DELIVERED" || type === "REFUNDED") ? "bg-green-standard hover:bg-green-500" : "bg-red-600 hover:bg-red-500"} text-white rounded-lg shadow-md transition`
                     }
                     type="submit">
                     {
                         loading ?
                             <Bars height={24} color={"white"}/>
                             :
-                            ((type === "EDIT" || type === "ADD") ? "Save" : type === "REMOVE" && "Remove")
+                            ((type === "EDIT" || type === "ADD" || type === "DELIVERED" || type === "REFUNDED") ? "Save" : type === "REMOVE" && "Remove")
                     }
                 </button>
                 <button
                     onClick={() => setModalOpen(false)}
                     className={
                         `p-3 w-1/2 text-lg text-white rounded-lg
-                         shadow-md ${(type === "EDIT" || type === "ADD") ? "bg-red-600 hover:bg-red-500" : "bg-neutral-500 hover:bg-neutral-400"} transition`
+                         shadow-md ${(type === "EDIT" || type === "ADD" || type === "DELIVERED" || type === "REFUNDED") ? "bg-red-600 hover:bg-red-500" : "bg-neutral-500 hover:bg-neutral-400"} transition`
                     }
                     type="submit">
                     Discard

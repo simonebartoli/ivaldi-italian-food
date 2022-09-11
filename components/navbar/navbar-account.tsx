@@ -36,6 +36,18 @@ const NavbarAccount = () => {
                                 <a href={"/items"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">Items</a>
                             </div>
                         </Link>
+                        <Link href="/manage-orders">
+                            <div className="flex flex-row gap-6 items-center cursor-pointer">
+                                <IoNewspaper className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
+                                <a href={"/manage-orders"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">Orders</a>
+                            </div>
+                        </Link>
+                        <Link href="/receipts">
+                            <div className="flex flex-row gap-6 items-center cursor-pointer">
+                                <FaFileSignature className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
+                                <a href={"/receipts"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">Receipts</a>
+                            </div>
+                        </Link>
                     </>
                     :
                     <>

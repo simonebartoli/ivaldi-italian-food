@@ -81,7 +81,7 @@ const Article: NextPage<{item: Item, hidden?: boolean}> = ({item, hidden= false}
                 {(item.discount && item.amount_available > 0) ?
                     <div className="flex flex-row gap-4 items-end">
                         <span className="font-semibold text-2xl">£ {item.price_total}</span>
-                        <span className="text-lg italic line-through text-red-600">£ {Number(item.price_total * (item.discount.percentage / 100 + 1)).toFixed(2)}</span>
+                        <span className="text-lg italic line-through text-red-600">£ {Number(item.price_total / (1 - item.discount.percentage / 100)).toFixed(2)}</span>
                     </div>
                     :
                     <span className="font-semibold text-2xl">£ {item.price_total}</span>
