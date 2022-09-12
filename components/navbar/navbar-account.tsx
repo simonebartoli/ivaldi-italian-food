@@ -6,6 +6,7 @@ import {IoHome, IoNewspaper, IoPersonCircleSharp} from "react-icons/io5";
 import {FaFileSignature, FaSitemap} from "react-icons/fa";
 import Link from "next/link";
 import {useAuth} from "../../contexts/auth-context";
+import {BiCategoryAlt} from "react-icons/bi";
 
 const NavbarAccount = () => {
     const {isAdmin} = useAuth()
@@ -46,6 +47,12 @@ const NavbarAccount = () => {
                             <div className="flex flex-row gap-6 items-center cursor-pointer">
                                 <FaFileSignature className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
                                 <a href={"/receipts"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">Receipts</a>
+                            </div>
+                        </Link>
+                        <Link href="/categories">
+                            <div className="flex flex-row gap-6 items-center cursor-pointer">
+                                <BiCategoryAlt className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
+                                <a href={"/categories"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">Categories</a>
                             </div>
                         </Link>
                     </>

@@ -3,7 +3,6 @@ import {IoArrowDownCircle} from "react-icons/io5";
 import {NextPage} from "next";
 import {DateTime} from "luxon";
 import {useAuth} from "../../contexts/auth-context";
-import {Simulate} from "react-dom/test-utils";
 import {OrderDeliveryType} from "../../pages/orders";
 
 enum OrderStatus {
@@ -45,7 +44,12 @@ const Description: NextPage<Props> = ({orderOpen, setOrderOpen, order, modal}) =
 
     const handleOrderOpenClick = (e: React.MouseEvent<HTMLDivElement>) => {
         const elementClicked = e.target as HTMLElement
-        if(!elementClicked.className.includes("no-event")) setOrderOpen(!orderOpen)
+        console.log(elementClicked)
+        try{
+            if(!elementClicked.className.includes("no-event")) setOrderOpen(!orderOpen)
+        }catch (e) {
+            setOrderOpen(!orderOpen)
+        }
     }
 
     const handleOrderStatusChange = (e: ChangeEvent<HTMLSelectElement>) => {
