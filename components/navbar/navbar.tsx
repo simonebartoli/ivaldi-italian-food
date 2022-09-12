@@ -10,7 +10,7 @@ import {useCart} from "../../contexts/cart-context";
 
 
 const Navbar = () => {
-    const {userInfoNav, functions: {logout}} = useAuth()
+    const {userInfoNav, isAdmin, functions: {logout}} = useAuth()
     const {cart} = useCart()
     const {heightPage, widthPage} = useResizer()
     const {navHeight, setNavHeight, navbarRef} = useLayoutContext()
@@ -151,16 +151,39 @@ const Navbar = () => {
                                                className="text-center hover:text-green-standard transition cursor-pointer">Your
                                                 Receipts</a>
                                         </Link>
-                                        <Link href="/shipping-addresses">
-                                            <a href={"/shipping-addresses"} onClick={onNavClick}
-                                               className="text-center hover:text-green-standard transition cursor-pointer">Your
-                                                Shipping Addresses</a>
-                                        </Link>
-                                        <Link href="/billing-addresses">
-                                            <a href={"/billing-addresses"} onClick={onNavClick}
-                                               className="text-center hover:text-green-standard transition cursor-pointer">Your
-                                                Delivery Addresses</a>
-                                        </Link>
+                                        {
+                                            isAdmin ?
+                                            <>
+                                                <Link href="/items">
+                                                    <a href={"/items"} onClick={onNavClick}
+                                                       className="text-center hover:text-green-standard transition cursor-pointer">Your
+                                                        Items</a>
+                                                </Link>
+                                                <Link href="/categories">
+                                                    <a href={"/categories"} onClick={onNavClick}
+                                                       className="text-center hover:text-green-standard transition cursor-pointer">Your
+                                                        Categories</a>
+                                                </Link>
+                                                <Link href="/holidays">
+                                                    <a href={"/holidays"} onClick={onNavClick}
+                                                       className="text-center hover:text-green-standard transition cursor-pointer">Your
+                                                        Holidays</a>
+                                                </Link>
+                                            </>
+                                            :
+                                            <>
+                                                <Link href="/shipping-addresses">
+                                                    <a href={"/shipping-addresses"} onClick={onNavClick}
+                                                       className="text-center hover:text-green-standard transition cursor-pointer">Your
+                                                        Shipping Addresses</a>
+                                                </Link>
+                                                <Link href="/billing-addresses">
+                                                    <a href={"/billing-addresses"} onClick={onNavClick}
+                                                       className="text-center hover:text-green-standard transition cursor-pointer">Your
+                                                        Delivery Addresses</a>
+                                                </Link>
+                                            </>
+                                        }
                                     </div>
                                     : null
                             }
