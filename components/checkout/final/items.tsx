@@ -30,7 +30,7 @@ const Items: NextPage<Props> = ({items}) => {
                 showProductsList &&
                 <div className="flex flex-col items-center justify-center gap-8">
                     {items.map((element) =>
-                        <Product item={element} key={element.item_id}/>
+                        <Product item={{...element, refund_total: 0}} key={element.item_id}/>
                     )}
                 </div>
             }

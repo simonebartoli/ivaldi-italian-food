@@ -3,12 +3,12 @@ import {IoMdTrash} from "react-icons/io";
 import {MdSettingsBackupRestore} from "react-icons/md"
 import {CurrentProduct} from "../edit-form";
 import {NextPage} from "next";
+import {gql, useQuery} from "@apollo/client";
 
 type Keyword = {
     name: string
     removed: boolean
 }
-
 type Props = {
     item: {
         keywords: string[]
@@ -19,6 +19,15 @@ type Props = {
     }
 }
 
+type GetKeywordsType = {
+    getKeywords: string[]
+}
+const GET_KEYWORDS = gql`
+    query GET_KEYWORDS {
+        getKeywords
+    }
+`
+
 const Keywords: NextPage<Props> = ({item, currentProperty}) => {
     const [keywords, setKeywords] = useState<Keyword[]>(item.keywords.map((element) => {
         return {
@@ -26,13 +35,13 @@ const Keywords: NextPage<Props> = ({item, currentProperty}) => {
             removed: false
         }
     }))
+    const [datalist, setDatalist] = useState<string[]>([])
     const [newKeyword, setNewKeyword] = useState("")
 
     const checkIfSame = (newKeywords: Keyword[]) => {
         const toTest = [...newKeywords.filter((_) => !_.removed).map((_) => _.name)]
         return toTest.every((element) => item.keywords.includes(element)) && item.keywords.every((element) => toTest.includes(element))
     }
-
     const onKeywordRemove = (index: number) => {
         const newKeywords = [...keywords]
         newKeywords[index].removed = true
@@ -98,20 +107,28 @@ const Keywords: NextPage<Props> = ({item, currentProperty}) => {
         }
     }
 
+    const {} = useQuery<GetKeywordsType>(GET_KEYWORDS, {
+        onCompleted: (data) => {
+            setDatalist(data.getKeywords)
+        }
+    })
+
     return (
         <div className="w-full flex flex-col gap-6">
             <div className="flex flex-col gap-3">
                 <span>Add a Keyword:</span>
-                <datalist id={"test"}>
-                    <option value="">test1</option>
-                    <option value="">test2</option>
-                    <option value="">test3</option>
+                <datalist id={"keywords"}>
+                    {
+                        datalist.map((_, index) =>
+                            <option key={index} value={_}>{_}</option>
+                        )
+                    }
                 </datalist>
                 <input
                     value={newKeyword}
                     onChange={(e) => setNewKeyword(e.target.value)}
                     onKeyDown={(e) => addKeyword(e)}
-                    list={"test"}
+                    list={"keywords"}
                     placeholder={"Insert your keyword here... (press enter to confirm)"}
                     type="text"
                     className="p-3 w-full border-[1px] rounded-lg shadow-md"/>

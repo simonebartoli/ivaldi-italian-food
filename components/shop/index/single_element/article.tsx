@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import {IoSearchSharp} from "react-icons/io5";
@@ -26,6 +26,7 @@ const Article: NextPage<{item: Item, hidden?: boolean}> = ({item, hidden= false}
     const [ready, setReady] = useState(false)
     const [loading, setLoading] = useState(false)
     const [disabled, setDisabled] = useState(false)
+    const componentRef = useRef<boolean>(false)
     const router = useRouter()
 
     const {item: itemFromContext, error, functions: {addToCart, resetErrorItemStatus}} = useCart()
@@ -35,7 +36,8 @@ const Article: NextPage<{item: Item, hidden?: boolean}> = ({item, hidden= false}
     }, [])
 
     useEffect(() => {
-        if(error !== null && itemFromContext !== null && itemFromContext.item_id === item.item_id){
+        if(error !== null && itemFromContext !== null && itemFromContext.item_id === item.item_id && componentRef.current){
+            componentRef.current = false
             if(error === false){
                 toast.success("Item Added To Your Cart.")
             }else if(error.graphQLErrors[0] !== undefined && error.graphQLErrors[0].extensions.type === SERVER_ERRORS_ENUM.AMOUNT_NOT_AVAILABLE){
@@ -55,6 +57,7 @@ const Article: NextPage<{item: Item, hidden?: boolean}> = ({item, hidden= false}
 
     const handleAddToCartButtonClick = () => {
         setLoading(true)
+        componentRef.current = true
         addToCart(item.item_id, 1)
     }
 

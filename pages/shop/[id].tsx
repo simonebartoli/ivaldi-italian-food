@@ -295,12 +295,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
     try{
         resultItem = await apolloClient.query<GetItemType>({
+            fetchPolicy: "network-only",
             query: GET_ITEM,
             variables: {
                 id: id
             }
         })
         resultKeywords = await apolloClient.query<GetKeywordsType, GetKeywordVarType>({
+            fetchPolicy: "network-only",
             query: GET_KEYWORDS,
             variables: {
                 id: id
