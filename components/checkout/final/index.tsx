@@ -12,6 +12,7 @@ import {loadStripe} from "@stripe/stripe-js";
 import CheckoutPayPal from "./checkoutPayPal";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import {HOST} from "../../../settings";
 
 type Props = {
     moveBack: (oldRef: number, newRef: number) => void
@@ -182,7 +183,7 @@ const FinalIndex = forwardRef<HTMLDivElement, Props>(({moveBack, shippingAddress
                         <CheckoutStripe billingAddress={billingAddress} paymentIntent={paymentIntent}/>
                     </Elements>
                 }
-                <span className="italic text-neutral-700">Proceeding with the payment you accept our <a target={"_blank"} rel={"noreferrer"} href={"/terms"} className="underline">Terms & Conditions</a>
+                <span className="italic text-neutral-700">Proceeding with the payment you accept our <a target={"_blank"} rel={"noreferrer"} href={`${HOST}/terms`} className="underline">Terms & Conditions</a>
                 </span>
             </section>
         </section>

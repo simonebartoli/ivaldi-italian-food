@@ -7,6 +7,7 @@ import {MdOutlineAlternateEmail} from "react-icons/md";
 import {useResizer} from "../../contexts/resizer-context";
 import {useLayoutContext} from "../../contexts/layout-context";
 import Link from "next/link";
+import {HOST} from "../../settings";
 
 
 const Footer = () => {
@@ -74,7 +75,7 @@ const Footer = () => {
                     <span className="font-semibold text-2xl">Conditions</span>
                     <div>
                         <ul className="list-disc list-inside space-y-4">
-                            <li className="pl-2"><a href="/terms" target={"_blank"} rel={"noreferrer"} className="pl-2">Terms & Conditions</a></li>
+                            <li className="pl-2"><a href={`${HOST}/terms`} target={"_blank"} rel={"noreferrer"} className="pl-2">Terms & Conditions</a></li>
                             <li className="pl-2"><span className="pl-2">Privacy Policy</span></li>
                             <li className="pl-2"><span className="pl-2">Payment System</span></li>
                         </ul>
