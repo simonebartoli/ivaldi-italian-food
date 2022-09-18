@@ -47,6 +47,7 @@ const HomeSectionList = () => {
 
     const [loading, setLoading] = useState(false)
     const [disabled, setDisabled] = useState(false)
+    const [height, setHeight] = useState("auto")
     const item_idRef = useRef<number | null>(null)
 
     const handleAddToCartButtonClick = (item_id: number) => {
@@ -71,12 +72,14 @@ const HomeSectionList = () => {
     useEffect(() => {
         if(searchBarHeight !== undefined && navHeight !== undefined && fullPageRef.current !== null){
             if(widthPage > 1152){
+                setHeight(`${heightPage - navHeight - searchBarHeight}px`)
                 fullPageRef.current.style.height = `${heightPage - navHeight - searchBarHeight}px`
             }else{
+                setHeight("auto")
                 fullPageRef.current.style.height = "auto"
             }
         }
-    }, [searchBarHeight, navHeight, heightPage, widthPage, loading])
+    }, [searchBarHeight, navHeight, heightPage, widthPage, loading, queryLoading])
     useEffect(() => {
         if(error !== null && itemFromContext !== null && itemFromContext.item_id === item_idRef.current){
             item_idRef.current = null
@@ -105,7 +108,7 @@ const HomeSectionList = () => {
         <div ref={fullPageRef} className="w-full flex items-center full-container-size">
             <Swiper
                 style={{
-                    height: `${heightPage - (navHeight ? navHeight : 0) - (searchBarHeight ? searchBarHeight : 0)}px`
+                    height: height
                 }}
                 loop={false}
                 autoHeight={false}

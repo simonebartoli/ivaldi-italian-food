@@ -14,7 +14,7 @@ import {DateTime} from "luxon";
 import {validate as uuidValidate} from "uuid";
 import Head from "next/head";
 import {HOST, TWITTER_USERNAME} from "../settings";
-
+import "react-toastify/dist/ReactToastify.css"
 
 type GetReceiptsFullVarType = {
     filters: {

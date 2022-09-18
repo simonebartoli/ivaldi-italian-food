@@ -311,7 +311,7 @@ const Search: NextPage<Props> = ({query, itemsServer, order}) => {
                             Try again with different parameters.
                         </span>
                             :
-                        <div className="grid lg:grid-cols-3 mdx:grid-cols-2 grid-cols-1 gap-x-8 gap-y-14">
+                        <div className="grid lg:grid-cols-3 mdx:grid-cols-2 grid-cols-1 gap-x-8 gap-y-14 w-full">
                             {
                                 items.map((item) => {
                                     return (

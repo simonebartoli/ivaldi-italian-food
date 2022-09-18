@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://example.com
+Host: https://ivaldi.uk
 
 # Sitemaps
-Sitemap: https://example.com/sitemap.xml
+Sitemap: https://ivaldi.uk/sitemap.xml

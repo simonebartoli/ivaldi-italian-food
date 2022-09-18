@@ -20,9 +20,9 @@ const HomeSection: NextPage<Props> = ({item, loading, disabled, handleAddToCartB
         <div className="h-full px-8 py-2 bg-neutral-50 w-full flex lg:flex-row flex-col items-center justify-evenly">
             {
                 item.discount !== null &&
-                <div className="lg:hidden block bg-white border-[1px] border-neutral-400 p-4 my-8">
-                    <span className="text-3xl">
-                        Discount: <span className="text-red-600 font-semibold">{`${item.discount.percentage}% OFF`}</span>
+                <div className="lg:hidden block bg-white border-[1px] border-neutral-400 p-4 my-8 w-full sm:w-1/2">
+                    <span className="w-full text-3xl text-center flex items-center flex-col gap-3">
+                        Discount: <span className="w-full text-red-600 font-semibold">{`${item.discount.percentage}% OFF`}</span>
                     </span>
                 </div>
             }
@@ -38,7 +38,7 @@ const HomeSection: NextPage<Props> = ({item, loading, disabled, handleAddToCartB
                         </span>
                     </div>
                 }
-                <span className="text-5xl ">{item.name}</span>
+                <span className="smxl:text-5xl text-3xl text-center leading-[3rem]">{item.name}</span>
                 <div className="flex flex-row gap-12 items-center">
                     <span className="font-semibold text-3xl">{`£ ${item.price_total.toFixed(2)}`}</span>
                     {

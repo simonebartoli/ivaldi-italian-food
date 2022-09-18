@@ -209,7 +209,7 @@ const Product: NextPage<ItemType & {JSONld: ProductJSONLDType}> = ({
                 <div className="shop-list mdx:basis-2/5 md:w-1/2 sm:w-3/4 w-full grow mdx:sticky top-[20%] lg:!static">
                     {ready &&
                         <Image quality={100} src={`${API_HOST}${photo_loc}`}
-                               alt="photo" layout="fill" className="image"
+                               alt={name} layout="fill" className="image"
                         />
                     }
                 </div>

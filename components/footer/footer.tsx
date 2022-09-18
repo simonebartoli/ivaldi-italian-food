@@ -74,7 +74,7 @@ const Footer = () => {
                     <span className="font-semibold text-2xl">Conditions</span>
                     <div>
                         <ul className="list-disc list-inside space-y-4">
-                            <li className="pl-2"><span className="pl-2">Terms & Conditions</span></li>
+                            <li className="pl-2"><a href="/terms" target={"_blank"} rel={"noreferrer"} className="pl-2">Terms & Conditions</a></li>
                             <li className="pl-2"><span className="pl-2">Privacy Policy</span></li>
                             <li className="pl-2"><span className="pl-2">Payment System</span></li>
                         </ul>

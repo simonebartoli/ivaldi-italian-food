@@ -21,6 +21,14 @@
 // 20 - Footer Link Fix
 // 21 - Fix Datalist Keyword
 // 22 - Homepage Priority TOP
+// 23 - Fix Homepage Style
+// 24 - Fix Search Small Icon
+// 25 - Heading Products
+// 26 - Revalidate when Purchase
+// 27 - Category Redis + API Check
+// 28 - React Toastify Receipt
+// 29 - Terms and Conditions
+// 30 - Query Shop Undefined
 
 // STATUS
 // 1 - PARTIALLY ~ Missing PayPal Button + OrdersReceiptsFilters ~
@@ -57,3 +65,12 @@
 // 19 - DONE
 // 20 - DONE
 // 21 - DONE
+// 22 - DONE
+// 23 - DONE
+// 24 - DONE
+// 25 - NOT NEEDED
+// 26 - DONE
+// 27 - DONE
+// 28 - DONE
+// 29 - DONE
+// 30 - DONE

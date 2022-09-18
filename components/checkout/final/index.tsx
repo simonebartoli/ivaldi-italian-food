@@ -2,13 +2,11 @@ import React, {forwardRef, useEffect, useMemo, useState} from 'react';
 import CheckoutStripe from "./checkoutStripe";
 import SavedCards from "./saved-cards";
 import {AddressReactType} from "../../../pages/checkout";
-import {gql, useMutation, useQuery} from "@apollo/client";
+import {gql, useMutation} from "@apollo/client";
 import Addresses from "./addresses";
 import Total from "./total";
 import Items from "./items";
-import {useCart} from "../../../contexts/cart-context";
 import {useAuth} from "../../../contexts/auth-context";
-import {useRouter} from "next/router";
 import {Elements} from "@stripe/react-stripe-js";
 import {loadStripe} from "@stripe/stripe-js";
 import CheckoutPayPal from "./checkoutPayPal";
@@ -184,6 +182,8 @@ const FinalIndex = forwardRef<HTMLDivElement, Props>(({moveBack, shippingAddress
                         <CheckoutStripe billingAddress={billingAddress} paymentIntent={paymentIntent}/>
                     </Elements>
                 }
+                <span className="italic text-neutral-700">Proceeding with the payment you accept our <a target={"_blank"} rel={"noreferrer"} href={"/terms"} className="underline">Terms & Conditions</a>
+                </span>
             </section>
         </section>
     );
