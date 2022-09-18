@@ -10,6 +10,7 @@ import {toast} from "react-toastify";
 import {Bars} from "react-loader-spinner";
 import {SERVER_ERRORS_ENUM} from "../../../../enums/SERVER_ERRORS_ENUM";
 import {useRouter} from "next/router";
+import {API_HOST} from "../../../../settings";
 
 type Item = {
     item_id: number
@@ -76,7 +77,7 @@ const Article: NextPage<{item: Item, hidden?: boolean}> = ({item, hidden= false}
             <div className="flex flex-col items-center justify-center gap-6">
                 <div className="shop-list w-full">
                     {ready &&
-                        <Image  quality={100} src={"/media/photos/shop/ragu_funghi_300x.webp"}
+                        <Image  quality={100} src={`${API_HOST}${item.photo_loc}`}
                                       alt="this is a photo" layout="fill" className={"image"}
                         />
                     }

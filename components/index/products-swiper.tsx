@@ -1,8 +1,8 @@
 import React from 'react';
-import PastaImage from "../../public/media/photos/index/pasta.jpg"
+import PastaImage from "../../public/media/photos/index/pasta.webp"
 import ParmigianoImage from "../../public/media/photos/index/parmigiano.jpg"
 import SalsicciaImage from "../../public/media/photos/index/salsiccia.jpg"
-import BiscuitsImage from "../../public/media/photos/index/biscuits.jpg"
+import BiscuitsImage from "../../public/media/photos/index/biscuits.webp"
 
 import Image from "next/image"
 import Link from "next/link";

@@ -110,7 +110,7 @@ const ArticleList = () => {
                                 item_id: Number(element.item_id),
                                 name: element.name,
                                 amount_available: element.amount_available,
-                                photo_loc: "test",
+                                photo_loc: element.photo_loc,
                                 price_total: element.price_total,
                                 discount: element.discount ? {
                                     percentage: element.discount.percentage

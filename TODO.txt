@@ -1,0 +1,59 @@
+// TODO
+// 1 - Mobile Based Everywhere
+// 2 - Filter Optimization
+// 3 - Cart Checks
+// 4 - Email System
+// 5 - Filters Orders / Receipts
+// 6 - Phone Number API Error Check
+// 7 - Check if Delivery Slot is Set
+// 8 - Cart Symbol on Mobile Navbar
+// 9 - Contact Page
+// 10 - API Optimization Field Resolver
+// 11 - Min Order Price
+// 12 - Holiday Time Period
+// 13 - ? Shipping Cost ?
+// 14 - SEO
+// 15 - Manage Network Error
+// 16 - Key Rotation Private/Public
+// 17 - Fix Menu over products
+// 18 - Check Host and Replace NOT ENV DERIVED
+// 19 - Click on Logo Shop Homepage - Search Query
+// 20 - Footer Link Fix
+// 21 - Fix Datalist Keyword
+// 22 - Homepage Priority TOP
+
+// STATUS
+// 1 - PARTIALLY ~ Missing PayPal Button + OrdersReceiptsFilters ~
+    // 1.1 - OrdersReceiptsFilters - DONE
+// 2 - DONE ~ Use Server Instead Of Client + MOBILE NOT DONE ~
+    // 2.1 - Use Server Instead Of Client - DONE
+    // 2.2 - MOBILE - DONE
+        // 2.21 - CATEGORIES FETCH - DONE
+        // 2.22 - Price Range - DONE
+        // 2.23 - Extra Properties - DONE
+// 3 - PARTIALLY DONE ~ Server Side DONE, Missing Client Completely ~
+// 4 - DONE ~ Access + Order DONE, Missing Contact ~
+    // 4.1 - Missing Contact - DONE
+// 5 - DONE ~ Date Filtering NOT DONE + Not Implemented In Receipt Page + Not Found Prompt + Single Research ID ~
+    // 5.1 - Date Filtering - DONE
+    // 5.2 - Receipt Page - DONE
+    // 5.3 - Not Found Prompt - DONE
+    // 5.4 - Single Research ID - DONE
+// 6 - DONE - If any Error Happen ìt Reload the Page
+// 7 - DONE
+// 8 - DONE - Replaced Option in the Slider
+// 9 - DONE
+// 11 - DONE
+// 12 - DONE
+// 14 - PARTIALLY DONE ~ Missing Sitemap + Non Product Page + Structured Missing + OG + Twitter ~
+    // 14.1 - Missing Sitemap - DONE
+    // 14.2 - Structured Missing - DONE
+    // 14.3 - OG - DONE
+    // 14.4 - Twitter - DONE
+    // 14.5 - Non Product Page - DONE
+// 15 - DO NOT KNOW HOW TO MANAGE
+// 16 - DONE
+// 17 - DONE
+// 19 - DONE
+// 20 - DONE
+// 21 - DONE

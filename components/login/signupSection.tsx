@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from "next/image";
-import SignupPhoto from "../../public/media/photos/login/signup.jpg"
+import SignupPhoto from "../../public/media/photos/login/signup.webp"
 import {BiSubdirectoryRight} from "react-icons/bi";
 import Link from "next/link";
 import {NextPage} from "next";

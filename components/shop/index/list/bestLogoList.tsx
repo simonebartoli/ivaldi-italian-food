@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import Image from "next/image";
 
 import BarillaImage from "../../../../public/media/photos/shop/logo/barilla.jpg"
-import MuttiImage from "../../../../public/media/photos/shop/logo/mutti.png"
-import MulinoBiancoImage from "../../../../public/media/photos/shop/logo/mulinobianco.png"
+import MuttiImage from "../../../../public/media/photos/shop/logo/mutti.webp"
+import MulinoBiancoImage from "../../../../public/media/photos/shop/logo/mulinobianco.webp"
 import NutellaImage from "../../../../public/media/photos/shop/logo/nutella.png"
 import RummoImage from "../../../../public/media/photos/shop/logo/rummo.jpg"
 import {Autoplay, Navigation} from "swiper";

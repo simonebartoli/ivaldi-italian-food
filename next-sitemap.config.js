@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-    siteUrl: 'https://example.com',
+    siteUrl: 'https://ivaldi.uk',
     generateRobotsTxt: true,
     additionalPaths: async (config) => {
         const result = []

@@ -91,7 +91,7 @@ const Description: NextPage<Props> = ({orderOpen, setOrderOpen, order, modal}) =
                     <span className="text-2xl smxl:block hidden"> - </span>
                     <span className="smxl:text-2xl text-lg">{DateTime.fromISO(order.datetime).toLocaleString(DateTime.DATETIME_SHORT)}</span>
                     {
-                        (order.order_delivery.actual === null) &&
+                        (order.order_delivery.actual === null && isAdmin) &&
                         <button
                             onClick={handleSetTimeslotButtonClick}
                             className="no-event hover:bg-neutral-100 transition border-[1px] border-neutral-500 ml-4 p-3 text-center shadow-lg rounded-lg bg-white">

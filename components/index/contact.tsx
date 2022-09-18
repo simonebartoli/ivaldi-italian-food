@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from "next/image";
-import TomatoImage from "../../public/media/photos/index/tomato.jpg";
+import TomatoImage from "../../public/media/photos/index/index-bottom.webp";
 import {BiPlus} from "react-icons/bi";
 import {BsFacebook, BsInstagram} from "react-icons/bs";
 

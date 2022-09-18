@@ -1,0 +1,494 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type AccessType {
+    accessToken: String!
+    publicKey: String!
+}
+
+type Address {
+    address_id: ID!
+    city: String!
+    coordinates: String
+    first_address: String!
+    notes: String
+    postcode: String!
+    second_address: String
+}
+
+type Archive {
+    billing_address: BillingAddress!
+    items: [ArchiveItem!]!
+    shipping_address: ShippingAddress!
+}
+
+type ArchiveItem {
+    amount: Int!
+    item_id: Float!
+    name: String!
+    photo_loc: String!
+    price_per_unit: Float!
+    price_total: Float!
+    price_unit: String!
+    vat: Float!
+}
+
+type ArchiveRefund {
+    amount_refunded: Int!
+    item_id: Int!
+    name: String!
+    price_per_unit: Float!
+    price_total: Float!
+    taxes: Float!
+}
+
+type BillingAddress {
+    address_id: ID!
+    city: String!
+    coordinates: String
+    country: String!
+    first_address: String!
+    notes: String
+    postcode: String!
+    second_address: String
+}
+
+type Cart {
+    amount: Int!
+    item: Item!
+    item_id: Int!
+}
+
+type Category {
+    category_id: ID!
+    items: [Item!]
+    name: String!
+    notes: String
+    sub_categories: [SubCategory!]
+}
+
+type Discount {
+    discount_id: ID!
+    notes: String
+    percentage: Float!
+}
+
+type HolidayType {
+    end_date: DateTime!
+    reason: String
+    start_date: DateTime!
+}
+
+type Item {
+    amount_available: Int!
+    category: [String!]!
+    description: String!
+    discount: Discount
+    entry_date: DateTime!
+    importance: Float
+    item_id: ID!
+    keywords: [String!]
+    name: String!
+    photo_loc: String!
+    price_total: Float!
+    price_unit: String!
+    priority: Boolean!
+    vat: Vat!
+}
+
+type Mutation {
+    addNewAddress(data: AddAddressInput!): Int!
+    addNewCategory(data: AddNewCategoryInput!): Boolean!
+    addNewItem(data: AddNewItemInput!): Boolean!
+    addNewRecord(data: AddEntryToCartInput!): Boolean!
+    addPaymentMethodToPaymentIntent(data: AddPaymentMethodToPaymentIntentInput!): Boolean!
+    changeEmail(data: ChangeEmailInput!): Boolean!
+    changePassword(data: ChangePasswordInput!): Boolean!
+    changeStatusRecoverToken(data: ChangeRecoverTokenStatusInputs!): Boolean!
+    checkRecoverTokenStatus: Boolean!
+    confirmDelivery(data: ConfirmDeliveryInput!): Boolean!
+    confirmPayment(data: ConfirmPaymentInput!): Boolean!
+    confirmPaypalPayment(data: ConfirmPaymentInput!): Boolean!
+    createAccessTokenStandard: AccessType!
+    createCVCToken(data: CreateCVCTokenInput!): String!
+    createNewContactRequest(data: CreateNewContactRequestInput!): Boolean!
+    createNewHoliday(data: CreateNewHolidayInput!): Boolean!
+    createNewUser(data: CreateNewUserInput!): String!
+    createOrRetrievePaymentIntent(data: CreatePaymentIntentInput!): PaymentIntent!
+    createOrRetrievePaypalPaymentIntent(data: CreatePaymentIntentInput!): String!
+    createRefund(data: CreateRefundInput!): Boolean!
+    createTimeslotDelivery(data: CreateTimeslotDeliveryInput!): Boolean!
+    editExistingAddress(data: EditAddressInput!): Boolean!
+    getOrCreateReceiptPDF(data: CreateRetrievePdfInput!): String!
+    loginWithPassword(credentials: LoginWithPasswordInputs!): Boolean!
+    loginWithoutPassword(data: LoginWithoutPasswordInputs!): String!
+    logout: Boolean!
+    modifyCategoryDetails(data: ModifyCategoryDetailsInput!): Boolean!
+    modifyItemDetails(data: ModifyItemDetailsInput!): Boolean!
+    removeAddress(data: RemoveAddressInput!): Boolean!
+    removeCategory(category_id: Int!): Boolean!
+    removeHoliday(data: CreateNewHolidayInput!): Boolean!
+    removeItem(item_id: Int!): Boolean!
+    removeRecord(data: RemoveEntryFromCartInput!): Boolean!
+    syncCarts(data: [AddEntryToCartInput!]!): Boolean!
+    translateAddress(data: TranslateAddressInput!): Boolean!
+}
+
+type Order {
+    archive: Archive!
+    datetime: DateTime!
+    order_delivery: OrderDelivery!
+    order_id: ID!
+    payment_method: PaymentMethodDB
+    price_total: Float!
+    receipt_number: Int!
+    reference: String!
+    refund: [Refund!]
+    shipping_cost: Float!
+    status: ORDER_STATUS_ENUM!
+    user: User!
+    vat_total: Float!
+}
+
+type OrderDelivery {
+    actual: DateTime
+    confirmed: String
+    order_delivery_id: Int!
+    suggested: String
+}
+
+type PaymentIntent {
+    amount: Int!
+    client_secret: String!
+    created: Int!
+    currency: String!
+    customer: String
+    id: ID!
+    status: String!
+}
+
+type PaymentMethod {
+    brand: String!
+    exp_date: String!
+    last4: String!
+    payment_method_id: String!
+}
+
+type PaymentMethodDB {
+    account: String!
+    reference: String!
+    type: String!
+}
+
+type Query {
+    checkExistingEmail(email: String!): Boolean!
+    checkIfCartAvailable(items: [ItemCartInput!]!): Boolean!
+    createSecureLink: String!
+    getCategories_FULL: [Category!]!
+    getHolidays: HolidayType!
+    getHolidays_FULL: [HolidayType!]!
+    getItem(id: Int!): Item!
+    getItemsCart(items: [ItemCartInput!]!): [Item!]!
+    getItems_FULL(discountOnly: Boolean, keywords: String!, order: String, outOfStock: Boolean, priceRange: Price, priority: Boolean): [Item!]!
+    getItems_pagination(discountOnly: Boolean, keywords: String!, limit: Int!, offset: Int!, order: String, outOfStock: Boolean, priceRange: Price, priority: Boolean): [Item!]!
+    getKeywords: [String!]!
+    getKeywordsItem(id: Int!): String!
+    getMinimumOrderPrice: Float!
+    getOrders_FULL(filters: OrderReceiptFilters!): [Order!]!
+    getPaymentMethods: [PaymentMethod!]!
+    getSubCategories_FULL: [SubCategory!]!
+    getSubCategories_cursor(cursor: Int, limit: Int!): [SubCategory!]!
+    getSubCategories_pagination(limit: Int!, offset: Int!): [SubCategory!]!
+    getUserCart: [Cart!]!
+    getUserInfo: User!
+}
+
+type Refund {
+    archive: [ArchiveRefund!]!
+    datetime: DateTime!
+    notes: String!
+    refund_id: ID!
+}
+
+type ShippingAddress {
+    address_id: ID!
+    city: String!
+    coordinates: String
+    first_address: String!
+    notes: String
+    postcode: String!
+    second_address: String
+}
+
+type SubCategory {
+    category: Category!
+    items: [Item!]
+    name: String!
+    notes: String
+    sub_category_id: ID!
+}
+
+type Token {
+    expiry_datetime: DateTime!
+    secret: String!
+    token_id: ID!
+    user: User!
+}
+
+type User {
+    billing_addresses: [BillingAddress!]
+    cart: [Cart!]
+    dob: DateTime!
+    email: String
+    email_to_verify: String
+    name: String!
+    role: String!
+    shipping_addresses: [ShippingAddress!]
+    stripe_customer_id: String
+    surname: String!
+    user_id: ID!
+}
+
+type Vat {
+    percentage: Float!
+    vat_id: ID!
+}
+
+enum ADDRESS_TYPE_ENUM {
+    BILLING
+    SHIPPING
+}
+
+enum ORDER_STATUS_ENUM {
+    CANCELLED
+    CONFIRMED
+    DELIVERED
+    REFUNDED
+    REQUIRES_PAYMENT
+}
+
+"The javascript `Date` as string. Type represents date and time as the ISO Date string."
+scalar DateTime
+
+input AddAddressInput {
+    city: String!
+    country: String!
+    first_address: String!
+    notes: String
+    postcode: String!
+    second_address: String
+    type: ADDRESS_TYPE_ENUM!
+}
+
+input AddEntryToCartInput {
+    amount: Int!
+    item_id: Int!
+}
+
+input AddNewCategoryInput {
+    name: String!
+    subCategories: [String!]!
+}
+
+input AddNewItemInput {
+    amount_available: Int!
+    category: [String!]!
+    description: String!
+    discount: Float!
+    keyword: [String!]!
+    name: String!
+    photo_loc: String!
+    price_total: Float!
+    price_unit: String!
+    vat: Float!
+}
+
+input AddPaymentMethodToPaymentIntentInput {
+    cvc: String
+    payment_intent_id: String!
+    payment_method_id: String!
+    save_card: Boolean!
+}
+
+input AddressInput {
+    address_id: ID!
+    city: String!
+    coordinates: String
+    first_address: String!
+    notes: String
+    postcode: String!
+    second_address: String
+}
+
+input ArchiveRefundInput {
+    amount_refunded: Int!
+    item_id: Int!
+    name: String!
+    price_per_unit: Float!
+    price_total: Float!
+    taxes: Float!
+}
+
+input BillingAddressInput {
+    address_id: ID!
+    city: String!
+    coordinates: String
+    country: String!
+    first_address: String!
+    notes: String
+    postcode: String!
+    second_address: String
+}
+
+input ChangeEmailInput {
+    newEmail: String!
+}
+
+input ChangePasswordInput {
+    newPassword: String!
+}
+
+input ChangeRecoverTokenStatusInputs {
+    secret: String!
+}
+
+input ConfirmDeliveryInput {
+    datetime: DateTime!
+    reference: String!
+}
+
+input ConfirmPaymentInput {
+    cvc: String
+    payment_intent_id: String!
+}
+
+input CreateCVCTokenInput {
+    cvc: String!
+}
+
+input CreateNewContactRequestInput {
+    email: String!
+    message: String!
+    name: String!
+    phone_number: String!
+    surname: String!
+}
+
+input CreateNewHolidayInput {
+    end_date: DateTime!
+    start_date: DateTime!
+}
+
+input CreateNewUserInput {
+    dob: DateTime!
+    email: String!
+    name: String!
+    password: String!
+    surname: String!
+}
+
+input CreatePaymentIntentInput {
+    billing_address: BillingAddressInput!
+    delivery_suggested: String
+    phone_number: String!
+    shipping_address: ShippingAddressInput!
+}
+
+input CreateRefundInput {
+    archive: [ArchiveRefundInput!]!
+    notes: String!
+    reference: String!
+}
+
+input CreateRetrievePdfInput {
+    order_ref: String!
+}
+
+input CreateTimeslotDeliveryInput {
+    reference: String!
+    timeslot: String!
+}
+
+input EditAddressInput {
+    address_id: Int!
+    city: String
+    country: String
+    first_address: String
+    notes: String
+    postcode: String
+    second_address: String
+}
+
+input ItemCartInput {
+    amount: Int!
+    item_id: Int!
+}
+
+input LoginWithPasswordInputs {
+    email: String!
+    password: String!
+}
+
+input LoginWithoutPasswordInputs {
+    email: String!
+}
+
+input ModifyCategoryDetailsInput {
+    category_id: Int!
+    name: String
+    subCategories: [String!]
+}
+
+input ModifyItemDetailsInput {
+    amount_available: Int
+    category: [String!]
+    description: String
+    discount: Float
+    item_id: Int!
+    keyword: [String!]
+    name: String
+    photo_loc: String
+    price_total: Float
+    price_unit: String
+    vat: Float
+}
+
+input OrderReceiptFilters {
+    dateMax: DateTime
+    dateMin: DateTime
+    order_ref: String
+    priceMax: Float
+    priceMin: Float
+}
+
+input Price {
+    max: Float
+    min: Float
+}
+
+input RemoveAddressInput {
+    address_id: Int!
+}
+
+input RemoveEntryFromCartInput {
+    item_id: Int!
+}
+
+input ShippingAddressInput {
+    address_id: ID!
+    city: String!
+    coordinates: String
+    first_address: String!
+    notes: String
+    postcode: String!
+    second_address: String
+}
+
+input TranslateAddressInput {
+    address_id: Int!
+    destination: ADDRESS_TYPE_ENUM!
+}

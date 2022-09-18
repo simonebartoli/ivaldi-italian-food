@@ -15,7 +15,7 @@ import {SERVER_ERRORS_ENUM} from "../../enums/SERVER_ERRORS_ENUM";
 import Head from "next/head";
 import productJSONLD, {ProductJSONLDType} from "../../structured-data/product-JSONLD";
 import {DateTime} from "luxon";
-import {HOST, TWITTER_USERNAME} from "../../settings";
+import {API_HOST, HOST, TWITTER_USERNAME} from "../../settings";
 import {useRouter} from "next/router";
 
 type ItemType = {
@@ -208,7 +208,7 @@ const Product: NextPage<ItemType & {JSONld: ProductJSONLDType}> = ({
             <article className="flex mdx:flex-row flex-col justify-evenly items-center p-2 gap-8 my-4">
                 <div className="shop-list mdx:basis-2/5 md:w-1/2 sm:w-3/4 w-full grow mdx:sticky top-[20%] lg:!static">
                     {ready &&
-                        <Image quality={100} src={"/media/photos/shop/ragu_funghi_300x.webp"}
+                        <Image quality={100} src={`${API_HOST}${photo_loc}`}
                                alt="photo" layout="fill" className="image"
                         />
                     }

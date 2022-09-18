@@ -2,11 +2,11 @@ import React from 'react';
 import Image from "next/image";
 import {IoSearchSharp} from "react-icons/io5";
 import {FiShoppingCart} from "react-icons/fi";
-import {useRouter} from "next/router";
 import {ItemType} from "../list/homeSectionList";
 import {NextPage} from "next";
 import Link from "next/link";
 import {Bars} from "react-loader-spinner";
+import {API_HOST} from "../../../../settings";
 
 type Props = {
     item: ItemType
@@ -16,8 +16,6 @@ type Props = {
 }
 
 const HomeSection: NextPage<Props> = ({item, loading, disabled, handleAddToCartButtonClick}) => {
-    const router = useRouter()
-
     return (
         <div className="h-full px-8 py-2 bg-neutral-50 w-full flex lg:flex-row flex-col items-center justify-evenly">
             {
@@ -28,8 +26,8 @@ const HomeSection: NextPage<Props> = ({item, loading, disabled, handleAddToCartB
                     </span>
                 </div>
             }
-            <div className="shop-list basis-1/2 grow shadow-2xl">
-                <Image priority={true} alt="photo" src="/media/photos/shop/mozzarella2.jpg" layout="fill" objectFit="cover" className="image rounded-lg"/>
+            <div className="shop-list basis-1/2 grow">
+                <Image priority={true} alt="photo" src={`${API_HOST}${item.photo_loc}`} layout="fill" objectFit="cover" className="image rounded-lg"/>
             </div>
             <div className="flex flex-col basis-1/2 grow items-center justify-center gap-12 self-stretch py-6">
                 {
@@ -43,9 +41,12 @@ const HomeSection: NextPage<Props> = ({item, loading, disabled, handleAddToCartB
                 <span className="text-5xl ">{item.name}</span>
                 <div className="flex flex-row gap-12 items-center">
                     <span className="font-semibold text-3xl">{`£ ${item.price_total.toFixed(2)}`}</span>
-                    <span className="font-semibold text-xl text-red-600 line-through">
-                        {`£ ${(item.price_total / (1 - (item.discount !== null ? item.discount.percentage : 0) / 100)).toFixed(2)}`}
-                    </span>
+                    {
+                        item.discount !== null &&
+                        <span className="font-semibold text-xl text-red-600 line-through">
+                            {`£ ${(item.price_total / (1 - (item.discount !== null ? item.discount.percentage : 0) / 100)).toFixed(2)}`}
+                        </span>
+                    }
                 </div>
                 <div className="flex flex-col gap-4 sm:w-1/2 w-full">
                     <Link href={`/shop/${item.item_id}`}>

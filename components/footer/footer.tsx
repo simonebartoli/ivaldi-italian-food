@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import Image from "next/image";
-import Logo from "../../public/media/photos/test.png"
+import Logo from "../../public/media/photos/logo.png"
 
 import {BsTelephone} from "react-icons/bs";
 import {MdOutlineAlternateEmail} from "react-icons/md";
@@ -64,7 +64,10 @@ const Footer = () => {
                             <MdOutlineAlternateEmail className="text-lg"/>
                             <a href="mailto: domain@gmail.com">domain@gmail.com</a>
                         </div>
-                        <span>Or use our contact form HERE</span>
+                        <span>
+                            Or use our contact form <Link href={"/contact"}>
+                            <a href={"/contact"}>HERE</a></Link>
+                        </span>
                     </div>
                 </div>
                 <div className="flex flex-col gap-6">

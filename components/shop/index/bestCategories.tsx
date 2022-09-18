@@ -1,9 +1,9 @@
 import React from 'react';
 import Image from "next/image";
-import MozzarellaImage from "../../../public/media/photos/shop/mozzarella.jpg";
-import PastaImage from "../../../public/media/photos/shop/pasta.jpg";
-import HamImage from "../../../public/media/photos/shop/ham.jpg";
-import BreadImage from "../../../public/media/photos/shop/bread.jpg";
+import MozzarellaImage from "../../../public/media/photos/shop/mozzarella.webp";
+import PastaImage from "../../../public/media/photos/shop/pasta.webp";
+import HamImage from "../../../public/media/photos/shop/ham.webp";
+import BreadImage from "../../../public/media/photos/shop/bread.webp";
 import {useRouter} from "next/router";
 
 const BestCategories = () => {
