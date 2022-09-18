@@ -17,12 +17,13 @@ import {ToastContainer} from "react-toastify";
 import {CartContext} from "../contexts/cart-context";
 import {onError} from "@apollo/client/link/error";
 import {HolidayContext} from "../contexts/holiday-context";
+import {API_HOST} from "../settings";
 
 const errorLink = onError(({networkError }) => {
     if (networkError) console.log(`[Network error]: ${networkError.message}`);
 });
 const httpLink = createHttpLink({
-    uri: "http://localhost:4000/graphql"
+    uri: `${API_HOST}/graphql`
 })
 const authLink = setContext((_, {headers}) => {
     return {

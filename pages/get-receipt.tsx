@@ -4,6 +4,7 @@ import {gql} from "@apollo/client";
 import {apolloClient} from "./_app";
 import {useResizer} from "../contexts/resizer-context";
 import {useLayoutContext} from "../contexts/layout-context";
+import {API_HOST} from "../settings";
 
 const GET_OR_CREATE_RECEIPT_PDF = gql`
     mutation GET_OR_CREATE_RECEIPT_PDF ($data: CreateRetrievePdfInput!) {
@@ -63,7 +64,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     if(ORDER_FOUND){
         return {
             redirect: {
-                destination: `http://localhost:4000/${RECEIPT_LINK}/invoice.pdf`,
+                destination: `${API_HOST}/${RECEIPT_LINK}/invoice.pdf`,
                 permanent: false
             }
         }
