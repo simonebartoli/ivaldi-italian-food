@@ -268,7 +268,7 @@ type PropsDescription = {
 const Description = forwardRef<HTMLDivElement, PropsDescription>(({orderOpen, item, handleChangePriority}, circleRef) => {
 
     return (
-        <div onClick={() => orderOpen.set(!orderOpen.value)} className="cursor-pointer flex flex-row w-full justify-between items-center">
+        <div onClick={() => orderOpen.set(!orderOpen.value)} className="cursor-pointer flex lg:flex-row flex-col lg:gap-0 gap-8 w-full justify-between items-center">
             <div className="flex flex-row lg:gap-8 gap-4 items-center justify-start text-xl">
                 <span>{item.name}</span>
                 <span>-</span>

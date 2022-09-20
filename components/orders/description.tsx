@@ -100,7 +100,7 @@ const Description: NextPage<Props> = ({orderOpen, setOrderOpen, order, modal}) =
                     }
                 </div>
                 <div className="flex flex-row items-center justify-center gap-8">
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-3 lg:items-start items-center">
                         <div className="space-x-4 flex flex-row items-center justify-center">
                             <span className="text-2xl">TOTAL</span>
                             <span className="text-2xl font-semibold text-green-standard">£{order.price_total.toFixed(2)}</span>

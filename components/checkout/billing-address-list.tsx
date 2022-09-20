@@ -34,6 +34,9 @@ const style: StyleType = {
     },
     insertManualAddressButton: {
         width: "100%"
+    },
+    padding: {
+        padding: "2em 0"
     }
 }
 

@@ -42,12 +42,12 @@ const Buttons: NextPage<Props> = ({invalid, currentProperty, setModalOpen, handl
                 currentProperty !== undefined &&
                 <span className="text-center text-neutral-500 italic text-sm">You don&apos;t need to save every single edit. Save when everything has been modified</span>
             }
-            <div className="w-full flex flex-row gap-8">
+            <div className="w-full flex smxl:flex-row flex-col gap-8">
                 <button
                     onClick={handleFormSubmit}
                     disabled={invalid || !checkIfChanged() || loading || !checkIfAllPropertySet()}
                     className={
-                        `flex items-center justify-center disabled:cursor-not-allowed disabled:bg-neutral-500 p-3 w-1/2 
+                        `flex items-center justify-center disabled:cursor-not-allowed disabled:bg-neutral-500 p-3 smxl:w-1/2 w-full 
                         text-lg ${(type === "EDIT" || type === "ADD" || type === "DELIVERED" || type === "REFUNDED" || type === "CATEGORY") ? "bg-green-standard hover:bg-green-500" : "bg-red-600 hover:bg-red-500"} text-white rounded-lg shadow-md transition`
                     }
                     type="submit">
@@ -61,7 +61,7 @@ const Buttons: NextPage<Props> = ({invalid, currentProperty, setModalOpen, handl
                 <button
                     onClick={() => setModalOpen(false)}
                     className={
-                        `p-3 w-1/2 text-lg text-white rounded-lg
+                        `p-3 smxl:w-1/2 w-full  text-lg text-white rounded-lg
                          shadow-md ${(type === "EDIT" || type === "ADD" || type === "DELIVERED" || type === "REFUNDED" || type === "CATEGORY") ? "bg-red-600 hover:bg-red-500" : "bg-neutral-500 hover:bg-neutral-400"} transition`
                     }
                     type="submit">

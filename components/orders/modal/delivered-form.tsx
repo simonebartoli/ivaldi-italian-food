@@ -119,11 +119,11 @@ const DeliveredForm: NextPage<Props> = ({modalOpen, reference, refetch}) => {
             <div className="smxl:p-12 p-3 w-full flex flex-col items-center gap-16">
                 <div className="flex flex-col gap-8 items-center justify-center w-full">
                     <span className="text-2xl">Timeslot Delivered: </span>
-                    <div className="flex flex-row justify-between items-center w-full gap-8">
-                        <input onChange={(e) => handleDateChange(e)} max={DateTime.now().toISODate()} value={date} className="border-[1px] border-neutral-500 rounded-lg p-3 shadow-lg w-2/3" type="date"/>
-                        <input onChange={(e) => handleTimeChange(e)} max={DateTime.now().toLocaleString(DateTime.TIME_24_SIMPLE)} value={time} className="border-[1px] border-neutral-500 rounded-lg p-3 shadow-lg w-1/3" type="time"/>
+                    <div className="flex sm:flex-row flex-col justify-between items-center w-full gap-8">
+                        <input onChange={(e) => handleDateChange(e)} max={DateTime.now().toISODate()} value={date} className="border-[1px] border-neutral-500 rounded-lg p-3 shadow-lg sm:w-2/3 w-full" type="date"/>
+                        <input onChange={(e) => handleTimeChange(e)} max={DateTime.now().toLocaleString(DateTime.TIME_24_SIMPLE)} value={time} className="border-[1px] border-neutral-500 rounded-lg p-3 shadow-lg sm:w-1/3 w-full" type="time"/>
                     </div>
-                    <span className="text-red-600 italic">This action cannot be reverted, so be careful</span>
+                    <span className="text-red-600 italic text-center">This action cannot be reverted, so be careful</span>
                 </div>
                 <Buttons
                     loading={loading}

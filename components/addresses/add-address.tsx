@@ -31,6 +31,7 @@ type Props = {
         buttonStyle?: CSS.Properties
         mainDiv?: CSS.Properties
         insertManualAddressButton?: CSS.Properties
+        padding?: CSS.Properties
     }
     billing: boolean
     setRenderFetchAddresses: React.Dispatch<React.SetStateAction<boolean>>
@@ -141,7 +142,7 @@ const AddAddress: NextPage<Props> = ({billing, setRenderFetchAddresses, style}) 
                                 Cancel
                             </button>
                         </div>
-                        <div className="md:p-16 p-8 border-green-standard border-[1px] border-none smxl:border-dashed rounded-lg w-full flex flex-col gap-10 items-center justify-center">
+                        <div style={style?.padding} className="md:p-16 p-8 border-green-standard border-y-[1px] border-none smxl:border-dashed w-full flex flex-col gap-10 items-center justify-center">
                             <AutomaticSearchAddress
                                 address={{
                                     firstAddress: firstAddress,

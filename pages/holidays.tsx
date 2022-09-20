@@ -129,17 +129,17 @@ const Holidays = () => {
 
     return (
         <LayoutPrivate className={"self-stretch flex h-full flex-col gap-8 items-center justify-start smxl:p-8 smx:p-4 px-0 py-4"}>
-            <div className="bg-neutral-100 flex flex-row w-full items-center justify-between gap-16 p-8 rounded-lg shadow-lg">
-                <div className="w-1/3 flex flex-row gap-6 items-center justify-center">
-                    <span>Start Date: </span>
+            <div className="bg-neutral-100 flex xls:flex-row flex-col w-full items-center justify-between xls:gap-16 gap-10 p-8 rounded-lg shadow-lg">
+                <div className="xls:w-1/3 w-full flex flex-row gap-6 items-center justify-center">
+                    <span className="w-1/3">Start Date: </span>
                     <input type="date"
                            min={DateTime.now().toISODate()}
                            value={startDate}
                            onChange={(e) => setStartDate(e.target.value)}
                            className="bg-neutral-50 border-[1px] border-neutral-500 rounded-lg p-3 shadow-lg w-2/3"/>
                 </div>
-                <div className="w-1/3 flex flex-row gap-6 items-center justify-center">
-                    <span>End Date: </span>
+                <div className="xls:w-1/3 w-full flex flex-row gap-6 items-center justify-center">
+                    <span className="w-1/3">End Date: </span>
                     <input type="date"
                            min={DateTime.now().plus({day: 1}).toISODate()}
                            value={endDate}
@@ -148,7 +148,7 @@ const Holidays = () => {
                 </div>
                 <button disabled={disabled || loading}
                         onClick={handleFormSubmit}
-                        className={"flex items-center justify-center disabled:bg-neutral-500 disabled:cursor-not-allowed hover:bg-green-500 transition w-1/3 bg-green-standard p-3 text-center text-white text-lg rounded-lg shadow-lg"}>
+                        className={"flex items-center justify-center disabled:bg-neutral-500 disabled:cursor-not-allowed hover:bg-green-500 transition xls:w-1/3 w-full bg-green-standard p-3 text-center text-white text-lg rounded-lg shadow-lg"}>
                     {
                         buttonLoading ?
                         <Bars height={24} color={"white"}/> : "Add New Holiday"
@@ -231,7 +231,7 @@ const Holiday: NextPage<HolidayProps> = ({holiday, refetch}) => {
     }, [reTry])
 
     return (
-        <div className="w-full text-xl p-8 rounded-lg shadow-lg bg-neutral-50 flex flex-row justify-between items-center">
+        <div className="w-full text-xl p-8 rounded-lg shadow-lg bg-neutral-50 flex sm:flex-row flex-col sm:gap-0 gap-6 justify-between items-center">
             <div className="flex flex-row items-center justify-center gap-6">
                 <span>{DateTime.fromISO(holiday.start_date).toLocaleString(DateTime.DATE_SHORT)}</span>
                 <span>-</span>

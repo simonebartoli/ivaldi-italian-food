@@ -222,8 +222,6 @@ const EditForm: NextPage<Props> = ({modalOpen, item, refetch}) => {
     })
 
     useEffect(() => {
-        console.log(item.price_total)
-        console.log(itemPriceOriginal)
 
         const newPriceTotal = (
             (price_original !== null ? Number(price_original) : itemPriceOriginal) *

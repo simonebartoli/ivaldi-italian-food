@@ -9,6 +9,7 @@ import {ItemType} from "../../pages/cart";
 import 'react-toastify/dist/ReactToastify.css';
 import {toast} from "react-toastify";
 import {SERVER_ERRORS_ENUM} from "../../enums/SERVER_ERRORS_ENUM";
+import {API_HOST} from "../../settings";
 
 type Props = {
     item: ItemType,
@@ -118,7 +119,7 @@ const CartArticle: NextPage<Props> = (
         <article className="flex smxl:flex-row flex-col gap-4 items-center w-full">
             <div className="shop-list relative smxl:w-1/2 w-3/4">
                 <Image
-                    alt="this is a photo" src={"/media/photos/shop/ragu_funghi_300x.webp"} layout={"fill"}
+                    alt={name} src={`${API_HOST}${photo_loc}`} layout={"fill"}
                     className="image"
                 />
             </div>
@@ -143,7 +144,7 @@ const CartArticle: NextPage<Props> = (
                             />
                             {
                                 render && widthPage < 600 &&
-                                <div>
+                                <div onClick={handleRemoveFromCartClick}>
                                     <FaRegTrashAlt className="text-3xl text-neutral-500 cursor-pointer hover:text-red-600 transition"/>
                                 </div>
                             }

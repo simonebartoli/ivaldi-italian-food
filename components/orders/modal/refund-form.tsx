@@ -240,7 +240,7 @@ const RefundForm: NextPage<Props> = ({order, modalOpen, invalid, refetch}) => {
                         <span>Total Refund: </span>
                         <span className="text-red-600 text-3xl font-semibold">{`£ ${total.toFixed(2)}`}</span>
                     </div>
-                    <span className="text-red-600 italic">This action cannot be reverted, so be careful</span>
+                    <span className="text-red-600 italic text-center">This action cannot be reverted, so be careful</span>
                 </div>
                 <Buttons
                     loading={loading}
@@ -297,12 +297,12 @@ const Product: NextPage<ProductProps> = ({product, refundManual, setRefundManual
 
     }
     return (
-        <div className="flex flex-row justify-between items-center w-full gap-8 bg-neutral-50 p-3 rounded-lg shadow-md">
-            <div className="flex flex-col gap-2 w-2/5">
+        <div className="flex sm:flex-row flex-col justify-between items-center w-full gap-8 bg-neutral-50 p-3 rounded-lg shadow-md">
+            <div className="flex flex-col gap-2 sm:w-2/5 w-full">
                 <span>{product.name}</span>
                 <span>{`£ ${product.price_per_unit}/${product.price_unit} | ${product.amount} UNITS`}</span>
             </div>
-            <select onChange={(e) => handleAmountRefundedChange(e)} value={amount} className="p-3 shadow-lg rounded-lg">
+            <select onChange={(e) => handleAmountRefundedChange(e)} value={amount} className="p-3 shadow-lg rounded-lg sm:w-auto w-full">
                 <option value={0}>0</option>
                 {
                     new Array(product.amount - amount_refunded).fill([]).map((element, index) =>
@@ -310,7 +310,7 @@ const Product: NextPage<ProductProps> = ({product, refundManual, setRefundManual
                     )
                 }
             </select>
-            <div className="flex flex-col gap-2 text-right">
+            <div className="flex flex-col gap-2 text-right w-full sm:w-auto">
                 <span>Refund Product</span>
                 <span className="text-red-600 font-semibold text-lg">{`£ ${(amount * product.price_per_unit).toFixed(2)}`}</span>
             </div>

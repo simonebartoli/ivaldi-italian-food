@@ -158,7 +158,7 @@ const Category: NextPage<Props> = ({item, currentProperty, invalid}) => {
                         backgroundColor: element.removed ? "rgb(245 245 245)" : "transparent"
                     }}
                          key={index}
-                         className="relative w-full flex flex-row justify-between items-center text-xl p-2 rounded-lg">
+                         className="relative w-full flex flex-row justify-between items-center smxl:text-xl smxl:gap-0 gap-4 text-lg p-2 rounded-lg">
 
                         <span>{element.name}</span>
                         {

@@ -128,9 +128,9 @@ const Category: NextPage<PropsCategory> = ({category, refetch}) => {
 
     return (
         <div className="w-full p-5 shadow-lg bg-neutral-100 rounded-lg flex flex-col gap-8">
-            <div onClick={() => setCategoryOpen(!categoryOpen)} className="cursor-pointer flex-row justify-between flex gap-3">
+            <div onClick={() => setCategoryOpen(!categoryOpen)} className="cursor-pointer flex-row items-center justify-between flex gap-3">
                 <div className="w-full">
-                    <span className="text-3xl text-neutral-700">{category.name}</span>
+                    <span className="smxl:text-3xl text-lg text-neutral-700">{category.name}</span>
                 </div>
                 <div className="flex flex-row items-center gap-8">
                     <HiPencilAlt onClick={() => setEditModal(true)} className="text-2xl hover:text-green-standard transition"/>
@@ -145,9 +145,9 @@ const Category: NextPage<PropsCategory> = ({category, refetch}) => {
                 <div className="w-full flex flex-col gap-6">
                     {
                         category.sub_categories.map(_ =>
-                            <div key={_.name} className="ml-8 w-full flex flex-row items-center gap-6">
+                            <div key={_.name} className="smxl:ml-8 m-0 w-full flex flex-row items-center gap-6">
                                 <BiSubdirectoryRight className="text-3xl"/>
-                                <span className="text-xl">{_.name}</span>
+                                <span className="smxl:text-xl text-lg">{_.name}</span>
                             </div>
                         )
                     }

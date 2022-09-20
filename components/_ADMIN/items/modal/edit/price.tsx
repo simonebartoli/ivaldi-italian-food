@@ -65,10 +65,9 @@ const Price: NextPage<Props> = ({item, currentProperty, invalid}) => {
     }
 
     useEffect(() => {
-        const price_original = Number(currentProperty.value["price_original"] )
+        const price_original = currentProperty.value["price_original"] !== null ? Number(currentProperty.value["price_original"]) : null
         const price_unit = currentProperty.value["price_unit"] as string
         const vat = currentProperty.value["vat"] as number
-
 
         if(price_original !== null || price_unit !== null || vat !== null){
             if(price_original !== null){
