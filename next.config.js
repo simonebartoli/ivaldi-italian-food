@@ -3,8 +3,8 @@
 const nextConfig = {
   reactStrictMode: false,
   images: {
-    domains: ["localhost"]
-    // unoptimized: true
+    domains: ["localhost"],
+    unoptimized: false
   },
   exportPathMap: async function (
       defaultPathMap,
