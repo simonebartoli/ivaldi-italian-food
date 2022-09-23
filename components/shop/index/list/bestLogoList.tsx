@@ -1,11 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Image from "next/image";
 
-import BarillaImage from "../../../../public/media/photos/shop/logo/barilla.jpg"
-import MuttiImage from "../../../../public/media/photos/shop/logo/mutti.webp"
-import MulinoBiancoImage from "../../../../public/media/photos/shop/logo/mulinobianco.webp"
-import NutellaImage from "../../../../public/media/photos/shop/logo/nutella.png"
-import RummoImage from "../../../../public/media/photos/shop/logo/rummo.jpg"
 import {Autoplay, Navigation} from "swiper";
 import {Swiper, SwiperSlide} from "swiper/react";
 import "swiper/css/bundle"
@@ -55,27 +50,97 @@ const BestLogoList = () => {
             >
                 <SwiperSlide>
                     <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
-                        <Image onClick={() => redirect("barilla")} alt={"image"} src={BarillaImage} layout="fill" objectFit="cover" className="image"/>
+                        <Image onClick={() => redirect("balocco")} alt={"image balocco"} src={"/media/photos/shop/logo/balocco.webp"} layout="fill" objectFit="cover" className="image"/>
                     </div>
                 </SwiperSlide>
                 <SwiperSlide>
                     <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
-                        <Image onClick={() => redirect("mutti")} alt={"image"} src={MuttiImage} layout="fill" objectFit="cover" className="image"/>
+                        <Image onClick={() => redirect("callipo")} alt={"image callipo"} src={"/media/photos/shop/logo/callipo.png"} layout="fill" objectFit="cover" className="image"/>
                     </div>
                 </SwiperSlide>
                 <SwiperSlide>
                     <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
-                        <Image onClick={() => redirect("mulino bianco")} alt={"image"} src={MulinoBiancoImage} layout="fill" objectFit="cover" className="image"/>
+                        <Image onClick={() => redirect("caputo")} alt={"image caputo"} src={"/media/photos/shop/logo/caputo.jpg"} layout="fill" objectFit="cover" className="image"/>
                     </div>
                 </SwiperSlide>
                 <SwiperSlide>
                     <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
-                        <Image onClick={() => redirect("nutella")} alt={"image"} src={NutellaImage} layout="fill" objectFit="cover" className="image"/>
+                        <Image onClick={() => redirect("corte buona")} alt={"image corte buona"} src={"/media/photos/shop/logo/cortebuona.webp"} layout="fill" objectFit="cover" className="image"/>
                     </div>
                 </SwiperSlide>
                 <SwiperSlide>
                     <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
-                        <Image onClick={() => redirect("rummo")} alt={"image"} src={RummoImage} layout="fill" objectFit="cover" className="image"/>
+                        <Image onClick={() => redirect("d'amico")} alt={"image d'amico"} src={"/media/photos/shop/logo/damico.png"} layout="fill" objectFit="cover" className="image"/>
+                    </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
+                        <Image onClick={() => redirect("dega")} alt={"image dega"} src={"/media/photos/shop/logo/dega.webp"} layout="fill" objectFit="cover" className="image"/>
+                    </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
+                        <Image onClick={() => redirect("divella")} alt={"image divella"} src={"/media/photos/shop/logo/divella.jpeg"} layout="fill" objectFit="cover" className="image"/>
+                    </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
+                        <Image onClick={() => redirect("levoni")} alt={"image levoni"} src={"/media/photos/shop/logo/levoni.png"} layout="fill" objectFit="cover" className="image"/>
+                    </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
+                        <Image onClick={() => redirect("pivetti")} alt={"image pivetti"} src={"/media/photos/shop/logo/pivetti.webp"} layout="fill" objectFit="cover" className="image"/>
+                    </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
+                        <Image onClick={() => redirect("pomi")} alt={"image pomi"} src={"/media/photos/shop/logo/pomi.jpg"} layout="fill" objectFit="cover" className="image"/>
+                    </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
+                        <Image onClick={() => redirect("renna")} alt={"image renna"} src={"/media/photos/shop/logo/renna.jpeg"} layout="fill" objectFit="cover" className="image"/>
+                    </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
+                        <Image onClick={() => redirect("san carlo")} alt={"image san carlo"} src={"/media/photos/shop/logo/sancarlo.png"} layout="fill" objectFit="cover" className="image"/>
+                    </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
+                        <Image onClick={() => redirect("santal")} alt={"image santal"} src={"/media/photos/shop/logo/santal.jpg"} layout="fill" objectFit="cover" className="image"/>
+                    </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
+                        <Image onClick={() => redirect("voiello")} alt={"image voiello"} src={"/media/photos/shop/logo/voiello.webp"} layout="fill" objectFit="cover" className="image"/>
+                    </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
+                        <Image onClick={() => redirect("barilla")} alt={"image barilla"} src={"/media/photos/shop/logo/barilla.jpg"} layout="fill" objectFit="cover" className="image"/>
+                    </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
+                        <Image onClick={() => redirect("mutti")} alt={"image mutti"} src={"/media/photos/shop/logo/mutti.webp"} layout="fill" objectFit="cover" className="image"/>
+                    </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
+                        <Image onClick={() => redirect("mulino bianco")} alt={"image mulino bianco"} src={"/media/photos/shop/logo/mulinobianco.webp"} layout="fill" objectFit="cover" className="image"/>
+                    </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
+                        <Image onClick={() => redirect("nutella")} alt={"image nutella"} src={"/media/photos/shop/logo/nutella.png"} layout="fill" objectFit="cover" className="image"/>
+                    </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
+                        <Image onClick={() => redirect("rummo")} alt={"image rummo"} src={"/media/photos/shop/logo/rummo.jpg"} layout="fill" objectFit="cover" className="image"/>
                     </div>
                 </SwiperSlide>
             </Swiper>

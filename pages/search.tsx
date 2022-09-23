@@ -300,7 +300,7 @@ const Search: NextPage<Props> = ({query, itemsServer, order}) => {
                         setMaxTypedByUser={setMaxTypedByUser}
                     />
                 </div>
-                <div className="bg-white flex flex-col gap-4 mdxl:w-3/4 md:w-2/3 sm:w-3/5 w-full smxl:p-8 p-4 items-center justify-center">
+                <div className="bg-white flex flex-col gap-4 mdxl:w-3/4 md:w-2/3 sm:w-3/5 w-full smxl:p-8 p-4 items-center justify-start">
                     <span className="text-neutral-500 text-lg pb-8 underline-offset-8 underline">Search Results for:&nbsp;
                         <span className="font-semibold text-green-standard">{query}</span>
                     </span>
@@ -356,6 +356,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     try {
         const result = await apolloClient.query<GetItemsPaginationType, GetItemsPaginationVarType>({
             query: GET_ITEMS_PAGINATION,
+            fetchPolicy: "network-only",
             variables: {
                 keywords: query,
                 offset: OFFSET_BASE,

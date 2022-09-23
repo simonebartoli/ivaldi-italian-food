@@ -205,6 +205,7 @@ const EditForm: NextPage<Props> = ({modalOpen, item, refetch}) => {
             }
         },
         onCompleted: () => {
+            toast.success("The Item Has Been Modified")
             setLoading(false)
             refetch()
             modalOpen.set(false)

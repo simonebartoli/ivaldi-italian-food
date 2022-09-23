@@ -50,6 +50,7 @@ const RemoveForm: NextPage<Props> = ({item, modalOpen, refetch}) => {
             }
         },
         onCompleted: () => {
+            toast.success("The Item Has Been Removed")
             setLoading(false)
             modalOpen.set(false)
             refetch()

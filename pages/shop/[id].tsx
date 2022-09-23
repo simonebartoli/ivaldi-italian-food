@@ -205,7 +205,7 @@ const Product: NextPage<ItemType & {JSONld: ProductJSONLDType}> = ({
                         className="shrink cursor-pointer hover:text-black transition hover:underline underline-offset-8">{name}</span>
                 </div>
             </div>
-            <article className="flex mdx:flex-row flex-col justify-evenly items-center p-2 gap-8 my-4">
+            <article className="flex mdx:flex-row flex-col justify-evenly items-center p-2 mdx:gap-24 gap-8 my-4">
                 <div className="shop-list mdx:basis-2/5 md:w-1/2 sm:w-3/4 w-full grow mdx:sticky top-[20%] lg:!static">
                     {ready &&
                         <Image quality={100} src={`${API_HOST}${photo_loc}`}

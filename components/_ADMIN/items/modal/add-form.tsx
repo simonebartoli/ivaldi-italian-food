@@ -177,6 +177,7 @@ const AddForm: NextPage<Props> = ({modalOpen, refetch}) => {
             }
         },
         onCompleted: () => {
+            toast.success("The Item has been Added")
             setLoading(false)
             refetch()
             modalOpen.set(false)
