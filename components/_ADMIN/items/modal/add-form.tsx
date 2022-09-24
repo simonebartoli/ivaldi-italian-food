@@ -64,7 +64,14 @@ const AddForm: NextPage<Props> = ({modalOpen, refetch}) => {
     const [reTry, setReTry] = useState(false)
     const optionToReTry = useRef<"IMAGE_UPLOAD" | "MODIFY_DETAILS" | null>(null)
 
-    const [invalid, setInvalid] = useState(false)
+    const [invalid, setInvalid] = useState({
+        "name": true,
+        "description": true,
+        "price": true,
+        "price_unit": true,
+        "discount": true,
+        "stock": true
+    })
     const [loading, setLoading] = useState(false)
     const [product, setProduct] = useState<CurrentProduct>({
         name: null,
@@ -95,7 +102,6 @@ const AddForm: NextPage<Props> = ({modalOpen, refetch}) => {
             rejectRef.current = reject
         })
     }
-
     const uploadImage = async (token: string) => {
         const url = API_HOST + "/api/upload/" + token
         const body = new FormData()
@@ -118,7 +124,6 @@ const AddForm: NextPage<Props> = ({modalOpen, refetch}) => {
             rejectRef.current!("ERROR")
         }
     }
-
     const handleFormSubmit = async () => {
         setLoading(true)
         photo_loc.current = null
@@ -152,6 +157,12 @@ const AddForm: NextPage<Props> = ({modalOpen, refetch}) => {
                     amount_available: product.amount_available!
                 }
             }
+        })
+    }
+    const changeInvalidDetails = (id: string, value: boolean) => {
+        setInvalid({
+            ...invalid,
+            [id]: value
         })
     }
 
@@ -226,7 +237,6 @@ const AddForm: NextPage<Props> = ({modalOpen, refetch}) => {
             setReTry(false)
         }
     }, [reTry])
-
     useEffect(() => {
         if(priceOriginal !== null){
             let newPriceTotal = Number(priceOriginal)
@@ -263,40 +273,28 @@ const AddForm: NextPage<Props> = ({modalOpen, refetch}) => {
                             value: product,
                             set: setProduct
                         }}
-                        invalid={{
-                            value: invalid,
-                            set: setInvalid
-                        }}
+                        changeInvalidDetails={changeInvalidDetails}
                     />
                     <Description
                         product={{
                             value: product,
                             set: setProduct
                         }}
-                        invalid={{
-                            value: invalid,
-                            set: setInvalid
-                        }}
+                        changeInvalidDetails={changeInvalidDetails}
                     />
                     <Price
                         product={{
                             value: product,
                             set: setProduct
                         }}
-                        invalid={{
-                            value: invalid,
-                            set: setInvalid
-                        }}
+                        changeInvalidDetails={changeInvalidDetails}
                     />
                     <PriceUnit
                         product={{
                             value: product,
                             set: setProduct
                         }}
-                        invalid={{
-                            value: invalid,
-                            set: setInvalid
-                        }}
+                        changeInvalidDetails={changeInvalidDetails}
                     />
                     <Vat
                         product={{
@@ -309,10 +307,7 @@ const AddForm: NextPage<Props> = ({modalOpen, refetch}) => {
                             value: product,
                             set: setProduct
                         }}
-                        invalid={{
-                            value: invalid,
-                            set: setInvalid
-                        }}
+                        changeInvalidDetails={changeInvalidDetails}
                     />
                     <ImageUpload
                         product={{
@@ -325,10 +320,7 @@ const AddForm: NextPage<Props> = ({modalOpen, refetch}) => {
                             value: product,
                             set: setProduct
                         }}
-                        invalid={{
-                            value: invalid,
-                            set: setInvalid
-                        }}
+                        changeInvalidDetails={changeInvalidDetails}
                     />
                     <Category
                         product={{
@@ -349,7 +341,12 @@ const AddForm: NextPage<Props> = ({modalOpen, refetch}) => {
                     />
                     <Buttons
                         type={"ADD"}
-                        invalid={invalid}
+                        invalid={(() => {
+                            for(const value of Object.values(invalid)){
+                                if(value) return true
+                            }
+                            return false
+                        })()}
                         currentProperty={product}
                         setModalOpen={modalOpen.set}
                         loading={loading}

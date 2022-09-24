@@ -7,20 +7,17 @@ type Props = {
         value: CurrentProduct
         set: React.Dispatch<React.SetStateAction<CurrentProduct>>
     },
-    invalid: {
-        value: boolean
-        set: React.Dispatch<React.SetStateAction<boolean>>
-    }
+    changeInvalidDetails: (id: string, value: boolean) => void
 }
 
-const Discount: NextPage<Props> = ({product, invalid}) => {
+const Discount: NextPage<Props> = ({product, changeInvalidDetails}) => {
     const handleDiscountChange = (e: ChangeEvent<HTMLInputElement>) => {
         let newValue = e.target.value
         const pattern = /^\d*(\.\d{0,2})?$/gm
         const OK = pattern.test(newValue)
         if (OK) {
-            if(Number(newValue) > 100) invalid.set(true)
-            else invalid.set(false)
+            if(Number(newValue) > 100) changeInvalidDetails("discount",true)
+            else changeInvalidDetails("discount",false)
 
             product.set({
                 ...product.value,
@@ -43,7 +40,7 @@ const Discount: NextPage<Props> = ({product, invalid}) => {
             <input
                 value={product.value.discount !== null ? product.value.discount : ""}
                 onChange={(e) => handleDiscountChange(e)}
-                placeholder={"Insert the discount of the product here... (leave blank for no discount)"}
+                placeholder={"Insert the discount of the product here..."}
                 type="text"
                 className="p-3 w-full border-[1px] rounded-lg shadow-md"/>
         </div>

@@ -7,17 +7,14 @@ type Props = {
         value: CurrentProduct
         set: React.Dispatch<React.SetStateAction<CurrentProduct>>
     },
-    invalid: {
-        value: boolean
-        set: React.Dispatch<React.SetStateAction<boolean>>
-    }
+    changeInvalidDetails: (id: string, value: boolean) => void
 }
 
-const Name: NextPage<Props> = ({product, invalid}) => {
+const Name: NextPage<Props> = ({product, changeInvalidDetails}) => {
     const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value
-        if(newValue.length < 3 || newValue.length > 49) invalid.set(true)
-        else invalid.set(false)
+        if(newValue.length < 3 || newValue.length > 49) changeInvalidDetails("name",true)
+        else changeInvalidDetails("name",false)
 
         product.set({
             ...product.value,

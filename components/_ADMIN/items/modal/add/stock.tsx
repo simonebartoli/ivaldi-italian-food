@@ -7,20 +7,17 @@ type Props = {
         value: CurrentProduct
         set: React.Dispatch<React.SetStateAction<CurrentProduct>>
     },
-    invalid: {
-        value: boolean
-        set: React.Dispatch<React.SetStateAction<boolean>>
-    }
+    changeInvalidDetails: (id: string, value: boolean) => void
 }
 
-const Stock: NextPage<Props> = ({product, invalid}) => {
+const Stock: NextPage<Props> = ({product, changeInvalidDetails}) => {
     const handleStockChange = (e: ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value
         const pattern = /^\d*$/gm
         const OK = pattern.test(newValue)
         if(OK) {
-            if(Number(newValue) > 1000 || newValue.length === 0) invalid.set(true)
-            else invalid.set(false)
+            if(Number(newValue) > 1000 || newValue.length === 0) changeInvalidDetails("stock", true)
+            else changeInvalidDetails("stock", false)
             product.set({...product.value, amount_available: Number(newValue)})
         }
     }
