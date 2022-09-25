@@ -75,7 +75,7 @@ const Article: NextPage<{item: Item, hidden?: boolean}> = ({item, hidden= false}
                 </div>
             }
             <div className="flex flex-col items-center justify-center gap-6 w-full">
-                <div className="shop-list h-[192px] w-full flex items-center">
+                <div className="relative h-[192px] w-full flex items-center">
                     {ready &&
                         <Image  quality={100} src={`${API_HOST}${item.photo_loc}`}
                                       alt="this is a photo" layout="fill" className={"image"}

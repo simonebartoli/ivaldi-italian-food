@@ -26,8 +26,8 @@ const HomeSection: NextPage<Props> = ({item, loading, disabled, handleAddToCartB
                     </span>
                 </div>
             }
-            <div className="shop-list basis-1/2 grow">
-                <Image priority={true} alt="photo" src={`${API_HOST}${item.photo_loc}`} layout="fill" objectFit="cover" className="image rounded-lg"/>
+            <div className={`relative max-h-[500px] lg:h-full ${item.discount !== null ? "h-[300px]" : "h-[481px]"} lg:w-1/2 w-full grow`}>
+                <Image priority={true} alt="photo" src={`${API_HOST}${item.photo_loc}`} layout="fill" objectFit="contain" className="rounded-lg"/>
             </div>
             <div className="flex flex-col basis-1/2 grow items-center justify-center gap-12 self-stretch py-6">
                 {
