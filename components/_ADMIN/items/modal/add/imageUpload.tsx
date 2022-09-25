@@ -3,7 +3,7 @@ import {IoMdTrash} from "react-icons/io";
 import Image from "next/image";
 import {CurrentProduct} from "../edit-form";
 import {NextPage} from "next";
-const imageMimeType = /image\/(png|jpg|jpeg)/i;
+const imageMimeType = /image\/(png|jpg|jpeg|webp)/i;
 
 type Props = {
     product: {
