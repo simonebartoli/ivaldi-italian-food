@@ -354,11 +354,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
-      paths: [
-          {
-              params: {id: "1"}
-          }
-      ],
+      paths: [],
       fallback: true
   }
 }
