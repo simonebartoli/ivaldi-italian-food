@@ -3,7 +3,7 @@ import {IoMdTrash} from "react-icons/io";
 import Image from "next/image";
 import {CurrentProduct} from "../edit-form";
 import {NextPage} from "next";
-const imageMimeType = /image\/(png)/i;
+const imageMimeType = /image\/(png|jpg|jpeg)/i;
 
 type Props = {
     product: {
@@ -84,7 +84,7 @@ const ImageUpload: NextPage<Props> = ({product}) => {
                 <input
                     ref={fileInputRef}
                     type="file"
-                    accept={".png"}
+                    accept={"image/*"}
                     onChange={(e) => changeHandler(e)}
                 />
                 <IoMdTrash className="cursor-pointer text-2xl text-red-600 hover:text-red-500" onClick={resetImage}/>
