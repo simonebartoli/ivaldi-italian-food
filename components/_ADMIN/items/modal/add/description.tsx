@@ -13,7 +13,7 @@ type Props = {
 const Description: NextPage<Props> = ({product, changeInvalidDetails}) => {
     const handleDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
         const newValue = e.target.value
-        if(newValue.length < 20 || newValue.length > 200) changeInvalidDetails("description",true)
+        if(newValue.length < 10 || newValue.length > 25000) changeInvalidDetails("description",true)
         else changeInvalidDetails("description",false)
 
         product.set({

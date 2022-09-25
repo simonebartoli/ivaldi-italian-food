@@ -21,7 +21,7 @@ const Description: NextPage<Props> = ({item, currentProperty, invalid}) => {
         const newValue = e.target.value
 
         if(newValue !== item.description) {
-            if(newValue.length < 10 || newValue.length > 200) invalid.set(true)
+            if(newValue.length < 10 || newValue.length > 25000) invalid.set(true)
             else invalid.set(false)
             currentProperty.set({...currentProperty.value, description: newValue})
         }else {
