@@ -143,6 +143,22 @@ const BestLogoList = () => {
                         <Image onClick={() => redirect("rummo")} alt={"image rummo"} src={"/media/photos/shop/logo/rummo.jpg"} layout="fill" objectFit="cover" className="image"/>
                     </div>
                 </SwiperSlide>
+
+                <SwiperSlide>
+                    <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
+                        <Image onClick={() => redirect("delizie calabria")} alt={"image delizie di calabria"} src={"/media/photos/shop/logo/delizie-di-calabria.jpg"} layout="fill" objectFit="cover" className="image"/>
+                    </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
+                        <Image onClick={() => redirect("gragnano")} alt={"image gragnano"} src={"/media/photos/shop/logo/gragnano.png"} layout="fill" objectFit="cover" className="image"/>
+                    </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <div className="shop-list p-4 basis-1/5 flex flex-row items-center">
+                        <Image onClick={() => redirect("salsicciamo")} alt={"image salsicciamo"} src={"/media/photos/shop/logo/salsicciamo.png"} layout="fill" objectFit="cover" className="image"/>
+                    </div>
+                </SwiperSlide>
             </Swiper>
         </section>
     );
