@@ -4,7 +4,7 @@ import {IoMdTrash} from "react-icons/io";
 import {CurrentProduct} from "../edit-form";
 import {NextPage} from "next";
 import {API_HOST} from "../../../../../settings";
-const imageMimeType = /image\/(png|jpg|jpeg|webp)/i;
+const imageMimeType = /image\/(png|jpg|jpeg|webp|avif)/i;
 
 type Props = {
     item: {
