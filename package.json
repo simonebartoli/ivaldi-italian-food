@@ -37,6 +37,7 @@
     "react-in-viewport": "^1.0.0-alpha.28",
     "react-leaflet": "^4.0.0",
     "react-loader-spinner": "^5.1.5",
+    "react-magnifier": "^3.0.4",
     "react-phone-number-input": "^3.2.3",
     "react-responsive-modal": "^6.2.0",
     "react-slidedown": "^2.4.7",

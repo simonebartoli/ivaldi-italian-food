@@ -2,6 +2,7 @@ import React from 'react';
 import Image from "next/image";
 import {NextPage} from "next";
 import Link from "next/link";
+import {API_HOST} from "../../../settings";
 
 type Item = {
     item_id: number
@@ -25,10 +26,10 @@ const SearchResults: NextPage<Props> = ({items}) => {
                     <div className="border-b-[1px] border-neutral-300 text-neutral-700 hover:text-black transition flex flex-row gap-8 items-center justify-start hover:bg-neutral-200 transition p-5 px-10 w-full">
                         <div className="w-[150px] flex items-center justify-center">
                             <div className="relative h-[100px] w-full items-center justify-center flex">
-                                <Image src="/media/photos/shop/ragu_funghi_300x.webp" layout={"fill"} objectFit={"contain"}/>
+                                <Image src={`${API_HOST}${item.photo_loc}`} layout={"fill"} objectFit={"contain"}/>
                             </div>
                         </div>
-                        <div className="flex flex-col gap-2 items-start justify-center">
+                        <div className="flex flex-col gap-2 items-start justify-center w-2/3">
                             <span className="smxl:text-xl smx:text-lg text-base">{item.name}</span>
                             <span className="smxl:text-2xl smx:text-xl text-lg">£ {item.price_total}/
                             <span className="text-base">{item.price_unit}</span>

@@ -1,5 +1,4 @@
 import React, {useEffect, useRef, useState} from 'react';
-import Image from "next/image";
 import {MdArrowForwardIos} from "react-icons/md";
 import {useResizer} from "../../contexts/resizer-context";
 import {useLayoutContext} from "../../contexts/layout-context";
@@ -17,6 +16,7 @@ import productJSONLD, {ProductJSONLDType} from "../../structured-data/product-JS
 import {DateTime} from "luxon";
 import {API_HOST, HOST, TWITTER_USERNAME} from "../../settings";
 import {useRouter} from "next/router";
+import Magnifier from "react-magnifier";
 
 type ItemType = {
     item_id: number
@@ -206,11 +206,10 @@ const Product: NextPage<ItemType & {JSONld: ProductJSONLDType}> = ({
                 </div>
             </div>
             <article className="flex mdx:flex-row flex-col justify-evenly items-center p-2 mdx:gap-24 gap-8 my-4">
-                <div className="shop-list mdx:basis-2/5 md:w-1/2 sm:w-3/4 w-full grow mdx:sticky top-[20%] lg:!static">
+                <div className="h-[500px] flex justify-center items-center shop-list mdx:basis-2/5 md:w-1/2 sm:w-3/4 w-full grow mdx:sticky top-[20%] lg:!static">
                     {ready &&
-                        <Image quality={100} src={`${API_HOST}${photo_loc}`}
-                               alt={name} layout="fill" className="image"
-                        />
+                        // @ts-ignore
+                        <Magnifier className={"!w-auto"} src={`${API_HOST}${photo_loc}`} mgWidth={200} mgHeight={200} zoomFactor={1.15}/>
                     }
                 </div>
                 <div className="flex flex-col justify-center gap-16 basis-3/5 p-2 relative">
