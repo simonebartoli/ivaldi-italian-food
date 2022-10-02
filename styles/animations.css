@@ -22,6 +22,8 @@
     transform-origin: bottom left;
 }
 
+
+
 @keyframes slideLeft {
     0% {
         transform: translateX(0);
@@ -109,4 +111,3 @@
         opacity: 0;
     }
 }
-

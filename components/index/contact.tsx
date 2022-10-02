@@ -1,12 +1,24 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import Image from "next/image";
 import TomatoImage from "../../public/media/photos/index/index-bottom.webp";
 import {BiPlus} from "react-icons/bi";
 import {BsFacebook, BsInstagram} from "react-icons/bs";
+import {useResizer} from "../../contexts/resizer-context";
+import {useLayoutContext} from "../../contexts/layout-context";
 
 const Contact = () => {
+    const fullPageRef = useRef<HTMLDivElement>(null)
+    const {heightPage} = useResizer()
+    const {navHeight} = useLayoutContext()
+
+    useEffect(() => {
+        if(heightPage > 0 && navHeight && fullPageRef.current !== null){
+            fullPageRef.current.style.minHeight = `${heightPage - navHeight}px`
+        }
+    }, [navHeight, heightPage])
+
     return (
-        <>
+        <div ref={fullPageRef} className={"relative w-full h-full flex lg:flex-row flex-col items-center justify-evenly"}>
             <div className="homepage-image">
                 <Image alt="Chef producing Home Made Pasta" src={TomatoImage} layout={"fill"} objectFit={"cover"}/>
             </div>
@@ -37,7 +49,7 @@ const Contact = () => {
                     <span>Ivaldi Italian Food</span>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

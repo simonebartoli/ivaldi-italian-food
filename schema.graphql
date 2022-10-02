@@ -454,6 +454,7 @@ input ModifyItemDetailsInput {
     photo_loc: String
     price_total: Float
     price_unit: String
+    priority: Boolean
     vat: Float
 }
 
