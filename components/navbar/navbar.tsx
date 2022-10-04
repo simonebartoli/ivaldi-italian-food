@@ -78,7 +78,6 @@ const Navbar = () => {
                 <Link href={"/shop"}>
                     <a className="hover:text-green-standard transition cursor-pointer">Shop</a>
                 </Link>
-                <span className="hover:text-green-standard transition cursor-pointer">Faqs</span>
                 <Link href="/contact">
                     <a className="hover:text-green-standard transition cursor-pointer">Contact Us</a>
                 </Link>
@@ -192,8 +191,8 @@ const Navbar = () => {
                     {
                         userInfoNav.name === null &&
                         <Link href="/login">
-                            <a className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>Log
-                                In / Sign Up</a>
+                            <a className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>
+                                Log In / Sign Up</a>
                         </Link>
                     }
                     {
@@ -208,8 +207,6 @@ const Navbar = () => {
                         <span className="hover:text-green-standard transition cursor-pointer"
                               onClick={onNavClick}>Shop</span>
                     </Link>
-                    <span className="hover:text-green-standard transition cursor-pointer"
-                          onClick={onNavClick}>Faqs</span>
                     <Link href="/contact">
                         <a className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>Contact
                             Us</a>

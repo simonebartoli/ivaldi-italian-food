@@ -9,6 +9,7 @@ import {gql, useLazyQuery} from "@apollo/client";
 import handleViewport from "react-in-viewport";
 import PriceRange from "../components/library/price-range";
 import Head from "next/head";
+import {getCookie, setCookie} from "cookies-next";
 
 type Item = {
     item_id: number
@@ -56,6 +57,10 @@ type Props = {
     itemsServer: Item[]
     query: string
     order: "Most Relevant" | "Price Ascending" | "Price Descending" | "Higher Discounts" | null
+    attr: {
+        outOfStock: boolean,
+        discountOnly: boolean
+    }
 }
 
 const OFFSET_BASE = 0
@@ -74,7 +79,7 @@ const orderSearch = (items: Item[]): Item[] => {
 }
 
 
-const Search: NextPage<Props> = ({query, itemsServer, order}) => {
+const Search: NextPage<Props> = ({query, itemsServer, order, attr}) => {
     const mainRef = useRef<HTMLDivElement>(null)
     const fullPageRef = useRef<HTMLDivElement>(null)
     const extraFilters = useRef<HTMLDivElement>(null)
@@ -86,8 +91,8 @@ const Search: NextPage<Props> = ({query, itemsServer, order}) => {
     const {widthPage, heightPage} = useResizer()
     const {navHeight, searchBarHeight} = useLayoutContext()
 
-    const [discountOnly, setDiscountOnly] = useState(false)
-    const [outOfStock, setOutOfStock] = useState(false)
+    const [discountOnly, setDiscountOnly] = useState(attr.discountOnly)
+    const [outOfStock, setOutOfStock] = useState(attr.outOfStock)
     const [fetchExtraProperty, setFetchExtraProperty] = useState(false)
     const [fetchPriceRange, setFetchPriceRange] = useState(false)
     const fetchMore = useRef(true)
@@ -136,16 +141,12 @@ const Search: NextPage<Props> = ({query, itemsServer, order}) => {
             extraFilters.current.style.top = `${searchBarHeight}px`
         }
     }, [widthPage, heightPage, navHeight, searchBarHeight])
-
-
-
     useEffect(() => {
         if(fetchExtraProperty) {
             fetchItems()
             setFetchExtraProperty(false)
         }
     }, [discountOnly, outOfStock, fetchExtraProperty])
-
     useEffect(() => {
         setOutOfStock(false)
         setDiscountOnly(false)
@@ -159,7 +160,6 @@ const Search: NextPage<Props> = ({query, itemsServer, order}) => {
             limit: LIMIT_BASE + INCREMENT
         })
     }, [query, order])
-
     useEffect(() => {
         if(fetchPriceRange){
             window.scroll(0,0)
@@ -183,6 +183,10 @@ const Search: NextPage<Props> = ({query, itemsServer, order}) => {
         }
     }, [items])
 
+    useEffect(() => {
+        setOutOfStock(attr.outOfStock)
+        setDiscountOnly(attr.discountOnly)
+    }, [attr])
 
     const handleScrollDownFetchMore = () => {
         if(fetchMore.current){
@@ -208,14 +212,36 @@ const Search: NextPage<Props> = ({query, itemsServer, order}) => {
     }
 
     const handleDiscountOnlyOptionClick = async (e: ChangeEvent<HTMLInputElement>) => {
+        let outOfStock, discountOnly
+        const search = getCookie("search")
+        if(search){
+            const searchJSON = JSON.parse(search as string)
+            outOfStock = searchJSON.outOfStock
+            discountOnly = e.target.checked
+        }
+        setCookie("search", JSON.stringify({
+            outOfStock: outOfStock ? outOfStock : false,
+            discountOnly: discountOnly ? discountOnly : false,
+        }))
+
         setDiscountOnly(e.target.checked)
         if(!fetchExtraProperty) setFetchExtraProperty(true)
     }
     const handleOutOfStockOptionClick = async (e: ChangeEvent<HTMLInputElement>) => {
+        let outOfStock, discountOnly
+        const search = getCookie("search")
+        if(search !== null){
+            const searchJSON = JSON.parse(search as string)
+            outOfStock = e.target.checked
+            discountOnly = searchJSON.discountOnly
+        }
+        setCookie("search", JSON.stringify({
+            outOfStock: outOfStock ? outOfStock : false,
+            discountOnly: discountOnly ? discountOnly : false,
+        }))
         setOutOfStock(e.target.checked)
         if(!fetchExtraProperty) setFetchExtraProperty(true)
     }
-
 
     const fetchItems = async () => {
         window.scroll(0,0)
@@ -354,6 +380,15 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
         }
     }
     try {
+        let discountOnly: boolean | undefined, outOfStock: boolean | undefined
+
+        const search = getCookie("search", {req: context.req, res: context.res})
+        if(search){
+            const searchJSON = JSON.parse(search as string)
+            discountOnly = searchJSON.discountOnly
+            outOfStock = searchJSON.outOfStock
+        }
+
         const result = await apolloClient.query<GetItemsPaginationType, GetItemsPaginationVarType>({
             query: GET_ITEMS_PAGINATION,
             fetchPolicy: "network-only",
@@ -361,17 +396,24 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
                 keywords: query,
                 offset: OFFSET_BASE,
                 limit: LIMIT_BASE,
-                order: order as "Most Relevant" | "Price Ascending" | "Price Descending" | "Higher Discounts" | undefined
+                order: order as "Most Relevant" | "Price Ascending" | "Price Descending" | "Higher Discounts" | undefined,
+                outOfStock: outOfStock,
+                discountOnly: discountOnly
             }
         })
         return {
             props: {
                 query: query,
                 order: order === undefined ? null : order as "Most Relevant" | "Price Ascending" | "Price Descending" | "Higher Discounts",
-                itemsServer: orderSearch(result.data.getItems_pagination)
+                itemsServer: orderSearch(result.data.getItems_pagination),
+                attr: {
+                    outOfStock: outOfStock ? outOfStock : false,
+                    discountOnly: discountOnly ? discountOnly : false
+                }
             }
         }
     }catch (e) {
+        console.log(e)
         return {
             redirect: {
                 destination: "/shop",
