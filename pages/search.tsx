@@ -212,7 +212,7 @@ const Search: NextPage<Props> = ({query, itemsServer, order, attr}) => {
     }
 
     const handleDiscountOnlyOptionClick = async (e: ChangeEvent<HTMLInputElement>) => {
-        let outOfStock, discountOnly
+        let outOfStock: boolean | undefined, discountOnly: boolean | undefined
         const search = getCookie("search")
         if(search){
             const searchJSON = JSON.parse(search as string)
@@ -228,9 +228,9 @@ const Search: NextPage<Props> = ({query, itemsServer, order, attr}) => {
         if(!fetchExtraProperty) setFetchExtraProperty(true)
     }
     const handleOutOfStockOptionClick = async (e: ChangeEvent<HTMLInputElement>) => {
-        let outOfStock, discountOnly
+        let outOfStock: boolean | undefined, discountOnly: boolean | undefined
         const search = getCookie("search")
-        if(search !== null){
+        if(search){
             const searchJSON = JSON.parse(search as string)
             outOfStock = e.target.checked
             discountOnly = searchJSON.discountOnly
@@ -388,6 +388,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
             discountOnly = searchJSON.discountOnly
             outOfStock = searchJSON.outOfStock
         }
+        console.log(outOfStock)
 
         const result = await apolloClient.query<GetItemsPaginationType, GetItemsPaginationVarType>({
             query: GET_ITEMS_PAGINATION,
@@ -397,7 +398,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
                 offset: OFFSET_BASE,
                 limit: LIMIT_BASE,
                 order: order as "Most Relevant" | "Price Ascending" | "Price Descending" | "Higher Discounts" | undefined,
-                outOfStock: outOfStock,
+                outOfStock: outOfStock !== undefined ? outOfStock : true,
                 discountOnly: discountOnly
             }
         })
@@ -407,7 +408,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
                 order: order === undefined ? null : order as "Most Relevant" | "Price Ascending" | "Price Descending" | "Higher Discounts",
                 itemsServer: orderSearch(result.data.getItems_pagination),
                 attr: {
-                    outOfStock: outOfStock ? outOfStock : false,
+                    outOfStock: outOfStock !== undefined ? outOfStock : true,
                     discountOnly: discountOnly ? discountOnly : false
                 }
             }

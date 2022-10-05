@@ -56,7 +56,7 @@ type GetItemsPaginationVarType = {
 
 const GET_ITEMS_PAGINATION = gql`
     query GET_ITEMS_PAGINATION ($keywords: String!) {
-        getItems_pagination(offset: 0, limit: 3, keywords: $keywords){
+        getItems_pagination(offset: 0, limit: 3, keywords: $keywords, outOfStock: true){
             item_id
             name
             price_total
