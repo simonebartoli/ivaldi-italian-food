@@ -79,7 +79,7 @@ const Price: NextPage<Props> = ({item, currentProperty, invalid}) => {
                 }
             }
             if(price_unit !== null){
-                if(price_unit.length === 0 || price_unit.length > 5) {
+                if(price_unit.length === 0 || price_unit.length > 15) {
                     invalid.set(true)
                     return
                 }else {

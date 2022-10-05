@@ -13,7 +13,7 @@ type Props = {
 const PriceUnit: NextPage<Props> = ({product, changeInvalidDetails}) => {
     const handlePriceUnitChange = (e: ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value
-        if(newValue.length > 5 || newValue.length === 0) changeInvalidDetails("price_unit",true)
+        if(newValue.length > 15 || newValue.length === 0) changeInvalidDetails("price_unit",true)
         else changeInvalidDetails("price_unit",false)
 
         product.set({
