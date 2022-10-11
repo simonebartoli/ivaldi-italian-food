@@ -6,7 +6,7 @@ import Image from "next/image";
 import "swiper/css/bundle"
 import {useResizer} from "../../../contexts/resizer-context";
 
-const logos = [
+export const logos = [
     {
         name: "balocco",
         url: "/media/photos/shop/logo/balocco.webp"
@@ -76,8 +76,8 @@ const logos = [
         url: "/media/photos/shop/logo/mulinobianco.webp"
     },
     {
-        name: "nutella",
-        url: "/media/photos/shop/logo/nutella.png"
+        name: "ferrero",
+        url: "/media/photos/shop/logo/ferrero.png"
     },
     {
         name: "rummo",
@@ -95,6 +95,26 @@ const logos = [
         name: "salsicciamo",
         url: "/media/photos/shop/logo/salsicciamo.png"
     },
+    {
+        name: "cinquina",
+        url: "/media/photos/shop/logo/cinquina.png"
+    },
+    {
+        name: "gran pavesi",
+        url: "/media/photos/shop/logo/gran-pavesi.webp"
+    },
+    {
+        name: "le ife",
+        url: "/media/photos/shop/logo/le-ife.jpg"
+    },
+    {
+        name: "strianese",
+        url: "/media/photos/shop/logo/strianese.jpg"
+    },
+    {
+        name: "pan ducale",
+        url: "/media/photos/shop/logo/panducale.png"
+    }
 ]
 
 const HomepageSlider = () => {
