@@ -97,7 +97,7 @@ export const logos = [
     },
     {
         name: "cinquina",
-        url: "/media/photos/shop/logo/cinquina.png"
+        url: "/media/photos/shop/logo/cinquina.webp"
     },
     {
         name: "gran pavesi",
