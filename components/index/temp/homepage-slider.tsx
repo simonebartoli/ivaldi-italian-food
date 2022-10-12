@@ -114,6 +114,18 @@ export const logos = [
     {
         name: "pan ducale",
         url: "/media/photos/shop/logo/panducale.png"
+    },
+    {
+        name: "d'addezio",
+        url: "/media/photos/shop/logo/addezio.webp"
+    },
+    {
+        name: "terre di puglia",
+        url: "/media/photos/shop/logo/terre-di-puglia.png"
+    },
+    {
+        name: "zuccato",
+        url: "/media/photos/shop/logo/zuccato.png"
     }
 ]
 
