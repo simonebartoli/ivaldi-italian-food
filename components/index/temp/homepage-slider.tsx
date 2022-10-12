@@ -48,10 +48,6 @@ export const logos = [
         url: "/media/photos/shop/logo/pomi.jpg"
     },
     {
-        name: "renna",
-        url: "/media/photos/shop/logo/renna.jpeg"
-    },
-    {
         name: "san carlo",
         url: "/media/photos/shop/logo/sancarlo.png"
     },
