@@ -51,6 +51,7 @@ const CartSummary: NextPage<Props> = ({items, minimumOrderPrice, shippingCosts})
             if(item.discount?.percentage !== undefined) discounts += (item.price_total / (1 - item.discount.percentage / 100) * item.amount) - item.price_total * item.amount
         }
 
+        console.log(shippingCosts)
         if(shippingCosts.length > 0){
             totalShipping = shippingCosts.filter(element => element.max_weight > totalWeight).sort((a, b) => a.max_weight > b.max_weight ? 1 : -1)[0].price
         }

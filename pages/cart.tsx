@@ -173,7 +173,7 @@ const Cart = () => {
                 <meta name="revisit-after" content="5 days"/>
                 <meta name="author" content="Ivaldi Italian Food"/>
             </Head>
-            {((loading || loadingGetMinimumOrderPrice || loadingGetShippingCosts) && loader) ? <PageLoader display/> :
+            {((loading || loadingGetMinimumOrderPrice) && loader) || loadingGetShippingCosts ? <PageLoader display/> :
                 <>
                     {itemsCart.size === 0 ?
                         <div ref={fullPageRef} className="w-full flex flex-col gap-8 items-center justify-center">
