@@ -53,9 +53,11 @@ const CartSummary: NextPage<Props> = ({items, minimumOrderPrice, shippingCosts})
 
         if(shippingCosts.length > 0){
             // TODO FIX THIS LINE BELOW
-            const result = shippingCosts.filter(element => element.max_weight > totalWeight).sort((a, b) => a.max_weight > b.max_weight ? 1 : -1)
+            const result = shippingCosts.filter(element => element.max_weight > totalWeight)
+            const result2 = result.sort((a, b) => a.max_weight > b.max_weight ? 1 : -1)
             console.log(result)
-            totalShipping = result[0].price
+            console.log(result2)
+            totalShipping = result2[0].price
         }
 
         setShippingCost(totalShipping)
