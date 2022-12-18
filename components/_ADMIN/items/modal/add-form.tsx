@@ -19,6 +19,7 @@ import {API_HOST} from "../../../../settings";
 import {toast} from "react-toastify";
 import {gql, useLazyQuery, useMutation} from "@apollo/client";
 import Summary from "./add/summary";
+import Weight from "./add/weight";
 
 type CreateSecureLinkType = {
     createSecureLink: string
@@ -32,6 +33,7 @@ type AddNewItemVarType = {
         description: string
         price_total: number
         price_unit: string
+        weight: number
         amount_available: number
         vat: number
         photo_loc: string
@@ -70,7 +72,8 @@ const AddForm: NextPage<Props> = ({modalOpen, refetch}) => {
         "price": true,
         "price_unit": true,
         "discount": true,
-        "stock": true
+        "stock": true,
+        "weight": true
     })
     const [loading, setLoading] = useState(false)
     const [product, setProduct] = useState<CurrentProduct>({
@@ -84,7 +87,8 @@ const AddForm: NextPage<Props> = ({modalOpen, refetch}) => {
         amount_available: null,
         vat: null,
         category: null,
-        keyword: null
+        keyword: null,
+        weight: null
     })
 
     const photo_loc = useRef<string | null>(null)
@@ -151,6 +155,7 @@ const AddForm: NextPage<Props> = ({modalOpen, refetch}) => {
                     vat: product.vat!,
                     price_total: product.price_total!,
                     price_unit: product.price_unit!,
+                    weight: product.weight!,
                     category: product.category!,
                     keyword: product.keyword!,
                     photo_loc: photo_loc.current!,
@@ -225,6 +230,7 @@ const AddForm: NextPage<Props> = ({modalOpen, refetch}) => {
                             vat: product.vat!,
                             price_total: product.price_total!,
                             price_unit: product.price_unit!,
+                            weight: product.weight!,
                             category: product.category!,
                             keyword: product.keyword!,
                             photo_loc: photo_loc.current!,
@@ -290,6 +296,13 @@ const AddForm: NextPage<Props> = ({modalOpen, refetch}) => {
                         changeInvalidDetails={changeInvalidDetails}
                     />
                     <PriceUnit
+                        product={{
+                            value: product,
+                            set: setProduct
+                        }}
+                        changeInvalidDetails={changeInvalidDetails}
+                    />
+                    <Weight
                         product={{
                             value: product,
                             set: setProduct

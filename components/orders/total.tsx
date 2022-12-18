@@ -12,6 +12,8 @@ type Props = {
         order_delivery: OrderDeliveryType
         reference: string
         shipping_address: AddressReactType
+        shipping_cost_refunded: boolean
+        shipping_total: number
         price_total: number
         vat_total: number
         refund: RefundType[] | null
@@ -106,15 +108,19 @@ const Total: NextPage<Props> = ({summary}) => {
                 </span>
             </div>
             <div className="flex lg:flex-row flex-col gap-6 lg:items-center items-start">
-                <span className="text-xl text-green-standard font-semibold">TOTAL (NO VAT):</span>
-                <span className="text-xl font-semibold">£{(summary.price_total - summary.vat_total).toFixed(2)}</span>
+                <span className="text-xl text-green-standard font-semibold">TOTAL (NO VAT, NO SHIPPING):</span>
+                <span className="text-xl font-semibold">£{(summary.price_total - summary.vat_total - summary.shipping_total).toFixed(2)}</span>
             </div>
             <div className="flex lg:flex-row flex-col gap-6 lg:items-center items-start">
                 <span className="text-xl text-green-standard font-semibold">VAT:</span>
                 <span className="text-xl font-semibold">£{summary.vat_total.toFixed(2)}</span>
             </div>
+            <div className="flex lg:flex-row flex-col gap-6 lg:items-center items-start">
+                <span className="text-xl text-green-standard font-semibold">SHIPPING COST {summary.shipping_cost_refunded && "(REFUNDED)"}:</span>
+                <span className="text-xl font-semibold">£{summary.shipping_total.toFixed(2)}</span>
+            </div>
             <div className="flex lg:flex-row flex-col gap-6 lg:items-center items-start pt-6 border-t-[1px] border-neutral-500 border-dashed">
-                <span className="text-2xl text-green-standard font-semibold">TOTAL (WITH VAT):</span>
+                <span className="text-2xl text-green-standard font-semibold">TOTAL:</span>
                 <span className="text-2xl font-semibold">£{(summary.price_total).toFixed(2)}</span>
             </div>
         </div>

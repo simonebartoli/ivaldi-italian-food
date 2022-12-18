@@ -35,6 +35,7 @@ type ArchiveItem {
     price_total: Float!
     price_unit: String!
     vat: Float!
+    weight: Int!
 }
 
 type ArchiveRefund {
@@ -98,6 +99,7 @@ type Item {
     price_unit: String!
     priority: Boolean!
     vat: Vat!
+    weight: Int!
 }
 
 type Mutation {
@@ -149,6 +151,7 @@ type Order {
     reference: String!
     refund: [Refund!]
     shipping_cost: Float!
+    shipping_cost_refunded: Boolean!
     status: ORDER_STATUS_ENUM!
     user: User!
     vat_total: Float!
@@ -200,6 +203,7 @@ type Query {
     getMinimumOrderPrice: Float!
     getOrders_FULL(filters: OrderReceiptFilters!): [Order!]!
     getPaymentMethods: [PaymentMethod!]!
+    getShippingCosts: [ShippingCost!]!
     getSubCategories_FULL: [SubCategory!]!
     getSubCategories_cursor(cursor: Int, limit: Int!): [SubCategory!]!
     getSubCategories_pagination(limit: Int!, offset: Int!): [SubCategory!]!
@@ -222,6 +226,11 @@ type ShippingAddress {
     notes: String
     postcode: String!
     second_address: String
+}
+
+type ShippingCost {
+    max_weight: Int!
+    price: Float!
 }
 
 type SubCategory {
@@ -305,6 +314,7 @@ input AddNewItemInput {
     price_total: Float!
     price_unit: String!
     vat: Float!
+    weight: Int!
 }
 
 input AddPaymentMethodToPaymentIntentInput {
@@ -402,6 +412,7 @@ input CreateRefundInput {
     archive: [ArchiveRefundInput!]!
     notes: String!
     reference: String!
+    shipping_cost: Boolean!
 }
 
 input CreateRetrievePdfInput {

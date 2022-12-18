@@ -109,6 +109,7 @@ const GET_ITEMS_CART = gql`
             vat {
                 percentage
             }
+            weight
         }
     }
 `
@@ -121,6 +122,7 @@ type Item = {
     vat: {
         percentage: number
     }
+    weight: number
 }
 type ItemReact = Item & {item_id: number, amount: number}
 type ItemServer = Item & {item_id: string}

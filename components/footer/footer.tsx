@@ -59,11 +59,11 @@ const Footer = () => {
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-row gap-4 items-center">
                             <BsTelephone className="text-lg"/>
-                            <a href="tel:155152">07723093701</a>
+                            <a href="tel:447796513701">+44 77 9651 3701</a>
                         </div>
                         <div className="flex flex-row gap-4 items-center">
                             <MdOutlineAlternateEmail className="text-lg"/>
-                            <a href="mailto: domain@gmail.com">domain@gmail.com</a>
+                            <a href="mailto: info@ivaldi.uk">info@ivaldi.uk</a>
                         </div>
                         <span>
                             Or use our contact form <Link href={"/contact"}>

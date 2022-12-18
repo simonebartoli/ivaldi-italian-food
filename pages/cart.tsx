@@ -24,11 +24,17 @@ export type ItemType = {
     amount_available: number
     amount: number
     price_unit: string
-    photo_loc: string
+    photo_loc: string,
+    weight: number,
     discount: {
         percentage: number
     } | null
 }
+export type ShippingCostType = {
+    max_weight: number
+    price: number
+}
+
 const GET_ITEMS_CART = gql`
     query GET_ITEMS_CART($items: [ItemCartInput!]!) {
         getItemsCart(items: $items){
@@ -40,10 +46,19 @@ const GET_ITEMS_CART = gql`
             }
             amount_available
             price_unit
-            photo_loc
+            photo_loc,
+            weight,
             discount {
                 percentage
             }
+        }
+    }
+`
+const GET_SHIPPING_COSTS = gql`
+    query GET_SHIPPING_COSTS {
+        getShippingCosts {
+            max_weight
+            price
         }
     }
 `
@@ -55,6 +70,9 @@ const GET_MINIMUM_ORDER_PRICE = gql`
 `
 type GetMinimumOrderPriceType = {
     getMinimumOrderPrice: number
+}
+type GetShippingCostsType = {
+    getShippingCosts: ShippingCostType[]
 }
 
 const Cart = () => {
@@ -68,10 +86,16 @@ const Cart = () => {
     const [render, setRender] = useState(true)
     const [loader, setLoader] = useState(true)
     const [minimumOrderPrice, setMinimumOrderPrice] = useState(0)
+    const [shippingCosts, setShippingCosts] = useState<ShippingCostType[]>([])
 
     const {loading: loadingGetMinimumOrderPrice} = useQuery<GetMinimumOrderPriceType>(GET_MINIMUM_ORDER_PRICE, {
         onCompleted: (data) => {
             setMinimumOrderPrice(data.getMinimumOrderPrice)
+        }
+    })
+    const {loading: loadingGetShippingCosts} = useQuery<GetShippingCostsType>(GET_SHIPPING_COSTS, {
+        onCompleted: (data) => {
+            setShippingCosts(data.getShippingCosts)
         }
     })
     const [itemsCart, setItemsCart] = useState<Map<number, ItemType>>(new Map())
@@ -109,7 +133,6 @@ const Cart = () => {
             }
         }
     }, [cart, render])
-
     useEffect(() => {
         if(cart.size === 0) setItemsCart(new Map())
         else if (!render) {
@@ -130,11 +153,9 @@ const Cart = () => {
             if(!equal) setRender(true)
         }
     }, [cart])
-
     useEffect(() => {
         updateCart()
     }, [])
-
     useEffect(() => {
         if(fullPageRef.current !== null && navHeight !== undefined){
             fullPageRef.current.style.minHeight = `${heightPage - navHeight}px`
@@ -152,7 +173,7 @@ const Cart = () => {
                 <meta name="revisit-after" content="5 days"/>
                 <meta name="author" content="Ivaldi Italian Food"/>
             </Head>
-            {((loading || loadingGetMinimumOrderPrice) && loader) ? <PageLoader display/> :
+            {((loading || loadingGetMinimumOrderPrice || loadingGetShippingCosts) && loader) ? <PageLoader display/> :
                 <>
                     {itemsCart.size === 0 ?
                         <div ref={fullPageRef} className="w-full flex flex-col gap-8 items-center justify-center">
@@ -182,6 +203,7 @@ const Cart = () => {
                                     <CartSummary
                                         minimumOrderPrice={minimumOrderPrice}
                                         items={itemsCart}
+                                        shippingCosts={shippingCosts}
                                     />
                                     <span className="pt-[1px] bg-neutral-500 w-full"/>
                                 </> :
@@ -207,6 +229,7 @@ const Cart = () => {
                                 <CartSummary
                                     minimumOrderPrice={minimumOrderPrice}
                                     items={itemsCart}
+                                    shippingCosts={shippingCosts}
                                 />
                             }
                         </article>

@@ -39,7 +39,7 @@ const Contact = () => {
                     <div className="flex flex-col gap-10 smxl:text-2xl smx:text-xl text-lg items-start">
                         <div className="flex flex-row smxl:gap-12 gap-8">
                             <HiOutlineMailOpen className="text-3xl"/>
-                            <a href="mailto: myemail@domain.com" className="col-span-4 hover:text-green-standard hover-underline-animation">myemail@domain.com</a>
+                            <a href="mailto: info@ivaldi.uk" className="col-span-4 hover:text-green-standard hover-underline-animation">info@ivaldi.uk</a>
                         </div>
                         <div className="flex flex-row smxl:gap-12 gap-8">
                             <BsTelephonePlus className="text-3xl"/>

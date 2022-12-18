@@ -44,7 +44,6 @@ const Description: NextPage<Props> = ({orderOpen, setOrderOpen, order, modal}) =
 
     const handleOrderOpenClick = (e: React.MouseEvent<HTMLDivElement>) => {
         const elementClicked = e.target as HTMLElement
-        console.log(elementClicked)
         try{
             if(!elementClicked.className.includes("no-event")) setOrderOpen(!orderOpen)
         }catch (e) {

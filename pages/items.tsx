@@ -155,7 +155,6 @@ const Items = () => {
             setReTry(false)
         }
     }, [reTry])
-
     useEffect(() => {
         if(query.length > 2) {
             const result: ItemConverted[] = []

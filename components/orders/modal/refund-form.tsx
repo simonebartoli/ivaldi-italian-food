@@ -37,6 +37,7 @@ type CreateRefundVarType = {
         reference: string
         archive: RefundType["items_refunded"]
         notes: string
+        shipping_cost: boolean
     }
 }
 type CreateRefundType = {createRefund: boolean}
@@ -51,6 +52,8 @@ const RefundForm: NextPage<Props> = ({order, modalOpen, invalid, refetch}) => {
     const [reTry, setReTry] = useState(false)
     const [loading, setLoading] = useState(false)
 
+
+    const [refundShippingCosts, setRefundShippingCosts] = useState(false)
     const [refundAll, setRefundAll] = useState(false)
     const [refund, setRefund] = useState<RefundType>({
         items_refunded: [],
@@ -61,8 +64,12 @@ const RefundForm: NextPage<Props> = ({order, modalOpen, invalid, refetch}) => {
     const total = useMemo(() => {
         let total = 0
         refund.items_refunded.forEach((element) => total += element.amount_refunded * element.price_per_unit)
+        if(refundShippingCosts){
+            total += order.shipping_cost
+        }
+        console.log(Number(total.toFixed(2)))
         return Number(total.toFixed(2))
-    }, [refund])
+    }, [refund, refundShippingCosts])
 
     const handleRefundAllOptionChange = (e: ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.checked
@@ -129,7 +136,8 @@ const RefundForm: NextPage<Props> = ({order, modalOpen, invalid, refetch}) => {
                 data: {
                     reference: order.reference,
                     notes: refund.notes!,
-                    archive: refund.items_refunded
+                    archive: refund.items_refunded,
+                    shipping_cost: refundShippingCosts
                 }
             }
         })
@@ -175,7 +183,8 @@ const RefundForm: NextPage<Props> = ({order, modalOpen, invalid, refetch}) => {
                     data: {
                         reference: order.reference,
                         notes: refund.notes!,
-                        archive: refund.items_refunded
+                        archive: refund.items_refunded,
+                        shipping_cost: refundShippingCosts
                     }
                 }
             })
@@ -232,10 +241,17 @@ const RefundForm: NextPage<Props> = ({order, modalOpen, invalid, refetch}) => {
                         onChange={(e) => handleReasonChange(e)}
                         placeholder={"Insert the reason of the refund here..."}
                         className="p-3 w-full border-[1px] rounded-lg shadow-md resize-y"/>
-                    <div className="flex flex-row items-center text-xl gap-8 my-6">
+                    <div className="flex flex-row items-center text-xl gap-8">
                         <span>Refund All Order: </span>
                         <input onChange={(e) => handleRefundAllOptionChange(e)} checked={refundAll} type="checkbox" className="scale-125"/>
                     </div>
+                    {
+                        !order.shipping_cost_refunded &&
+                        <div className="flex flex-row items-center text-xl gap-8 my-6">
+                            <span>Refund Shipping Cost: </span>
+                            <input onChange={(e) => setRefundShippingCosts(e.target.checked)} checked={refundShippingCosts} type="checkbox" className="scale-125"/>
+                        </div>
+                    }
                     <div className="flex flex-row items-center text-2xl gap-8">
                         <span>Total Refund: </span>
                         <span className="text-red-600 text-3xl font-semibold">{`£ ${total.toFixed(2)}`}</span>

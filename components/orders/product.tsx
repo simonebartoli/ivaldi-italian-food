@@ -62,7 +62,7 @@ const Product: NextPage<Props> = ({item}) => {
                 <span className="text-2xl font-semibold">£{item.price_total.toFixed(2)}</span>
                 {
                     item.refund_total > 0 &&
-                    <span className="text-red-600">{`£ ${item.refund_total} Refunded`}</span>
+                    <span className="text-red-600">{`£ ${item.refund_total.toFixed(2)} Refunded`}</span>
                 }
             </div>
         </section>

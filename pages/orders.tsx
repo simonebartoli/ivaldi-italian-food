@@ -34,6 +34,7 @@ type OrderType = {
     order_id: string
     datetime: string
     shipping_cost: number
+    shipping_cost_refunded: boolean
     status: string
     price_total: number
     vat_total: number
@@ -86,6 +87,7 @@ const GET_ORDERS_FULL = gql`
             datetime
             vat_total
             shipping_cost
+            shipping_cost_refunded
             status
             price_total
             reference
@@ -346,6 +348,7 @@ const Order: NextPage<OrderProps> = ({order, refetch}) => {
                                 })
                             })
                         }
+                        if(order.shipping_cost_refunded) total += order.shipping_cost
                         return total
                     })()
                 }}
@@ -361,6 +364,8 @@ const Order: NextPage<OrderProps> = ({order, refetch}) => {
                             price_total: order.price_total,
                             vat_total: order.vat_total,
                             reference: order.reference,
+                            shipping_total: order.shipping_cost,
+                            shipping_cost_refunded: order.shipping_cost_refunded,
                             shipping_address: order.archive.shipping_address,
                             refund: order.refund
                         }}

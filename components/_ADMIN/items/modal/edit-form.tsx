@@ -21,6 +21,7 @@ enum OptionsEnum {
     PRICE = "PRICE",
     STOCK = "STOCK",
     DISCOUNT = "DISCOUNT",
+    WEIGHT = "WEIGHT",
     IMAGE = "IMAGE",
     CATEGORY = "CATEGORY",
     KEYWORDS = "KEYWORDS",
@@ -40,6 +41,7 @@ type CurrentProduct = {
     discount: string | null
     category: string[] | null
     keyword: string[] | null
+    weight: number | null
 }
 type CreateSecureLinkType = {
     createSecureLink: string
@@ -54,6 +56,7 @@ type ModifyItemDetailsVarType = {
         description?: string
         price_total?: number
         price_unit?: string
+        weight?: number
         amount_available?: number
         vat?: number
         photo_loc?: string
@@ -101,7 +104,8 @@ const EditForm: NextPage<Props> = ({modalOpen, item, refetch}) => {
         amount_available: null,
         vat: null,
         category: null,
-        keyword: null
+        keyword: null,
+        weight: null
     })
     const [invalid, setInvalid] = useState(false)
     const photo_loc = useRef<string | null>(null)

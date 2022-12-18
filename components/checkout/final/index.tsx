@@ -2,7 +2,7 @@ import React, {forwardRef, useEffect, useMemo, useState} from 'react';
 import CheckoutStripe from "./checkoutStripe";
 import SavedCards from "./saved-cards";
 import {AddressReactType} from "../../../pages/checkout";
-import {gql, useMutation} from "@apollo/client";
+import {gql, useMutation, useQuery} from "@apollo/client";
 import Addresses from "./addresses";
 import Total from "./total";
 import Items from "./items";
@@ -13,6 +13,7 @@ import CheckoutPayPal from "./checkoutPayPal";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import {HOST} from "../../../settings";
+import {ShippingCostType} from "../../../pages/cart";
 
 type Props = {
     moveBack: (oldRef: number, newRef: number) => void
@@ -51,6 +52,15 @@ type CreateOrRetrievePaymentIntentType = {
 }
 // ------------------------------------------------
 
+const GET_SHIPPING_COSTS = gql`
+    query GET_SHIPPING_COSTS {
+        getShippingCosts {
+            max_weight
+            price
+        }
+    }
+`
+
 
 type Item = {
     name: string
@@ -60,8 +70,12 @@ type Item = {
     vat: {
         percentage: number
     }
+    weight: number
 }
 type ItemReact = Item & {item_id: number, amount: number}
+type GetShippingCostsType = {
+    getShippingCosts: ShippingCostType[]
+}
 // ------------------------------------------------
 
 const FinalIndex = forwardRef<HTMLDivElement, Props>(({moveBack, shippingAddress, billingAddress, phoneNumber, delivery_suggested, items}, ref) => {
@@ -70,15 +84,29 @@ const FinalIndex = forwardRef<HTMLDivElement, Props>(({moveBack, shippingAddress
 
     const [paymentIntent, setPaymentIntent] = useState<{ client_secret: string, amount: number, id: string } | null>(null)
     const [reTry, setReTry] = useState(false)
+    const [shippingCosts, setShippingCosts] = useState<ShippingCostType[]>([])
 
+
+    const shippingTotal = useMemo(() => {
+        if(shippingCosts.length > 0){
+            let totalWeight = 0
+            if(items.length === 0) return 0
+            for(const item of items){
+                totalWeight += item.weight * item.amount
+            }
+            return shippingCosts.filter(element => element.max_weight > totalWeight).sort((a, b) => a.max_weight > b.max_weight ? 1 : -1)[0].price
+        }else{
+            return 0
+        }
+    }, [items, shippingCosts])
     const total = useMemo<number>(() => {
         let newTotal = 0
         if(items.length === 0) return newTotal
         for(const item of items){
             newTotal += item.price_total * item.amount
         }
-        return Number(newTotal.toFixed(2))
-    }, [items])
+        return Number((newTotal + shippingTotal).toFixed(2))
+    }, [items, shippingTotal])
     const vatTotal = useMemo<number>(() => {
         let newTotal = 0
         if(items.length === 0) return newTotal
@@ -88,6 +116,11 @@ const FinalIndex = forwardRef<HTMLDivElement, Props>(({moveBack, shippingAddress
         return Number(newTotal.toFixed(2))
     }, [items])
 
+    const {} = useQuery<GetShippingCostsType>(GET_SHIPPING_COSTS, {
+        onCompleted: (data) => {
+            setShippingCosts(data.getShippingCosts)
+        }
+    })
     const [createOrRetrievePaymentIntent] = useMutation<CreateOrRetrievePaymentIntentType, CreateOrRetrievePaymentIntentVarType>(CREATE_OR_RETRIEVE_PAYMENT_INTENT, {
         context: {
             headers: {
@@ -153,7 +186,7 @@ const FinalIndex = forwardRef<HTMLDivElement, Props>(({moveBack, shippingAddress
                 <span>{phoneNumber}</span>
             </div>
             <span className="w-full border-t-[1px] border-neutral-300"/>
-            <Total total={total} vatTotal={vatTotal}/>
+            <Total total={total} vatTotal={vatTotal} shippingTotal={shippingTotal}/>
             <Items items={items.map((element) => {
                 return {
                     ...element,

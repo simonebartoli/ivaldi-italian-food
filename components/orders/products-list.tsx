@@ -15,6 +15,8 @@ type Props = {
         shipping_address: AddressReactType
         price_total: number
         vat_total: number
+        shipping_total: number
+        shipping_cost_refunded: boolean
         refund: RefundType[] | null
     }
 }
