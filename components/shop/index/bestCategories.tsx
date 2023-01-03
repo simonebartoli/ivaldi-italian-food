@@ -17,10 +17,10 @@ const BestCategories = () => {
         <section className="flex flex-col gap-8">
             <h2 className="text-3xl text-center font-semibold leading-10 px-4">Browse Our Fantastic Products</h2>
             <div className="grid xls:grid-cols-4 sm:grid-cols-2 grid-cols-1 items-stretch">
-                <div onClick={() => redirect("cheese")} className="relative group cursor-pointer">
+                <div onClick={() => redirect("cheese and soft cheese")} className="relative group cursor-pointer">
                     <div className="transition-all homepage-image z-10 group-hover:opacity-[35%]"/>
                     <div className="transition-all p-4 group-hover:bg-black opacity-80 z-20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                        <span className="text-5xl text-white font-navbar">Cheese</span>
+                        <span className="text-5xl text-white font-navbar">Cheese and Soft Cheese</span>
                     </div>
                     <div className="-z-10 h-[550px]">
                         <Image alt="image" placeholder={"blur"} src={CheeseImage} className={"image !max-h-[400px] xls:!max-h-full"} layout={"fill"} objectFit={"cover"} />
