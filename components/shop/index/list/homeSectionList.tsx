@@ -123,7 +123,7 @@ const HomeSectionList = () => {
                     pauseOnMouseEnter: true
                 }}
                 modules={[Navigation, Autoplay]}
-                className=""
+                className="homepage-slider"
             >
                 {
                     products.map(_ =>

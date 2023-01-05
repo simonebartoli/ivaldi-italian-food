@@ -12,8 +12,8 @@ export const logos = [
         url: "/media/photos/shop/logo/balocco.webp"
     },
     {
-        name: "callipo",
-        url: "/media/photos/shop/logo/callipo.png"
+        name: "rio mare",
+        url: "/media/photos/shop/logo/riomare.png"
     },
     {
         name: "corte buona",

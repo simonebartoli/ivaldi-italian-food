@@ -39,6 +39,10 @@ const ShippingAddressList = forwardRef<HTMLDivElement, Props>(
     return (
         <section ref={ref} className="flex flex-col items-center justify-center xls:w-1/2 mdx:w-2/3 md:w-3/4 w-full gap-12 px-4 py-8">
             <h2 className="text-3xl mb-8 text-center">Select your Shipping Address</h2>
+            <span className="text-lg font-semibold leading-8 text-gray-700 p-4 rounded-lg bg-cyan-100 w-full text-center shadow-lg border-2 border-cyan-400">
+                We currently deliver only in LONDON<br/>
+                <span className={"text-sm font-normal leading-6"}>Any order with a delivery address outside LONDON might be rejected with a partial refund</span>
+            </span>
             {
                 existingAddresses.length === 0 ?
                     <div className="w-full flex items-center p-10 bg-neutral-100 rounded-lg">

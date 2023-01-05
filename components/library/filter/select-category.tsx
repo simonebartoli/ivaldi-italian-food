@@ -64,7 +64,8 @@ const SelectCategory = () => {
                 newCategories.push({name: category.name})
             }
         }
-        setCategoriesNoSub(newCategories)
+        setCategoriesNoSub(newCategories.sort((a, b) => a.name !== "Relevant" ? (a.name > b.name ? 1 : -1) : -1))
+
 
     }, [categories])
     useEffect(() => {
@@ -141,7 +142,7 @@ const SelectCategory = () => {
                 <span className="w-full border-t-[1px] border-neutral-500"/>
                 <div className="w-full grid grid-cols-4 auto-rows-min grid-flow-row gap-x-16 gap-y-4">
                     {
-                        categories.map((element) => {
+                        categories.sort((a, b) => a > b ? 1 : -1).map((element) => {
                             if(element.sub_categories.length > 0){
                                 return (
                                     <div key={element.name} className="flex flex-col w-fit gap-6 items-start justify-start p-8">
@@ -160,38 +161,6 @@ const SelectCategory = () => {
                     }
                 </div>
             </div>
-            {/*<div ref={contextMenuRef} className="hidden animate-slideUp pointer-events-none mt-4 border-[1px] rounded-b-lg border-neutral-500 bg-white absolute top-full left-0 flex-col items-center w-full shadow-lg">
-                {
-                    categories.map((element, index) =>
-                        <div
-                            style={{backgroundColor: `${categorySelectedIndex === index ? "rgb(245,245,245)" : "inherit"}`}}
-                            onMouseEnter={() => handleMouseEnter(element.name)}
-                            onClick={() => handleClickCategory(element.name)}
-                            key={index}
-                            className="group flex flex-row justify-between items-center w-full p-4 hover:bg-neutral-100">
-                                <span>{element.name}</span>
-                                {
-                                    element.sub_categories.length > 0 && <IoMdArrowDropright
-                                        style={{color: `${categorySelectedIndex === index ? "black" : "rgb(163 163 163)"}`}}
-                                        className="text-2xl text-neutral-400 group-hover:text-black transition"
-                                    />
-                                }
-                        </div>
-                    )
-                }
-            </div>
-            <div className={`grid grid-cols-1 grid-flow-row mt-4 ml-4 border-[1px] rounded-b-lg border-neutral-500 bg-white absolute top-full left-full items-center w-max shadow-lg`}>
-                {
-                    subElements.map((element, index) =>
-                        <span
-                            onClick={() => handleClickCategory(element.name)}
-                            key={index}
-                            className="border-[1px] border-neutral-200 w-full px-6 py-4 hover:bg-neutral-100">
-                            {element.name}
-                        </span>
-                    )
-                }
-            </div>*/}
         </div>
     );
 };

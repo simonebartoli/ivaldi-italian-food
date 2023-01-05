@@ -63,7 +63,7 @@ const Article: NextPage<{item: Item, hidden?: boolean}> = ({item, hidden= false}
     }
 
     return (
-        <article className="w-full flex flex-col items-center justify-center gap-6 smxl:p-6 p-0 relative border-b-[1px] border-neutral-400">
+        <article className="w-full h-full flex flex-col items-center justify-between gap-6 smxl:p-6 p-0 relative border-b-[1px] border-neutral-400">
             {(item.discount !== null && item.amount_available > 0) &&
                 <div className="absolute z-20 text-lg top-0 left-1/2 -translate-x-1/2 w-5/6 p-1 bg-red-600 text-white text-center font-semibold">
                     <span>Save {item.discount.percentage}%</span>
@@ -75,10 +75,10 @@ const Article: NextPage<{item: Item, hidden?: boolean}> = ({item, hidden= false}
                 </div>
             }
             <div className="flex flex-col items-center justify-center gap-6 w-full">
-                <div className="relative h-[192px] w-full flex items-center">
+                <div className="relative h-[192px] w-full flex items-center mt-4">
                     {ready &&
                         <Image  quality={100} src={`${API_HOST}${item.photo_loc}`}
-                                      alt="this is a photo" layout="fill" className={"image"}
+                                      alt={item.name} layout="fill" className={"image"}
                         />
                     }
                 </div>

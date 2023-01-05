@@ -76,8 +76,8 @@ const Footer = () => {
                     <div>
                         <ul className="list-disc list-inside space-y-4">
                             <li className="pl-2"><a href={`${HOST}/terms`} target={"_blank"} rel={"noreferrer"} className="pl-2">Terms & Conditions</a></li>
-                            <li className="pl-2"><span className="pl-2">Privacy Policy</span></li>
-                            <li className="pl-2"><span className="pl-2">Payment System</span></li>
+                            <li className="pl-2"><a href={`${HOST}/terms`} target={"_blank"} rel={"noreferrer"} className="pl-2">Privacy Policy</a></li>
+                            <li className="pl-2"><a href={`${HOST}/terms`} target={"_blank"} rel={"noreferrer"} className="pl-2">Payment System</a></li>
                         </ul>
                     </div>
                 </div>

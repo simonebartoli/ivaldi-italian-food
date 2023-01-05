@@ -15,3 +15,7 @@
 .swiper-container-free-mode > .swiper-wrapper{
     transition-timing-function : linear;
 }
+
+.homepage-slider .swiper-slide {
+    height: auto;
+}

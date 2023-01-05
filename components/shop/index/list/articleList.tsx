@@ -93,7 +93,7 @@ const ArticleList = () => {
             <div>
                 <Swiper
                     loop={false}
-                    autoHeight={true}
+                    autoHeight={false}
                     draggable={true}
                     slidesPerView={slidesPerView}
                     slidesPerGroup={slidesPerGroup}
@@ -102,7 +102,7 @@ const ArticleList = () => {
                     grabCursor={true}
                     navigation={true}
                     modules={[Navigation]}
-                    className=""
+                    className="homepage-slider"
                 >
                     {items.map((element) =>
                         <SwiperSlide key={element.item_id}>

@@ -74,15 +74,15 @@ const CartSummary: NextPage<Props> = ({items, minimumOrderPrice, shippingCosts})
                 <span className={"text-xl"}>{items.size} Different Article{items.size > 0 && "s"}</span>
             </div>
             <div className="flex flex-col gap-4">
-                <span className="text-lg">Total (no VAT, no Shipping): <span className="text-2xl ">£ {totalNoVatNoShipping}</span></span>
+                <span className="text-lg">Total (no VAT, no Shipping): <span className="text-2xl ">£ {totalNoVatNoShipping.toFixed(2)}</span></span>
                 <span className="text-lg">Shipping Cost: <span>£ {shippingCost.toFixed(2)}</span></span>
                 <span className="text-lg">VAT: <span>£ {vat.toFixed(2)}</span></span>
-                <span className="text-xl">Total: <span className="text-2xl font-semibold text-green-standard">£ {total}</span></span>
+                <span className="text-xl">Total: <span className="text-2xl font-semibold text-green-standard">£ {total.toFixed(2)}</span></span>
             </div>
             {totalDiscounts > 0 &&
                 <div className="flex flex-row gap-4 items-center text-lg text-red-500 font-semibold">
                     <FiPercent/>
-                    <span>You Saved £ {totalDiscounts} with Discounts</span>
+                    <span>You Saved £ {totalDiscounts.toFixed(2)} with Discounts</span>
                 </div>
             }
             {

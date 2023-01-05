@@ -17,7 +17,7 @@ type Props = {
 
 const HomeSection: NextPage<Props> = ({item, loading, disabled, handleAddToCartButtonClick}) => {
     return (
-        <div className="h-full px-8 py-2 bg-neutral-50 w-full flex lg:flex-row flex-col items-center justify-evenly">
+        <div className="h-full px-8 py-2 bg-neutral-50 w-full flex lg:flex-row flex-col items-center justify-between lg:gap-16 gap-4">
             {
                 item.discount !== null &&
                 <div className="lg:hidden block bg-white border-[1px] border-neutral-400 p-4 my-8 w-full sm:w-1/2">
@@ -38,7 +38,7 @@ const HomeSection: NextPage<Props> = ({item, loading, disabled, handleAddToCartB
                         </span>
                     </div>
                 }
-                <span className="smxl:text-5xl text-3xl text-center leading-[3rem]">{item.name}</span>
+                <span className="lg:text-3xl font-semibold text-2xl text-center lg:leading-[3.5rem] leading-[3rem]">{item.name}</span>
                 <div className="flex flex-row gap-12 items-center">
                     <span className="font-semibold text-3xl">{`£ ${item.price_total.toFixed(2)}`}</span>
                     {
