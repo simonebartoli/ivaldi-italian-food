@@ -36,12 +36,12 @@ const SelectCategory = () => {
     const [categories, setCategories] = useState<Category[]>([{
         name: "Relevant"
     }])
-    const [categoriesNoSub, setCategoriesNoSub] = useState<Category["sub_categories"]>([])
+    // const [categoriesNoSub, setCategoriesNoSub] = useState<Category["sub_categories"]>([])
 
 
     const {} = useQuery<GetCategoriesFull>(GET_CATEGORIES_FULL, {
         onCompleted: (data) => {
-            setCategories([...categories, ...data.getCategories_FULL])
+            setCategories([...categories, ...data.getCategories_FULL].sort((a, b) => a.name !== "Relevant" ? (a.name > b.name ? 1 : -1) : -1))
         }
     })
 

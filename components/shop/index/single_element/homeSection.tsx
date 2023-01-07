@@ -20,9 +20,9 @@ const HomeSection: NextPage<Props> = ({item, loading, disabled, handleAddToCartB
         <div className="h-full px-8 py-2 bg-neutral-50 w-full flex lg:flex-row flex-col items-center justify-between lg:gap-16 gap-4">
             {
                 item.discount !== null &&
-                <div className="lg:hidden block bg-white border-[1px] border-neutral-400 p-4 my-8 w-full sm:w-1/2">
-                    <span className="w-full text-3xl text-center flex items-center flex-col gap-3">
-                        Discount: <span className="w-full text-red-600 font-semibold">{`${item.discount.percentage}% OFF`}</span>
+                <div className="lg:hidden block bg-orange-100 border-[1px] border-neutral-400 p-4 my-8 w-full sm:w-1/2 rounded-lg shadow-lg">
+                    <span className="w-full text-3xl text-center flex items-center justify-center smx:flex-row flex-col smx:gap-6 gap-2">
+                        Discount: <span className="text-red-600 font-semibold">{`${item.discount.percentage}% OFF`}</span>
                     </span>
                 </div>
             }
@@ -32,8 +32,8 @@ const HomeSection: NextPage<Props> = ({item, loading, disabled, handleAddToCartB
             <div className="flex flex-col basis-1/2 grow items-center justify-center gap-12 self-stretch py-6">
                 {
                     item.discount !== null &&
-                    <div className="lg:block hidden bg-white border-[1px] border-neutral-400 p-4">
-                        <span className="text-3xl">
+                    <div className="lg:block hidden bg-orange-100 border-[1px] border-neutral-400 p-4 px-8 rounded-lg shadow-lg">
+                        <span className="text-3xl text-gray-700">
                             Discount: <span className="text-red-600 font-semibold">{`${item.discount.percentage}% OFF`}</span>
                         </span>
                     </div>

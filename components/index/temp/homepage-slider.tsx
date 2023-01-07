@@ -122,7 +122,11 @@ export const logos = [
     {
         name: "zuccato",
         url: "/media/photos/shop/logo/zuccato.png"
-    }
+    },
+    {
+        name: "soft drinks, alcohol, and wine",
+        url: "/media/photos/shop/logo/drinks.png"
+    },
 ]
 
 const HomepageSlider = () => {
