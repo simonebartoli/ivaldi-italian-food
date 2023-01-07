@@ -56,7 +56,7 @@ const SelectCategory = () => {
         }
     }, [widthPage, navHeight, searchBarHeight])
     useEffect(() => {
-        setCategorySelected(categories[0].name)
+        setCategorySelected("Relevant")
 
         const newCategories: Category["sub_categories"] = []
         for(const category of categories){
@@ -64,9 +64,7 @@ const SelectCategory = () => {
                 newCategories.push({name: category.name})
             }
         }
-        setCategoriesNoSub(newCategories.sort((a, b) => a.name !== "Relevant" ? (a.name > b.name ? 1 : -1) : -1))
-
-
+        setCategoriesNoSub(newCategories.sort((a, b) => (a.name === "Relevant") ? -1 : (b.name === "Relevant") ? 1 : (a.name > b.name ? 1 : -1)))
     }, [categories])
     useEffect(() => {
         if(query !== undefined && !Array.isArray(query)){
