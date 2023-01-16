@@ -54,11 +54,11 @@ const Contact = () => {
                     <div className="flex flex-col gap-10 smxl:text-2xl smx:text-xl text-lg items-start">
                         <div className="flex flex-row smxl:gap-12 gap-8">
                             <BsFacebook className="text-3xl"/>
-                            <a href="" className="col-span-4 hover:text-green-standard hover-underline-animation">Ivaldi Italian Food</a>
+                            <a rel={"noreferrer"} target={"_blank"} href="https://www.facebook.com/profile.php?id=100089324176503" className="col-span-4 hover:text-green-standard hover-underline-animation">Ivaldi Italian Food</a>
                         </div>
                         <div className="flex flex-row smxl:gap-12 gap-8">
                             <BsInstagram className="text-3xl"/>
-                            <a href="" className="col-span-4 hover:text-green-standard hover-underline-animation">Ivaldi Official Food</a>
+                            <a rel={"noreferrer"} target={"_blank"} href="https://www.instagram.com/ivaldi_italian_food/?hl=it" className="col-span-4 hover:text-green-standard hover-underline-animation">Ivaldi Official Food</a>
                         </div>
                     </div>
                 </article>

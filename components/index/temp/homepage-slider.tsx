@@ -127,6 +127,10 @@ export const logos = [
         name: "soft drinks, alcohol, and wine",
         url: "/media/photos/shop/logo/drinks.png"
     },
+    {
+        name: "cheese and soft cheese",
+        url: "/media/photos/shop/logo/cheese.webp"
+    }
 ]
 
 const HomepageSlider = () => {

@@ -40,14 +40,14 @@ const Contact = () => {
                 </div>
             </div>
             <div className="flex w-full items-center justify-center smxl:w-fit flex-col gap-12 p-8 bg-[rgb(0,0,0,0.8)] z-20 text-white xls:text-4xl smxl:text-3xl text-2xl">
-                <div className="flex flex-row items-center gap-8">
+                <a rel={"noreferrer"} target={"_blank"} href={"https://www.facebook.com/people/Ivaldi-Italian-Food/100089324176503/"} className="flex flex-row items-center gap-8">
                     <BsFacebook/>
                     <span>Ivaldi Italian Food</span>
-                </div>
-                <div className="flex flex-row items-center gap-8">
+                </a>
+                <a rel={"noreferrer"} target={"_blank"} href={"https://www.instagram.com/ivaldi_italian_food/"} className="flex flex-row items-center gap-8">
                     <BsInstagram/>
                     <span>Ivaldi Italian Food</span>
-                </div>
+                </a>
             </div>
         </div>
     );
