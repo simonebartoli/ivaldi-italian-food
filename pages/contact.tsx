@@ -34,7 +34,7 @@ const Contact = () => {
                 <article className="flex flex-col gap-12 basis-1/3 grow items-center">
                     <p className="text-center smxl:text-xl text-lg leading-10">
                         You can contact &quot;Ivaldi Italian Food&quot; using phone, email or the contact form.
-                        <span className="font-semibold"> Monday - Sunday | 8:00 - 18:00</span>
+                        <span className="font-semibold"> Monday - Friday | 13:00 - 21:00</span>
                     </p>
                     <div className="flex flex-col gap-10 smxl:text-2xl smx:text-xl text-lg items-start">
                         <div className="flex flex-row smxl:gap-12 gap-8">
@@ -43,7 +43,7 @@ const Contact = () => {
                         </div>
                         <div className="flex flex-row smxl:gap-12 gap-8">
                             <BsTelephonePlus className="text-3xl"/>
-                            <a href="tel: +447796513701" className="col-span-4 hover:text-green-standard hover-underline-animation">+44 77 9651 3701</a>
+                            <a href="tel: +447743192857" className="col-span-4 hover:text-green-standard hover-underline-animation">+44 77 4319 2857</a>
                         </div>
                     </div>
                     <span className="pt-[1px] bg-neutral-500 w-full"/>
