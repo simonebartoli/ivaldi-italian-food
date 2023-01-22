@@ -125,6 +125,9 @@ const EmailDob = React.forwardRef<HTMLDivElement, Props>(({email, setEmail, dob,
         else setSecondSectionButtonDisabled(true)
     }, [secondButtonErrors])
 
+    useEffect(() => {
+        moveLabel(dobRef)
+    }, [])
 
     return (
         <div ref={ref} className="hidden flex flex-col gap-16 items-center xls:w-1/3 mdx:w-1/2 sm:w-2/3 smxl:w-3/4 w-full">
@@ -156,12 +159,7 @@ const EmailDob = React.forwardRef<HTMLDivElement, Props>(({email, setEmail, dob,
                             min={MIN_DATE.format("YYYY-MM-DD")}
                             max={MAX_DATE.format("YYYY-MM-DD")}
                             value={dob} onChange={(e) => onDobChange(e)}
-                            onFocus={(e) => {
-                                e.target.type = "date"
-                                moveLabel(dobRef)
-                            }}
-                            onBlur={(e) => onInputBlur(e, dobRef, true)}
-                            type="text"
+                            type="date"
                             className="border-[1px] border-neutral-400 text-lg p-3 w-full rounded-md"/>
                     </div>
                 </div>
