@@ -11,6 +11,7 @@ type Props = {
         status: string
         user: OrderType["user"]
         order_delivery: OrderDeliveryType
+        phone_number: string
         reference: string
         shipping_address: AddressReactType
         price_total: number

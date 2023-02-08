@@ -146,6 +146,7 @@ type Order {
     order_delivery: OrderDelivery!
     order_id: ID!
     payment_method: PaymentMethodDB
+    phone_number: String!
     price_total: Float!
     receipt_number: Int!
     reference: String!

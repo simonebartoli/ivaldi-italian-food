@@ -9,6 +9,7 @@ type Props = {
     summary: {
         user: OrderType["user"]
         status: string
+        phone_number: string
         order_delivery: OrderDeliveryType
         reference: string
         shipping_address: AddressReactType
@@ -61,6 +62,10 @@ const Total: NextPage<Props> = ({summary}) => {
                     <div className="flex lg:flex-row flex-col gap-6 lg:items-center items-start">
                         <span className="text-xl text-green-standard font-semibold">USER:</span>
                         <span className="text-xl font-semibold">{`${summary.user.name} ${summary.user.surname} - ${summary.user.email}`}</span>
+                    </div>
+                    <div className="flex lg:flex-row flex-col gap-6 lg:items-center items-start">
+                        <span className="text-xl text-green-standard font-semibold">PHONE NUMBER:</span>
+                        <span className="text-xl font-semibold">{`${summary.phone_number}`}</span>
                     </div>
                     <hr className="w-full"/>
                 </>

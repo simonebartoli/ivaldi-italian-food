@@ -36,6 +36,7 @@ type OrderType = {
     shipping_cost: number
     shipping_cost_refunded: boolean
     status: string
+    phone_number: string
     price_total: number
     vat_total: number
     archive: ArchiveType
@@ -56,6 +57,7 @@ type ArchiveType = {
 }
 type UserType = {
     name: string
+    phone_number: string
     surname: string
     email: string
 }
@@ -90,6 +92,7 @@ const GET_ORDERS_FULL = gql`
             shipping_cost_refunded
             status
             price_total
+            phone_number
             reference
             refund {
                 notes
@@ -361,6 +364,7 @@ const Order: NextPage<OrderProps> = ({order, refetch}) => {
                             order_delivery: order.order_delivery,
                             user: order.user,
                             status: order.status,
+                            phone_number: order.phone_number,
                             price_total: order.price_total,
                             vat_total: order.vat_total,
                             reference: order.reference,
