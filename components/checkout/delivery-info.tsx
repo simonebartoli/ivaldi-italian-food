@@ -88,7 +88,7 @@ const DeliveryInfo = forwardRef<HTMLDivElement, Props>(({moveBack, moveNext, pho
                         door. You need to be present at the time of the delivery.<br/><br/>
                         After the order has been placed, we will contact you in a few hours (up to a maximum of 24 hours) to arrange
                         together the best time slot for the delivery. To speed up the process, please leave below your preferred timeslots
-                        in the next days. Some items could take up to 3 days to arrive.
+                        in the next days. Some items could take up to 4 days to arrive.
                     </p>
                 </section>
                 <div className="w-full space-y-4">
