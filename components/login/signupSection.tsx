@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from "next/image";
+import Image from "next/legacy/image";
 import SignupPhoto from "../../public/media/photos/login/signup.webp"
 import {BiSubdirectoryRight} from "react-icons/bi";
 import Link from "next/link";
@@ -39,7 +39,7 @@ const SignupSection: NextPage<Props> = ({redirectTo}) => {
             </div>
             <div className="button-animated hover:before:w-full before:bg-[#008c2e] z-0 smxl:w-1/2 w-2/3 bg-green-standard border-black border-2 rounded-lg">
                 <Link href={redirectTo !== null ? `/signup?${redirectTo}` : "/signup"}>
-                    <a className="relative block z-10 p-4 text-center text-white shadow-lg text-lg">Signup Now</a>
+                    <span className="relative block z-10 p-4 text-center text-white shadow-lg text-lg">Signup Now</span>
                 </Link>
             </div>
         </article>

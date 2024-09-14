@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from "next/image";
+import Image from "next/legacy/image";
 import {IoSearchSharp} from "react-icons/io5";
 import {FiShoppingCart} from "react-icons/fi";
 import {ItemType} from "../list/homeSectionList";
@@ -51,7 +51,7 @@ const HomeSection: NextPage<Props> = ({item, loading, disabled, handleAddToCartB
                 <div className="flex flex-col gap-4 sm:w-1/2 w-full">
                     <Link href={`/shop/${item.item_id}`}>
                         <div className="cursor-pointer p-2 flex flex-row gap-4 items-center justify-center bg-green-standard text-white rounded-lg shadow-md border-neutral-400 border-[1px] text-lg">
-                            <a href={`/shop/${item.item_id}`}>Check Product</a>
+                            <span>Check Product</span>
                             <IoSearchSharp/>
                         </div>
                     </Link>

@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from "next/image";
+import Image from "next/legacy/image";
 import CheeseImage from "../../../public/media/photos/shop/parmigiano-reggiano-cheese.jpg";
 import PastaImage from "../../../public/media/photos/shop/pasta.webp";
 import {useRouter} from "next/router";

@@ -1,6 +1,6 @@
 import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
 import {IoMdTrash} from "react-icons/io";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import {CurrentProduct} from "../edit-form";
 import {NextPage} from "next";
 const imageMimeType = /image\/(png|jpg|jpeg|webp|avif)/i;

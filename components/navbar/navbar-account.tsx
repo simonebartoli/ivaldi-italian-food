@@ -26,7 +26,7 @@ const NavbarAccount = () => {
             <Link href="/account">
                 <div className="flex flex-row gap-6 items-center cursor-pointer">
                     <IoPersonCircleSharp className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
-                    <a href={"/account"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Account</a>
+                    <span className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Account</span>
                 </div>
             </Link>
             {
@@ -35,31 +35,31 @@ const NavbarAccount = () => {
                         <Link href="/items">
                             <div className="flex flex-row gap-6 items-center cursor-pointer">
                                 <FaSitemap className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
-                                <a href={"/items"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">Items</a>
+                                <span className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">Items</span>
                             </div>
                         </Link>
                         <Link href="/manage-orders">
                             <div className="flex flex-row gap-6 items-center cursor-pointer">
                                 <IoNewspaper className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
-                                <a href={"/manage-orders"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">Orders</a>
+                                <span className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">Orders</span>
                             </div>
                         </Link>
                         <Link href="/receipts">
                             <div className="flex flex-row gap-6 items-center cursor-pointer">
                                 <FaFileSignature className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
-                                <a href={"/receipts"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">Receipts</a>
+                                <span className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">Receipts</span>
                             </div>
                         </Link>
                         <Link href="/categories">
                             <div className="flex flex-row gap-6 items-center cursor-pointer">
                                 <BiCategoryAlt className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
-                                <a href={"/categories"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">Categories</a>
+                                <span className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">Categories</span>
                             </div>
                         </Link>
                         <Link href="/holidays">
                             <div className="flex flex-row gap-6 items-center cursor-pointer">
                                 <GiPalmTree className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
-                                <a href={"/holidays"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">Holidays</a>
+                                <span className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">Holidays</span>
                             </div>
                         </Link>
                     </>
@@ -68,25 +68,25 @@ const NavbarAccount = () => {
                         <Link href="/orders">
                             <div className="flex flex-row gap-6 items-center cursor-pointer">
                                 <IoNewspaper className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
-                                <a href={"/orders"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Orders</a>
+                                <span className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Orders</span>
                             </div>
                         </Link>
                         <Link href="/receipts">
                             <div className="flex flex-row gap-6 items-center cursor-pointer">
                                 <FaFileSignature className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
-                                <a href={"/receipts"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Receipts</a>
+                                <span className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Receipts</span>
                             </div>
                         </Link>
                         <Link href="/shipping-addresses">
                             <div className="flex flex-row gap-6 items-center cursor-pointer">
                                 <IoHome className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
-                                <a href={"/shipping-addresses"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Shipping Addresses</a>
+                                <span className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Shipping Addresses</span>
                             </div>
                         </Link>
                         <Link href="/billing-addresses">
                             <div className="flex flex-row gap-6 items-center cursor-pointer">
                                 <BsGeoAltFill className="mt-1 lg:text-4xl text-3xl text-green-standard"/>
-                                <a href={"/billing-addresses"} className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Billing Addresses</a>
+                                <span className="!text-white after:!bg-white hover-underline-animation transition hover:text-green-standard">My Billing Addresses</span>
                             </div>
                         </Link>
                     </>

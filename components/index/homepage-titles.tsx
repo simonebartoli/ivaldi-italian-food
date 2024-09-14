@@ -32,8 +32,8 @@ const HomepageTitles = () => {
                 </div>
             </div>
             <Link href="/shop">
-                <a href={"/shop"}
-                   className="mdx:m-0 my-4 hover:bg-green-standard transition p-4 mdxl:w-1/2 w-5/6 bg-green-500 text-white text-lg shadow-lg text-center rounded-lg">Go to Shop</a>
+                <span
+                   className="mdx:m-0 my-4 hover:bg-green-standard transition p-4 mdxl:w-1/2 w-5/6 bg-green-500 text-white text-lg shadow-lg text-center rounded-lg">Go to Shop</span>
             </Link>
         </>
     );

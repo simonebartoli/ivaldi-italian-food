@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import Image from "next/image";
+import Image from "next/legacy/image";
 import TomatoImage from "../../public/media/photos/index/index-bottom.webp";
 import {BiPlus} from "react-icons/bi";
 import {BsFacebook, BsInstagram} from "react-icons/bs";

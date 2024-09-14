@@ -67,29 +67,29 @@ const Navbar = () => {
     return (
         <nav ref={navbarRef} className="sticky top-0 z-40 flex flex-row justify-between shadow-lg p-6 bg-white">
             <Link href="/">
-                <a className="font-navbarTitle text-2xl" onClick={closeNav}>
+                <span className="font-navbarTitle text-2xl" onClick={closeNav}>
                     <span className="text-red-600">Ivaldi</span>
                     <span className="text-green-standard"> Italian </span>
                     <span className="text-green-standard">Food</span>
-                </a>
+                </span>
             </Link>
             <div
                 className="mdx:flex hidden flex-row justify-around items-center text-lg mdx:basis-2/3 xls:basis-1/2 font-navbar">
                 <Link href={"/shop"}>
-                    <a className="hover:text-green-standard transition cursor-pointer">Shop</a>
+                    <span className="hover:text-green-standard transition cursor-pointer">Shop</span>
                 </Link>
                 <Link href="/contact">
-                    <a className="hover:text-green-standard transition cursor-pointer">Contact Us</a>
+                    <span className="hover:text-green-standard transition cursor-pointer">Contact Us</span>
                 </Link>
                 <span> | </span>
                 {
                     userInfoNav.name === null ?
                         <Link href="/login">
-                            <a className="hover:text-green-standard transition cursor-pointer">Log In / Sign Up</a>
+                            <span className="hover:text-green-standard transition cursor-pointer">Log In / Sign Up</span>
                         </Link>
                         :
                         <Link href="/account">
-                            <a className="hover:text-green-standard transition cursor-pointer">Hi {userInfoNav.name}</a>
+                            <span className="hover:text-green-standard transition cursor-pointer">Hi {userInfoNav.name}</span>
                         </Link>
                 }
                 <Link href="/cart">
@@ -136,50 +136,50 @@ const Navbar = () => {
                                     <div
                                         className="p-8 flex flex-col gap-10 items-center justify-center bg-neutral-100 w-5/6">
                                         <Link href="/account">
-                                            <a onClick={onNavClick} href={"/account"}
+                                            <span onClick={onNavClick}
                                                className="text-center hover:text-green-standard transition cursor-pointer">Your
-                                                Account</a>
+                                                Account</span>
                                         </Link>
                                         <Link href="/orders">
-                                            <a href={"/orders"} onClick={onNavClick}
+                                            <span onClick={onNavClick}
                                                className="text-center hover:text-green-standard transition cursor-pointer">Your
-                                                Orders</a>
+                                                Orders</span>
                                         </Link>
                                         <Link href="/receipts">
-                                            <a href={"/receipts"} onClick={onNavClick}
+                                            <span onClick={onNavClick}
                                                className="text-center hover:text-green-standard transition cursor-pointer">Your
-                                                Receipts</a>
+                                                Receipts</span>
                                         </Link>
                                         {
                                             isAdmin ?
                                             <>
                                                 <Link href="/items">
-                                                    <a href={"/items"} onClick={onNavClick}
+                                                    <span onClick={onNavClick}
                                                        className="text-center hover:text-green-standard transition cursor-pointer">Your
-                                                        Items</a>
+                                                        Items</span>
                                                 </Link>
                                                 <Link href="/categories">
-                                                    <a href={"/categories"} onClick={onNavClick}
+                                                    <span onClick={onNavClick}
                                                        className="text-center hover:text-green-standard transition cursor-pointer">Your
-                                                        Categories</a>
+                                                        Categories</span>
                                                 </Link>
                                                 <Link href="/holidays">
-                                                    <a href={"/holidays"} onClick={onNavClick}
+                                                    <span onClick={onNavClick}
                                                        className="text-center hover:text-green-standard transition cursor-pointer">Your
-                                                        Holidays</a>
+                                                        Holidays</span>
                                                 </Link>
                                             </>
                                             :
                                             <>
                                                 <Link href="/shipping-addresses">
-                                                    <a href={"/shipping-addresses"} onClick={onNavClick}
+                                                    <span onClick={onNavClick}
                                                        className="text-center hover:text-green-standard transition cursor-pointer">Your
-                                                        Shipping Addresses</a>
+                                                        Shipping Addresses</span>
                                                 </Link>
                                                 <Link href="/billing-addresses">
-                                                    <a href={"/billing-addresses"} onClick={onNavClick}
+                                                    <span onClick={onNavClick}
                                                        className="text-center hover:text-green-standard transition cursor-pointer">Your
-                                                        Delivery Addresses</a>
+                                                        Delivery Addresses</span>
                                                 </Link>
                                             </>
                                         }
@@ -191,8 +191,8 @@ const Navbar = () => {
                     {
                         userInfoNav.name === null &&
                         <Link href="/login">
-                            <a className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>
-                                Log In / Sign Up</a>
+                            <span className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>
+                                Log In / Sign Up</span>
                         </Link>
                     }
                     {
@@ -208,8 +208,8 @@ const Navbar = () => {
                               onClick={onNavClick}>Shop</span>
                     </Link>
                     <Link href="/contact">
-                        <a className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>Contact
-                            Us</a>
+                        <span className="hover:text-green-standard transition cursor-pointer" onClick={onNavClick}>Contact
+                            Us</span>
                     </Link>
                 </div>
             </div>

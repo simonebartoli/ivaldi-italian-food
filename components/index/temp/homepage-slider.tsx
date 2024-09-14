@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {AiOutlineAntDesign} from "react-icons/ai";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Autoplay, Navigation} from "swiper";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import "swiper/css/bundle"
 import {useResizer} from "../../../contexts/resizer-context";
 

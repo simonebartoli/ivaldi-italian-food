@@ -182,14 +182,14 @@ const Cart = () => {
                                 <div className="self-stretch lg:w-1/3 sm:w-1/2 w-full smxl:p-12 p-6 rounded-lg border-neutral-300 border-[1px] flex flex-col items-center justify-between bg-white gap-8">
                                     <span className="text-xl text-center">First Time Here?</span>
                                     <Link href={"/shop"}>
-                                        <a className="hover:bg-green-500 transition w-full p-4 bg-green-standard text-lg text-center text-white shadow-lg rounded-lg" href={"/shop"}>Go to Shop</a>
+                                        <span className="hover:bg-green-500 transition w-full p-4 bg-green-standard text-lg text-center text-white shadow-lg rounded-lg">Go to Shop</span>
                                     </Link>
                                 </div>
                                 {!logged &&
                                     <div className="self-stretch lg:w-1/3 sm:w-1/2 w-full smxl:p-12 p-6 rounded-lg border-neutral-300 border-[1px] flex flex-col items-center justify-between bg-neutral-50 gap-8">
                                         <span className="text-xl text-center">Do you have already an Account?</span>
                                         <Link href={"/login?cart"}>
-                                            <a className="hover:bg-green-500 transition w-full p-4 bg-green-standard text-lg text-center text-white shadow-lg rounded-lg" href={"/login?cart"}>Login</a>
+                                            <span className="hover:bg-green-500 transition w-full p-4 bg-green-standard text-lg text-center text-white shadow-lg rounded-lg">Login</span>
                                         </Link>
                                     </div>
                                 }

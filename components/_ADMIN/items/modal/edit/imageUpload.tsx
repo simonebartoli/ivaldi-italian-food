@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
-import Image from "next/image";
+import Image from "next/legacy/image";
 import {IoMdTrash} from "react-icons/io";
 import {CurrentProduct} from "../edit-form";
 import {NextPage} from "next";

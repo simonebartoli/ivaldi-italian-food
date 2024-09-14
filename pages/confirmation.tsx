@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import {useResizer} from "../contexts/resizer-context";
 import {useLayoutContext} from "../contexts/layout-context";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import ConfirmImage from "../public/media/photos/checkout/confirm.svg"
 import {useCart} from "../contexts/cart-context";
 import {useAuth} from "../contexts/auth-context";

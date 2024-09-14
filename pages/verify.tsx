@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {gql, useMutation} from "@apollo/client";
 import PageLoader from "../components/page-loader";
 import {GetServerSideProps, NextPage} from "next";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import ConfirmImage from "../public/media/photos/checkout/confirm.svg";
 import ForbiddenImage from "../public/media/photos/login/forbidden.svg";
 

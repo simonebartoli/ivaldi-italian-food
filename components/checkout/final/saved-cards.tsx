@@ -1,5 +1,5 @@
 import React, {ChangeEvent, FormEvent, useEffect, useRef, useState} from 'react';
-import Image from "next/image";
+import Image from "next/legacy/image";
 import {gql, useLazyQuery, useMutation} from "@apollo/client";
 import {useAuth} from "../../../contexts/auth-context";
 import {DateTime} from "luxon";

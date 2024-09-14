@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from "next/image";
+import Image from "next/legacy/image";
 import PeoplePhoto from "../../public/media/photos/index/people.jpg";
 import Link from "next/link";
 
@@ -18,10 +18,10 @@ const WhyUs = () => {
                 </p>
                 <div className="flex smxl:flex-row flex-col justify-evenly items-center sm:w-4/5 w-full smxl:gap-8 gap-4">
                     <Link href="/shop">
-                        <a href="" className="w-full grow transition text-lg p-4 shadow-lg bg-green-500 hover:bg-green-standard rounded-lg text-white text-center">Look the Shop</a>
+                        <span className="w-full grow transition text-lg p-4 shadow-lg bg-green-500 hover:bg-green-standard rounded-lg text-white text-center">Look the Shop</span>
                     </Link>
                     <Link href="/contact">
-                        <a href="" className="w-full grow transition text-lg p-4 shadow-lg bg-red-500 hover:bg-red-600 rounded-lg text-white text-center">Contact Me</a>
+                        <span className="w-full grow transition text-lg p-4 shadow-lg bg-red-500 hover:bg-red-600 rounded-lg text-white text-center">Contact Me</span>
                     </Link>
                 </div>
             </div>

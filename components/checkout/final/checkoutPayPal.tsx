@@ -8,7 +8,7 @@ import {useAuth} from "../../../contexts/auth-context";
 import {useRouter} from "next/router";
 
 const paypalOptions = {
-    "client-id": "AWYmCr81BL6nv5eBe3hBhbUkz_1qTluKTaLoHGYdf5VZ9esKpROL1NtXHV4hq6I-vsWNyJHRGeSRrft3",
+    "client-id": "AcNzJ5jNXztDlL0CYMMVtdIm-BI3alGFgPrY-x6zxACZaU5MYW3yeWO0JsUgySwkjBqqOdL3xZxhLeIa",
     "commit": true,
     "currency": "GBP",
     "disable-funding": "card,credit,paylater,bancontact,blik,eps,giropay,ideal,mercadopago,mybank,p24,sofort,venmo,sepa"

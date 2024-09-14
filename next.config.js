@@ -3,16 +3,8 @@
 const nextConfig = {
   reactStrictMode: false,
   images: {
-    domains: ["localhost"],
+    domains: ["api.ivaldi.uk"],
     unoptimized: false
-  },
-  exportPathMap: async function (
-      defaultPathMap,
-      { dev, dir, outDir, distDir, buildId }
-  ) {
-    return {
-      '/index': { page: '/work-in-progress' }
-    }
   }
   // async headers() {
   //   return [

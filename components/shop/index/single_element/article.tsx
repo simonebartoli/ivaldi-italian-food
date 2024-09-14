@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 import {IoSearchSharp} from "react-icons/io5";
 import {FiShoppingCart} from "react-icons/fi";
@@ -95,7 +95,7 @@ const Article: NextPage<{item: Item, hidden?: boolean}> = ({item, hidden= false}
             <div className="flex flex-col gap-4 w-full">
                 <Link href={"/shop/" + item.item_id + (router.query.query !== undefined ? ("?query=" + router.query.query) : "")}>
                     <div className="cursor-pointer w-full p-2 flex flex-row gap-4 items-center justify-center bg-green-standard text-white rounded-lg shadow-md border-neutral-400 border-[1px] text-lg">
-                        <a href={"/shop/" + item.item_id + (router.query.query !== undefined ? ("?query=" + router.query.query) : "")}>Check Product</a>
+                        <span>Check Product</span>
                         <IoSearchSharp/>
                     </div>
                 </Link>

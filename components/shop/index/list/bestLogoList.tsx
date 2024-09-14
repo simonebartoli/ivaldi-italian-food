@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import Image from "next/image";
+import Image from "next/legacy/image";
 
 import {Autoplay, Navigation} from "swiper";
 import {Swiper, SwiperSlide} from "swiper/react";

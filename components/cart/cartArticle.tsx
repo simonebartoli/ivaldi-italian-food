@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Counter from "../library/counter";
 import {FaRegTrashAlt} from "react-icons/fa";
 import {useResizer} from "../../contexts/resizer-context";

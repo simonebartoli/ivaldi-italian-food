@@ -4,7 +4,7 @@ import ParmigianoImage from "../../public/media/photos/index/parmigiano.jpg"
 import SalsicciaImage from "../../public/media/photos/index/salsiccia.jpg"
 import BiscuitsImage from "../../public/media/photos/index/biscuits.webp"
 
-import Image from "next/image"
+import Image from "next/legacy/image"
 import Link from "next/link";
 
 import {Swiper, SwiperSlide} from "swiper/react";
@@ -31,7 +31,7 @@ const ProductsSwiper = () => {
                         <div className="xls:w-2/3 w-5/6 flex flex-col items-center justify-center gap-8 z-20 text-center leading-[4rem] absolute top-1/2 left-1/2 text-5xl text-white -translate-y-1/2 -translate-x-1/2">
                             <span>Discover Our Pasta Selection</span>
                             <Link href={"/shop"}>
-                                <a href="" className="block h-full p-4 w-3/4 text-white text-2xl border-2 rounded-lg border-white relative">Check Our Pasta</a>
+                                <span className="block h-full p-4 w-3/4 text-white text-2xl border-2 rounded-lg border-white relative">Check Our Pasta</span>
                             </Link>
                         </div>
                         <div className="homepage-image">
@@ -44,7 +44,7 @@ const ProductsSwiper = () => {
                         <div className="xls:w-2/3 w-5/6 flex flex-col items-center justify-center gap-8 z-20 text-center leading-[4rem] absolute top-1/2 left-1/2 text-5xl text-white -translate-y-1/2 -translate-x-1/2">
                             <span>Discover Our Cheese Selection</span>
                             <Link href={"/shop"}>
-                                <a href="" className="block h-full p-4 w-3/4 text-white text-2xl border-2 rounded-lg border-white relative">Check Our Cheese</a>
+                                <span className="block h-full p-4 w-3/4 text-white text-2xl border-2 rounded-lg border-white relative">Check Our Cheese</span>
                             </Link>
                         </div>
                         <div className="homepage-image">
@@ -57,7 +57,7 @@ const ProductsSwiper = () => {
                         <div className="xls:w-2/3 w-5/6 flex flex-col items-center justify-center gap-8 z-20 text-center leading-[4rem] absolute top-1/2 left-1/2 text-5xl text-white -translate-y-1/2 -translate-x-1/2">
                             <span>Discover Our Sausages Selection</span>
                             <Link href={"/shop"}>
-                                <a href="" className="block h-full p-4 w-3/4 text-white text-2xl border-2 rounded-lg border-white relative">Check Our Sausages</a>
+                                <span className="block h-full p-4 w-3/4 text-white text-2xl border-2 rounded-lg border-white relative">Check Our Sausages</span>
                             </Link>
                         </div>
                         <div className="homepage-image">
@@ -70,7 +70,7 @@ const ProductsSwiper = () => {
                         <div className="xls:w-2/3 w-5/6 flex flex-col items-center justify-center gap-8 z-20 text-center leading-[4rem] absolute top-1/2 left-1/2 text-5xl text-white -translate-y-1/2 -translate-x-1/2">
                             <span>Discover Our Biscuits Selection</span>
                             <Link href={"/shop"}>
-                                <a href="" className="block h-full p-4 w-3/4 text-white text-2xl border-2 rounded-lg border-white relative">Check Our Biscuits</a>
+                                <span className="block h-full p-4 w-3/4 text-white text-2xl border-2 rounded-lg border-white relative">Check Our Biscuits</span>
                             </Link>
                         </div>
                         <div className="homepage-image">

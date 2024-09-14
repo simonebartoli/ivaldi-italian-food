@@ -88,9 +88,9 @@ const CartSummary: NextPage<Props> = ({items, minimumOrderPrice, shippingCosts})
             {
                 (total - shippingCost) >= minimumOrderPrice && minimumOrderPrice !== 0 && !holidayPeriod  ?
                     <Link href={!logged ? "/login?cart" : "/checkout"}>
-                        <a href={!logged ? "/login?cart" : "/checkout"} className="font-semibold cursor-pointer w-full text-lg bg-green-standard hover:bg-green-500 transition rounded-lg shadow-lg p-4 text-white text-center">
+                        <span className="font-semibold cursor-pointer w-full text-lg bg-green-standard hover:bg-green-500 transition rounded-lg shadow-lg p-4 text-white text-center">
                             Proceed To Checkout
-                        </a>
+                        </span>
                     </Link>
                     : holidayPeriod ?
                         <span className="text-red-600 text-center leading-8">This is an holiday period, there will be no deliveries in this time</span>

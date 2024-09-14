@@ -34,7 +34,7 @@ const CREATE_OR_RETRIEVE_PAYMENT_INTENT = gql`
         }
     }
 `
-const stripePromise = loadStripe('pk_test_51LHx5kILFxyKM1maBgbPWiLi1fcn545wLVdmeOUhX62ddzSoBUdLJ53yB2u9LNYdo9upTw7IdCe2nIlNyinYvubC00zipLMrxk');
+const stripePromise = loadStripe('pk_live_51LHx5kILFxyKM1ma2BOkxKRNrS4YZbK6i8Gd9KxjN31b9jbPPh8UrOdl1dMptxMPUebG2mJsGZJDj5elYK3Zd6pL00CuRh7TiJ');
 type CreateOrRetrievePaymentIntentVarType = {
     data: {
         shipping_address: AddressReactType,
